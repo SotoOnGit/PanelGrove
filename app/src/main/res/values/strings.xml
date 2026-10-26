@@ -1,0 +1,625 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <!-- Interface text, accessibility, progress and user-facing errors. -->
+
+    <string name="a_file_named_already_exists_where_the_series_folder">A file named %1$s already exists where the series folder should be.</string>
+
+    <string name="about">About</string>
+
+    <string name="add_a_folder">Add a folder</string>
+
+    <string name="add_a_library_folder">Add a library folder</string>
+
+    <string name="add_manga">Add manga</string>
+
+    <string name="add_manga_files_or_a_whole_folder_your_files">Add manga files or a whole folder. Your files stay where they are.</string>
+
+    <string name="add_to_favorites">Add to favorites</string>
+
+    <string name="added">Added %1$s</string>
+
+    <string name="all">All</string>
+
+    <string name="all_collections">All collections</string>
+
+    <string name="all_series">All series</string>
+
+    <string name="also_delete_the_copied_manga_file_from_its_storage">Also delete the copied manga file from its storage folder</string>
+
+    <string name="an_archive_entry_exceeds_the_supported_size_limit">An archive entry exceeds the supported size limit.</string>
+
+    <string name="android_did_not_grant_lasting_read_and_write_access">Android did not grant lasting read and write access. Choose the import folder again.</string>
+
+    <string name="android_did_not_grant_persistent_access_to_this_folder">Android did not grant persistent access to this folder.</string>
+
+    <string name="app_description">Offline manga reader</string>
+
+    <string name="app_name">Panelgrove</string>
+
+    <string name="appearance">Appearance</string>
+
+    <string name="archive_contains_duplicate_filenames">Archive contains duplicate filenames.</string>
+
+    <string name="archive_exceeds_extraction_limits">Archive exceeds extraction limits.</string>
+
+    <string name="archive_links_are_not_supported">Archive links are not supported.</string>
+
+    <string name="back_matter">Back matter</string>
+
+    <string name="back_to_library">Back to library</string>
+
+    <string name="backup_preferences_recovery_will_be_retried_on_next_launch">Backup preferences recovery will be retried on next launch</string>
+
+    <string name="backup_preferences_still_need_restoring_check_free_storage_then">Backup preferences still need restoring. Check free storage, then reopen Panelgrove to retry. Your library restore is saved.</string>
+
+    <string name="backup_restore">Backup &amp; restore</string>
+
+    <string name="backup_restored_relink_unavailable_folders_or_books_in_settings">Backup restored. Relink unavailable folders or books in Settings.</string>
+
+    <string name="backup_saved_manga_files_were_left_in_their_folders">Backup saved. Manga files were left in their folders.</string>
+
+    <string name="black">Black</string>
+
+    <string name="book">book-%1$s</string>
+
+    <string name="book_details">Book details</string>
+
+    <string name="bookmark_a_page_to_find_it_here">Bookmark a page to find it here.</string>
+
+    <string name="bookmark_page">Bookmark page</string>
+
+    <string name="bookmarks">Bookmarks</string>
+
+    <string name="cancel">Cancel</string>
+
+    <string name="cannot_render_this_region">Cannot render this region.</string>
+
+    <string name="cannot_start_the_document_decoder">Cannot start the document decoder.</string>
+
+    <string name="cannot_write_the_backup">Cannot write the backup.</string>
+
+    <string name="cannot_write_to_the_import_folder">Cannot write to the import folder.</string>
+
+    <string name="cannot_zoom_this_image">Cannot zoom this image.</string>
+
+    <string name="cbz_cbr_pdf_and_image_folders">CBZ/ZIP, CBR/RAR, PDF and image folders</string>
+
+    <string name="cbz_cbr_pdf_image_folders">CBZ/ZIP · CBR/RAR · PDF · image folders</string>
+
+    <string name="change">Change</string>
+
+    <string name="change_import_folder">Change import folder</string>
+
+    <string name="chapter">Chapter %1$s</string>
+
+    <string name="chapters">Chapters</string>
+
+    <string name="choose">Choose</string>
+
+    <string name="choose_a_document_using_android_s_file_picker">Choose a document using Android\'s file picker.</string>
+
+    <string name="choose_a_folder_on_your_device_for_manga_copies">Choose a folder on your device for manga copies. Panelgrove will create series folders inside it. Your original files stay where they are.</string>
+
+    <string name="choose_a_folder_using_android_s_folder_picker">Choose a folder using Android\'s folder picker.</string>
+
+    <string name="choose_an_import_folder">Choose an import folder</string>
+
+    <string name="choose_backup">Choose backup</string>
+
+    <string name="choose_files">Choose files</string>
+
+    <string name="choose_folder">Choose folder</string>
+
+    <string name="choose_import_folder">Choose import folder</string>
+
+    <string name="clear_history">Clear history</string>
+
+    <string name="clear_reading_history">Clear reading history?</string>
+
+    <string name="clear_series_and_collection_filters">Clear series and collection filters</string>
+
+    <string name="close">Close</string>
+
+    <string name="close_finished_book">Close finished book</string>
+
+    <string name="collections">Collections</string>
+
+    <string name="completion_could_not_be_saved_check_free_storage">Completion could not be saved. Check free storage.</string>
+
+    <string name="contents">Contents</string>
+
+    <string name="continue_reading">Continue reading</string>
+
+
+    <string name="copies_appear_in_your_file_manager_as_series_book">Copies appear in your file manager as Series / Book file. Changing the folder applies to future imports.</string>
+
+    <string name="copies_could_not_be_moved_check_folder_access_and">Copies could not be moved. Check folder access and free storage.</string>
+
+
+    <string name="copy_imported_files">Copy imported files</string>
+
+    <string name="copying">Copying %1$s…</string>
+
+    <string name="could_not_cache_the_page">Could not cache the page.</string>
+
+    <string name="could_not_create_the_manga_copy">Could not create the manga copy.</string>
+
+    <string name="could_not_create_the_series_folder_check_folder_access">Could not create the series folder. Check folder access and free storage.</string>
+
+    <string name="could_not_finish_the_managed_copy">Could not finish the managed copy.</string>
+
+    <string name="could_not_finish_the_working_copy">Could not finish the working copy.</string>
+
+    <string name="could_not_read_pdf_pages">Could not read PDF pages.</string>
+
+    <string name="could_not_render_this_pdf_page">Could not render this PDF page.</string>
+
+    <string name="could_not_save_import_recovery_information_check_free_storage">Could not save import recovery information. Check free storage.</string>
+
+    <string name="could_not_save_the_manga_copy_check_the_import">Could not save the manga copy. Check the import folder, its permissions and free storage.</string>
+
+    <string name="cover_of">Cover of %1$s</string>
+
+    <string name="creating_backup">Creating backup…</string>
+
+    <string name="current_page">Current page</string>
+
+
+    <string name="decoder_is_unavailable">Decoder is unavailable.</string>
+
+    <string name="decoder_stopped_open_the_book_again">Decoder stopped. Open the book again.</string>
+
+    <string name="decoder_stopped_try_the_page_again">Decoder stopped. Try the page again.</string>
+
+    <string name="default_reading_settings">Default reading settings</string>
+
+    <string name="delete_managed_copy">Delete managed copy</string>
+
+    <string name="details_for">Details for %1$s</string>
+
+
+    <string name="document_decoding_failed">Document decoding failed</string>
+
+    <string name="down_advances_up_goes_back">Down advances, up goes back</string>
+
+    <string name="encrypted_archives_are_not_supported">Encrypted archives are not supported.</string>
+
+    <string name="end_of_book_finish_reading">End of book · finish reading</string>
+
+    <string name="export">Export: %1$s</string>
+
+    <string name="export_backup">Export backup</string>
+
+    <string name="favorite">Favorite</string>
+
+    <string name="favorites">Favorites</string>
+
+    <string name="files_stay_in_their_folders_unless_you_choose_to">Files stay in their folders unless you choose to copy imports in Settings.</string>
+
+    <string name="files_storage">Files &amp; storage</string>
+
+    <string name="filter_by_collection">Filter by collection</string>
+
+    <string name="filter_by_series">Filter by series</string>
+
+    <string name="finish">Finish</string>
+
+    <string name="finish_book">Finish book</string>
+
+    <string name="finished">Finished</string>
+
+    <string name="fit_page">Fit page</string>
+
+    <string name="fit_width">Fit width</string>
+
+    <string name="folder_unavailable_grant_access_again">Folder unavailable · grant access again</string>
+
+
+    <string name="free_and_open_source_gpl_3_0_or_later">Free and open source · GPL-3.0-or-later\nNo ads. No account. No tracking.</string>
+
+    <string name="front_matter">Front matter</string>
+
+
+    <string name="history">History</string>
+
+
+    <string name="import_cancelled_choose_a_copy_folder_before_importing_these">Import cancelled. Choose a copy folder before importing these files again.</string>
+
+    <string name="import_failed_check_that_the_file_is_a_readable">Import failed. Check that the file is a readable, unencrypted CBZ, ZIP, CBR, RAR or PDF and that storage is available.</string>
+
+    <string name="import_folder">Import folder</string>
+
+    <string name="import_needs_attention">Import needs attention</string>
+
+    <string name="indexing">Indexing %1$s…</string>
+
+    <string name="ink">Ink</string>
+
+    <string name="internal_storage">Internal storage</string>
+
+    <string name="invalid_managed_filename">Invalid managed filename.</string>
+
+    <string name="invalid_managed_source">Invalid managed source.</string>
+
+    <string name="invalid_page_region">Invalid page region.</string>
+
+
+    <string name="keep_screen_awake">Keep screen awake</string>
+
+
+    <string name="left_to_right">Left to right</string>
+
+    <string name="library">Library</string>
+
+    <string name="library_folder_exceeds_scanning_limits">Library folder exceeds scanning limits.</string>
+
+    <string name="library_folder_was_removed">Library folder was removed.</string>
+
+    <string name="library_folders">Library folders</string>
+
+    <string name="library_options">Library options</string>
+
+    <string name="library_updated">Library updated</string>
+
+    <string name="linked_refreshed_when_you_return_to_panelgrove">Linked · refreshed when you return to Panelgrove</string>
+
+    <string name="make_a_managed_copy">Make a managed copy</string>
+
+
+    <string name="manga_copies_moved_into_the_selected_import_folder">Manga copies moved into the selected import folder.</string>
+
+    <string name="mark_unread">Mark unread</string>
+
+
+    <string name="move_existing_copies_here">Move existing copies here</string>
+
+    <string name="moving">Moving %1$s…</string>
+
+    <string name="multipart_archives_are_not_supported">Multipart archives are not supported.</string>
+
+    <string name="next_page">Next page</string>
+
+    <string name="no_books_match_these_filters">No books match these filters.</string>
+
+    <string name="no_folders_yet_add_one_from_library_to_enable">No folders yet. Add one from Library to enable rescanning.</string>
+
+    <string name="no_import_folder_selected">No import folder selected</string>
+
+
+    <string name="not_enough_free_storage_for_a_local_copy_free">Not enough free storage for a local copy. Free space and try again.</string>
+
+    <string name="on_wide_screens_cover_stays_alone">On wide screens; cover stays alone</string>
+
+    <string name="open_source_licenses">Open-source licenses</string>
+
+    <string name="opening_your_book">Opening your book…</string>
+
+    <string name="orientation_automatic">Orientation: automatic</string>
+
+    <string name="orientation_locked">Orientation: locked</string>
+
+    <string name="original_page_removed_opens_nearest_remaining_page">Original page removed; opens nearest remaining page.</string>
+
+    <string name="page">Page %1$s</string>
+
+    <string name="page_could_not_be_read">Page %1$s could not be read</string>
+
+    <string name="page_is_missing_from_the_folder">Page is missing from the folder.</string>
+
+    <string name="page_of">Page %1$s of %2$s</string>
+
+    <string name="page_pinch_or_double_tap_to_zoom">Page %1$s. Pinch or double tap to zoom.</string>
+
+    <string name="page_sizing">Page sizing</string>
+
+    <string name="page_thumbnail">Page %1$s thumbnail</string>
+
+    <string name="page_thumbnails">Page thumbnails</string>
+
+    <string name="book_page_format">%1$s pages · %2$s</string>
+
+    <string name="page_count">%1$s pages</string>
+
+    <string name="book_file_summary">%1$s pages · %2$s · %3$s</string>
+
+    <string name="paper">Paper</string>
+
+
+
+
+    <string name="pdf_contains_too_many_pages">PDF contains too many pages.</string>
+
+
+    <string name="preparing_a_local_working_copy">Preparing a local working copy…</string>
+
+    <string name="preparing_the_rar_page_index">Preparing the RAR page index…</string>
+
+    <string name="preparing_your_library">Preparing your library…</string>
+
+    <string name="previous_page">Previous page</string>
+
+    <string name="pure_black_background_in_dark_mode">Pure black background in dark mode</string>
+
+    <string name="read_again">Read again</string>
+
+    <string name="read_next">Read next</string>
+
+    <string name="reader_background">Reader background</string>
+
+    <string name="reader_brightness">Reader brightness</string>
+
+    <string name="reading">Reading</string>
+
+    <string name="reading_direction">Reading direction</string>
+
+    <string name="reading_mode">Reading mode</string>
+
+    <string name="reading_page">Reading page</string>
+
+    <string name="reading_progress_and_bookmarks_will_be_kept">Reading progress and bookmarks will be kept.</string>
+
+    <string name="reading_progress_is_safe">Reading progress is safe</string>
+
+    <string name="reading_settings">Reading settings</string>
+
+    <string name="panelgrove_could_not_create_its_library_storage_check_available">Panelgrove could not create its library storage. Check available space.</string>
+
+    <string name="about_panelgrove">Panelgrove is an offline manga reader. Manga stays on your device. Supports CBZ/ZIP, CBR/RAR, PDF and image folders. Encrypted and multipart documents are not supported.</string>
+
+    <string name="relink">Relink</string>
+
+    <string name="relink_source">Relink source</string>
+
+    <string name="relink_source_file">Relink source file</string>
+
+    <string name="remove">Remove</string>
+
+    <string name="remove_bookmark">Remove bookmark</string>
+
+    <string name="remove_bookmark_on_page">Remove bookmark on page %1$s</string>
+
+    <string name="remove_favorite">Remove favorite</string>
+
+    <string name="remove_from_library">Remove from library</string>
+
+    <string name="remove_this_book">Remove this book?</string>
+
+
+    <string name="rescan">Rescan</string>
+
+    <string name="rescan_library_folders">Rescan library folders</string>
+
+    <string name="reset_zoom">Reset zoom</string>
+
+    <string name="restore">Restore</string>
+
+    <string name="restore_a_backup">Restore a backup?</string>
+
+    <string name="restoring_library">Restoring library…</string>
+
+    <string name="retry">Retry</string>
+
+    <string name="right_to_left">Right to left</string>
+
+    <string name="save">Save</string>
+
+    <string name="saved_in_your_folder_organized_by_series">Saved in your folder, organized by series</string>
+
+    <string name="saves_progress_bookmarks_collections_and_settings_manga_files_are">Saves progress, bookmarks, collections and settings. Manga files are not included, and a new device needs permission to access its folders.</string>
+
+    <string name="saving_in">Saving %1$s in %2$s…</string>
+
+
+    <string name="scanning">Scanning %1$s…</string>
+
+    <string name="search_your_shelf">Search your shelf</string>
+
+    <string name="selected_folder">Selected folder</string>
+
+    <string name="separate_with_commas">Separate with commas</string>
+
+
+    <string name="series">Series</string>
+
+    <string name="series_reading_settings">Series reading settings</string>
+
+
+
+    <string name="series_settings">%1$s settings</string>
+
+    <string name="settings">Settings</string>
+
+    <string name="skip_page">Skip page</string>
+
+    <string name="source_unavailable_relink_in_details">Source unavailable · relink in details</string>
+
+    <string name="sources_to_relink">Sources to relink</string>
+
+    <string name="storage">Storage %1$s</string>
+
+    <string name="supported_files_are_cbz_zip_cbr_rar_and_pdf">%1$s: supported files are CBZ, ZIP, CBR, RAR and PDF.</string>
+
+    <string name="switch_library_layout">Switch library layout</string>
+
+    <string name="tap_the_bookmark_icon_in_the_reader_bar_to">Tap the bookmark icon in the reader bar to add or remove one for the current page.</string>
+
+    <string name="the_backup_will_be_merged_into_your_library_entries">The backup will be merged into your library. Entries with matching identities use the backup\'s reading data and settings.</string>
+
+    <string name="the_bookmark_could_not_be_saved_check_free_storage">The bookmark could not be saved. Check free storage.</string>
+
+    <string name="the_books_you_open_will_appear_here">The books you open will appear here.</string>
+
+    <string name="the_document_decoder_did_not_start_try_again">The document decoder did not start. Try again.</string>
+
+    <string name="the_document_decoder_returned_no_response_try_opening_the">The document decoder returned no response. Try opening the book again.</string>
+
+    <string name="the_document_decoder_took_too_long_try_the_page">The document decoder took too long. Try the page again.</string>
+
+    <string name="the_file_could_not_be_imported">The file could not be imported.</string>
+
+    <string name="the_import_folder_is_unavailable_choose_it_again_in">The import folder is unavailable. Choose it again in Settings.</string>
+
+    <string name="the_import_folder_needs_read_and_write_access_choose">The import folder needs read and write access. Choose it again in Settings.</string>
+
+    <string name="the_library_entry_was_removed_but_its_file_could">The library entry was removed, but its file could not be deleted. You can remove it from the selected folder.</string>
+
+    <string name="the_operation_could_not_be_completed_check_file_access">The operation could not be completed. Check file access and free storage, then try again.</string>
+
+    <string name="the_rar_page_index_could_not_be_read">The RAR page index could not be read.</string>
+
+    <string name="the_source_is_unavailable">The source is unavailable.</string>
+
+    <string name="this_archive_contains_too_many_entries">This archive contains too many entries.</string>
+
+    <string name="this_archive_page_failed_its_integrity_check">This archive page failed its integrity check.</string>
+
+    <string name="this_book_could_not_be_opened">This book could not be opened.</string>
+
+    <string name="this_book_could_not_be_opened_check_the_file">This book could not be opened. Check the file or relink it from the library.</string>
+
+    <string name="this_book_has_no_chapter_metadata_use_the_page">This book has no chapter metadata. Use the page slider to navigate.</string>
+
+    <string name="this_book_is_no_longer_in_your_library">This book is no longer in your library.</string>
+
+    <string name="this_book_s_settings">This book\'s settings</string>
+
+    <string name="this_book_was_removed">This book was removed.</string>
+
+    <string name="this_copy_has_no_destination_folder">This copy has no destination folder.</string>
+
+
+    <string name="this_file_exceeds_the_supported_size_limit">This file exceeds the supported size limit.</string>
+
+    <string name="this_file_is_an_external_original">This file is an external original.</string>
+
+    <string name="this_file_is_outside_its_copy_folder">This file is outside its copy folder.</string>
+
+    <string name="this_folder_contains_too_many_files">This folder contains too many files.</string>
+
+    <string name="this_folder_does_not_allow_new_files_choose_a">This folder does not allow new files. Choose a writable import folder.</string>
+
+    <string name="this_folder_is_already_linked">This folder is already linked.</string>
+
+    <string name="this_folder_is_unavailable_grant_access_again">This folder is unavailable. Grant access again.</string>
+
+    <string name="this_image_is_corrupt_or_unsupported">This image is corrupt or unsupported.</string>
+
+    <string name="this_page_could_not_be_displayed_try_again_or">This page could not be displayed. Try again or skip to the next page.</string>
+
+    <string name="this_page_is_corrupt_or_has_unsupported_dimensions">This page is corrupt or has unsupported dimensions.</string>
+
+    <string name="this_page_is_missing">This page is missing.</string>
+
+    <string name="this_page_is_no_longer_in_the_book">This page is no longer in the book.</string>
+
+    <string name="this_source_is_not_managed_by_panelgrove">This source is not managed by Panelgrove.</string>
+
+    <string name="title">Title</string>
+
+    <string name="today">Today</string>
+
+    <string name="too_many_files_have_this_name_in_the_series">Too many files have this name in the series folder.</string>
+
+    <string name="true_black">True black</string>
+
+    <string name="try_again">Try again</string>
+
+    <string name="two_page_spreads">Two-page spreads</string>
+
+    <string name="unlink">Unlink</string>
+
+    <string name="unread">Unread</string>
+
+    <string name="unsorted">Unsorted</string>
+
+    <string name="untitled">Untitled</string>
+
+    <string name="up_next">Up next</string>
+
+    <string name="use_defaults">Use defaults</string>
+
+    <string name="use_system_brightness">Use system brightness</string>
+
+    <string name="vertical_scroll">Vertical scroll</string>
+
+    <string name="vol">Vol. %1$s</string>
+
+    <string name="vol_ch">Vol. / ch.</string>
+
+    <string name="volume_key_navigation">Volume-key navigation</string>
+
+    <string name="yesterday">Yesterday</string>
+
+    <string name="your_original_file_stays_in_its_folder">Your original file stays in its folder.</string>
+
+    <string name="your_place_could_not_be_saved_check_free_storage">Your place could not be saved. Check free storage.</string>
+
+    <string name="your_shelf_is_empty">Your shelf is empty</string>
+
+    <string name="zoom">%1$s%% zoom</string>
+
+    <string name="zoom_detail_unavailable_keeping_the_base_image">Zoom detail unavailable; keeping the base image</string>
+
+    <string name="reading_mode_pages">Pages</string>
+
+    <string name="theme_system">System</string>
+
+    <string name="theme_light">Light</string>
+
+    <string name="theme_dark">Dark</string>
+
+    <string name="format_zip">CBZ/ZIP</string>
+
+    <string name="format_rar">CBR/RAR</string>
+
+    <string name="format_pdf">PDF</string>
+
+    <string name="format_folder">Image folder</string>
+
+    <string name="page_position">%1$d / %2$d</string>
+
+    <string name="page_number">%1$d</string>
+
+    <string name="backup_filename" translatable="false">Panelgrove-backup.json</string>
+
+    <plurals name="managed_copy_count">
+
+        <item quantity="one">%1$d managed copy in the library</item>
+
+        <item quantity="other">%1$d managed copies in the library</item>
+
+    </plurals>
+
+    <plurals name="reading_session_count">
+
+        <item quantity="one">Last read %1$s · %2$d session</item>
+
+        <item quantity="other">Last read %1$s · %2$d sessions</item>
+
+    </plurals>
+
+    <string name="preparing_megabytes">Preparing %1$d MB…</string>
+    <string name="restore_import_folder">Restore import folder</string>
+    <string name="restore_import_folder_explanation">Choose “%1$s” to let Panelgrove read your saved manga again. Books found there will be added or reconnected to their saved progress and bookmarks. If you moved the folder, choose its new location.</string>
+    <string name="later">Later</string>
+    <string name="find_existing_books">Find existing books</string>
+    <string name="find_existing_books_description">Grant folder access and recover the manga already saved there.</string>
+    <string name="restoring_found_book">Restoring %1$s…</string>
+    <string name="import_folder_restored">%1$s %2$s</string>
+    <plurals name="recovered_book_count">
+        <item quantity="one">Recovered %1$d book.</item>
+        <item quantity="other">Recovered %1$d books.</item>
+    </plurals>
+    <plurals name="unreadable_file_count">
+        <item quantity="one">Could not read %1$d file.</item>
+        <item quantity="other">Could not read %1$d files.</item>
+    </plurals>
+    <string name="android_did_not_grant_persistent_file_access">Android did not grant lasting access to this file. Choose it again using the file picker.</string>
+    <string name="import_folder_restore_failed">The import folder could not be read. Choose it again using Find existing books in Settings.</string>
+    <string name="relink_failed">The book could not be relinked. Choose its matching file, or use Find existing books in Settings to restore the import folder.</string>
+    <string name="relinked_book">Relinked %1$s</string>
+    <string name="relink_file_already_linked">This file is already linked to “%1$s”. Choose the file for “%2$s”, or use Find existing books in Settings to restore the import folder.</string>
+</resources>
+

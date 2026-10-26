@@ -1,0 +1,6 @@
+-keepclasseswithmembernames class * { native <methods>; }
+-keep class dev.soto.panelgrove.engine.NativeArchive { *; }
+-dontwarn org.apache.commons.compress.harmony.**
+-dontwarn org.apache.commons.compress.compressors.brotli.**
+-dontwarn org.tukaani.xz.**
+-dontwarn com.github.luben.zstd.**

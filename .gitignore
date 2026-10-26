@@ -1,0 +1,64 @@
+# Gradle, Kotlin, native builds, and local tools
+.gradle/
+.gradle-user/
+.kotlin/
+.tooling/
+**/build/
+**/.cxx/
+**/.externalNativeBuild/
+
+# Machine and editor configuration
+local.properties
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Signing credentials and local environment files
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.pem
+*.key
+keystore.properties
+signing.properties
+.env
+.env.*
+!.env.example
+!.env.template
+
+# Packages, diagnostics, and private validation evidence
+*.apk
+*.aab
+*.apks
+*.idsig
+*.log
+*.hprof
+captures/
+/local-validation/
+/dist/
+
+# Local development history and original design references
+/IMPLEMENTATION_PLAN.md
+/IMPLEMENTATION_STATUS.md
+/DESIGN_IMPLEMENTATION.md
+/VALIDATION.md
+/design guidelines/
+
+# Books and archives stay local, including uppercase extensions
+*.[cC][bB][zZ]
+*.[cC][bB][rR]
+*.[rR][aA][rR]
+*.[pP][dD][fF]
+*.[zZ][iI][pP]
+*.[cC][bB]7
+*.7[zZ]
+*.[eE][pP][uU][bB]
+
+# Original generated test fixtures are required for a clean checkout
+!/app/src/androidTest/assets/fixtures/*.cbz
+!/app/src/androidTest/assets/fixtures/*.cbr
+!/app/src/androidTest/assets/fixtures/*.rar
+!/app/src/androidTest/assets/fixtures/*.pdf

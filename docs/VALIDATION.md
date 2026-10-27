@@ -1,6 +1,30 @@
 # Panelgrove 0.1.6 validation summary
 
-This summary covers **0.1.6**, version code **7**, package `dev.soto.panelgrove`. The [first public prerelease](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.1.6) was published on **2026-10-27**. Local-preview results from **2026-10-24** and remote CI/release results verified on **2026-10-27** are recorded separately below.
+This summary covers **0.1.6**, version code **7**, package `dev.soto.panelgrove`. The [first public prerelease](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.1.6) was published on **2026-10-27**. Physical-phone checks, earlier local-preview emulator results, and remote CI/release results are recorded separately below.
+
+## Physical phone — 2026-10-27
+
+**Xiaomi M2012K11AG (alioth), Android 13 / API 33, ARM64, 4096-byte runtime memory pages.** Panelgrove was absent before testing. Debug/test APKs were built from commit `60f6391b96a8b8f648c3ac8c510484a20c10c3e2`; app/core sources match the public release tag. The debug installation was then replaced with the unchanged published signed APK, whose hash and certificate are recorded below.
+
+| Check | Recorded result |
+| --- | --- |
+| Standard debug instrumentation | **All 66 applicable cases passed across separate runs**: archive engines/compatibility, generated provider storage and copies, backup recovery, database migration, lifecycle, failure recovery, UI and resource assertions |
+| Resource stress case | Timed out at **90 seconds**, then **240 seconds**; a final run on a fresh debug installation with the app foregrounded **passed in 86.922 seconds**. Initial failures remain recorded; foreground state and cache population both changed, so the cause is not isolated |
+| Automated UI cases | **12 passed in 40.404 seconds** after the owner enabled MIUI background pop-ups. The earlier suite and focused attempt were interrupted when MIUI denied the runner's launch of `MainActivity` |
+| External process termination | Separate prepare/force-stop/new-process verification passed; page ID, vertical offset, bookmark, completion, interrupted-restore recovery and temporary-output cleanup were retained/recovered |
+| Optional private 157-page CBZ | Passed separately: expected stable page IDs and chapter groups, five representative renders and twenty cached renders |
+| Published release installation and reading | Fresh installation and cold launch passed; CBZ, native RAR5, PDF and image-folder pages visibly rendered through Android's actual Documents picker |
+| Published release backup recovery | Exported through the UI, uninstalled, freshly installed the same public APK, restored through the picker and reacquired the library-folder grant using **Settings → Relink**; all four formats reopened at **2 / 4** after a cold launch |
+
+The phone has passing coverage for all 66 applicable standard cases: 24 before the initial UI interruption, 29 in the remaining non-UI run, 12 in the successful UI retry and one in the final resource retry. Two opt-in compatibility cases were deliberately skipped before the interruption. Process restart and the private-volume check ran separately. This is **complete case coverage across runs, not an uninterrupted passing full suite**; the stress timing variability remains open. The earlier Gradle JVM results (49 passes and one optional skip) were up to date and reused; the APKs were rebuilt.
+
+The final resource workload completed in **84.888 seconds** within the 86.922-second JUnit run. It traversed all 1,000 pages, issued/cancelled 50 rapid region requests and rendered the 20,000×20,000 image. Sampled app-process peaks were **31.2 MiB Java heap** and **413.6 MiB PSS**; bitmap-cache usage peaked at **42.5 MiB** against its heap-derived **42.7 MiB** budget, and page-cache usage at **19.9 MiB** against **512 MiB**. The largest bitmap was **6.0 MiB** and staging usage was zero. These are sampled observations from this run, not guaranteed total-memory ceilings or an explanation of the earlier timeouts.
+
+The release backup comparison retained **four book IDs**, all saved page IDs/indices/offsets and book metadata/settings, **three bookmarks**, **four history entries**, the source ID and global preferences. All seven generated source files retained their SHA-256 hashes. Rescanning changed cache-generation IDs and restore added provenance keys, as expected. These were linked books in the phone's internal shared storage through Android Documents; removable media, other providers and physical managed-copy transfer were not exercised.
+
+The optional local-volume check observed **820 ms** for import/index/cover, **1,830 ms total** for five representative page renders, and **29 ms total** for twenty cached renders. The archive was already in app storage; USB transfer time is excluded. These are single-session debug observations, not release performance guarantees or sustained-reading measurements.
+
+The published APK remains installed with the four generated sample books and their backup files. Device logs, private samples, screenshots, APK hashes and comparison reports remain in ignored local validation storage.
 
 ## GitHub CI and public release — verified 2026-10-27
 
@@ -16,7 +40,7 @@ Both workflows ran at commit `8d28a4716ca1de8be15cb10027b8021251aa6745`.
 
 Each remote Android suite discovered 71 cases. The five skips cover private-sample tests and separately invoked process-restart phases. The first CI attempt failed while downloading/unpacking the Android emulator before the Android tests started; rerunning the failed jobs completed both suites successfully without source changes.
 
-The Android suites used debug APKs. Physical-device acceptance of the published signed APK remains open.
+The CI Android suites used debug APKs. The separate published-APK phone checks are recorded above.
 
 The published APK's SHA-256, verified against the downloaded file and release checksum on **2026-10-27**, is:
 
@@ -32,7 +56,7 @@ bdcf7e47ee8e19c06ee2c8f17f1e43a3390c8254d83ed9a369a3713685f2c955
 
 ## Local-preview checks — 2026-10-24
 
-These earlier checks used the local-preview signing identity. They have not been rerun against the published APK as part of this documentation update.
+These earlier emulator checks used the local-preview signing identity. The published-APK phone checks above are separate; this session did not rerun the emulator matrix.
 
 | Area | Recorded result |
 | --- | --- |
@@ -63,9 +87,10 @@ This was a documentation capture session, not a rerun of the automated suites ab
 
 ## Remaining limits
 
-- The tested emulators use **4 KB runtime memory pages**. Passing native ELF and APK alignment checks does not establish actual 16 KB runtime compatibility.
-- Acceptance of the published APK on physical phones/tablets, fresh-install transfer on physical devices, removable SD cards, and additional production document providers remains open.
-- Human accessibility review, broader light-theme review, and sustained physical-device reading and resource measurements remain open.
+- The tested emulators and Xiaomi phone use **4 KB runtime memory pages**. Passing native ELF and APK alignment checks does not establish actual 16 KB runtime compatibility.
+- Investigate the phone's initial stress timeouts and reproduce the result with controlled foreground/cache conditions; a single uninterrupted full phone suite is not yet recorded. All 12 previously blocked UI cases and the final resource retry passed.
+- The published APK's four-format reading and fresh-install linked-folder restore pass on one phone/provider. Tablets, removable SD cards, physical managed-copy transfer and additional production providers remain open.
+- Human accessibility review, broader light-theme review, sustained physical-device reading and broader resource measurements remain open.
 - Installation of a future public update over 0.1.6, using the same signing identity and preserving reading data, remains to be verified.
 
 Panelgrove remains a preview. Test sources and original generated fixtures are included so contributors can repeat the automated checks; see the [development guide](DEVELOPMENT.md).

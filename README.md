@@ -67,7 +67,13 @@ The first public prerelease, [**0.1.6**](https://github.com/SotoOnGit/PanelGrove
 
 Earlier local validation covered API 26, 32, and 36, including local-preview launches and CBZ/RAR/PDF reading. API 36 coverage spans two runs.
 
-Physical-device acceptance of the published APK, broader storage-provider coverage, removable SD cards, actual 16 KB memory-page execution, accessibility review, and sustained reading sessions remain open. See the [validation summary](docs/VALIDATION.md) for the measured scope and limitations.
+Physical checks on **2026-10-27** used a Xiaomi M2012K11AG running **Android 13 / API 33 (ARM64)**. The published APK reads CBZ, RAR5, PDF, and image folders through the phone's Documents picker. Fresh-install backup restoration and folder relinking preserved four books, saved positions, three bookmarks, history, and settings. Debug engine/storage checks and a separate process-restart check also passed.
+
+All **66 applicable automated cases** have passing phone results across separate runs, including the 12 UI cases after enabling MIUI background pop-ups. The stress test first timed out at 90 and 240 seconds, then passed in 86.9 seconds with a fresh debug installation and the app foregrounded; that variability remains under investigation. Broader providers/tablets, removable SD cards, actual 16 KB execution, human accessibility review, sustained reading, and a future public-version update remain open. See the [validation summary](docs/VALIDATION.md) for the measured scope.
+
+## Planned for 1.0
+
+The next feature priorities, in order, are **CB7/7Z support**, **custom covers**, **contrast and gamma controls**, **language editions grouped under the same series**, **page export**, and **local reading statistics**. These are planned additions to the current prerelease. See the [roadmap](docs/ROADMAP.md) for scope and deferred features.
 
 ## Development and feedback
 

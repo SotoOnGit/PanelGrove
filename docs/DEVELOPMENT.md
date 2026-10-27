@@ -35,6 +35,24 @@ Run this Windows check separately from connected tests to verify externally term
 
 The restart script installs the built debug and test APKs, prepares generated reading data, stops the running app externally, and verifies recovery in a new process. Use a development device or emulator.
 
+### Testing one physical device
+
+When a phone and an emulator are both connected, select the phone explicitly. The following PowerShell commands build the test packages and run only on the chosen serial:
+
+```powershell
+.\gradlew.bat :app:assembleDebug :app:assembleDebugAndroidTest
+adb devices -l
+$deviceSerial = '<phone serial>'
+adb -s $deviceSerial install -r app/build/outputs/apk/debug/app-debug.apk
+adb -s $deviceSerial install -r app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+adb -s $deviceSerial shell am instrument -w -r -e timeout_msec 90000 dev.soto.panelgrove.test/androidx.test.runner.AndroidJUnitRunner
+.\scripts\test-process-restart.ps1 -Serial $deviceSerial
+```
+
+Keep the phone unlocked and approve any phone-side USB installation prompts. Some MIUI devices also restrict background activity launches; if the runner stays on the launcher, inspect the device log and Panelgrove's background pop-up permission before treating the attempt as an app test failure. Preserve interrupted runs and timeout results alongside any retries, including a changed timeout.
+
+These tests create generated library entries and exercise settings, history, storage and recovery. Use a development installation. Debug and public APKs have different signing identities; back up existing reading data before replacing an installation. Test the published signed APK separately through Android's actual file picker, since passing debug instrumentation does not establish release behavior or production-provider access.
+
 ## Project layout
 
 | Path | Purpose |

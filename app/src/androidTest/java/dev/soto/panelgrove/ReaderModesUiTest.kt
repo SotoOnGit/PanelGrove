@@ -35,6 +35,12 @@ class ReaderModesUiTest {
         return book
     }
     private fun page(index: Int) = compose.onNodeWithContentDescription("Page $index. Pinch or double tap to zoom.")
+    private fun confirmSavedSelection(label: String) {
+        compose.onNodeWithContentDescription("Reading settings").performClick()
+        compose.waitUntil(10_000) { compose.onAllNodes(hasText(label) and
+            SemanticsMatcher.expectValue(SemanticsProperties.Selected, true)).fetchSemanticsNodes().isNotEmpty() }
+        compose.onNodeWithText("Cancel").performClick()
+    }
     @Test fun rtlLtrZoomAndVerticalResume() {
         val book = open("mode-test.cbz")
         page(1).performTouchInput { swipeRight() }
@@ -47,12 +53,14 @@ class ReaderModesUiTest {
         compose.onNodeWithText("Left to right").performClick()
         compose.onNodeWithText("Save").performClick()
         compose.waitUntil(10_000) { runBlocking { app.library.book(book.id)?.settings?.direction == Direction.LTR } }
+        confirmSavedSelection("Left to right")
         page(2).performTouchInput { swipeLeft() }
         compose.waitUntil(10_000) { runBlocking { app.library.book(book.id)?.position?.index == 2 } }
         compose.onNodeWithContentDescription("Reading settings").performClick()
         compose.onNodeWithText("Vertical scroll").performClick()
         compose.onNodeWithText("Save").performClick()
         compose.waitUntil(10_000) { runBlocking { app.library.book(book.id)?.settings?.mode == ReadingMode.VERTICAL } }
+        confirmSavedSelection("Vertical scroll")
         compose.onRoot().performTouchInput { swipeUp(startY = height * .7f, endY = height * .5f, durationMillis = 500) }
         compose.waitUntil(10_000) { runBlocking { (app.library.book(book.id)?.position?.offset ?: 0f) > .05f } }
         // A fling and its queued database writes must settle before recording the recreation baseline.

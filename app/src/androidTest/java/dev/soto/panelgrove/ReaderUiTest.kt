@@ -93,8 +93,10 @@ class ReaderUiTest {
         compose.waitUntil(20_000) { compose.onAllNodesWithText("1 / 4").fetchSemanticsNodes().isNotEmpty() }
         compose.onNodeWithContentDescription("Next page").assertIsDisplayed().performClick()
         compose.waitUntil(10_000) { runBlocking { app.library.book(book.id)?.position?.index == 1 } }
+        compose.waitUntil(10_000) { compose.onAllNodesWithText("2 / 4").fetchSemanticsNodes().isNotEmpty() }
         compose.onNodeWithContentDescription("Previous page").assertIsDisplayed().performClick()
         compose.waitUntil(10_000) { runBlocking { app.library.book(book.id)?.position?.index == 0 } }
+        compose.waitUntil(10_000) { compose.onAllNodesWithText("1 / 4").fetchSemanticsNodes().isNotEmpty() }
         compose.onNodeWithContentDescription("Reading page").assertExists()
         compose.onNodeWithContentDescription("Reading settings").performClick()
         compose.onNodeWithText("Right to left").assertIsDisplayed()

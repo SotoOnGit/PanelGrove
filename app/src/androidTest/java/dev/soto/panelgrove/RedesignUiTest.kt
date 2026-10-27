@@ -8,6 +8,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.state.ToggleableState
 import androidx.lifecycle.ViewModelProvider
 import androidx.test.platform.app.InstrumentationRegistry
 import dev.soto.panelgrove.core.*
@@ -63,15 +65,17 @@ class RedesignUiTest {
             compose.onNodeWithText("Chapter 2").assertIsDisplayed()
             snapshot("contents-chapters")
             compose.onNodeWithText("Bookmarks").performClick()
+            compose.waitUntil(10_000) { compose.onAllNodesWithText("Current page").fetchSemanticsNodes().isNotEmpty() }
             compose.onNodeWithText("Current page").assertIsDisplayed()
             snapshot("contents-bookmarks")
             compose.onNodeWithContentDescription("Remove bookmark on page 1").performClick()
+            compose.waitUntil(10_000) { compose.onAllNodesWithText("Bookmark a page to find it here.").fetchSemanticsNodes().isNotEmpty() }
             compose.onNodeWithText("Bookmark a page to find it here.").assertIsDisplayed()
             compose.onNodeWithText("Close").performClick()
             compose.onNodeWithContentDescription("Reading settings").performClick()
             snapshot("reader-settings")
             compose.onNodeWithText("Left to right").performClick()
-            compose.onNodeWithText("Cancel").performClick()
+            compose.onNode(hasText("Cancel") and hasAnyAncestor(isDialog())).performClick()
             assertNull(runBlocking { app.library.book(first.id)!!.settings.direction })
             compose.onNodeWithContentDescription("Reading settings").performClick()
             compose.onNodeWithText("Left to right").performClick()
@@ -93,26 +97,32 @@ class RedesignUiTest {
             compose.onNodeWithTag("book-${first.id}").performTouchInput { longClick() }
             compose.onNodeWithText("Book details").assertIsDisplayed()
             snapshot("book-details")
-            compose.onNodeWithText("Add to favorites").performClick()
+            compose.onNodeWithText("Add to favorites").performScrollTo().assertIsDisplayed().performClick()
             compose.waitUntil(10_000) { runBlocking { app.library.book(first.id)!!.favorite } }
             compose.onNodeWithText("Close").performClick()
             compose.onNodeWithContentDescription("Search your shelf").performTextClearance()
             snapshot("library")
             val now = System.currentTimeMillis()
+            val historyDay = java.time.Instant.ofEpochMilli(now).atZone(java.time.ZoneId.systemDefault()).toLocalDate()
             runBlocking {
                 app.library.dao.deleteHistory(first.id)
-                repeat(3) { app.library.dao.save(HistoryEntry(UUID.randomUUID().toString(), first.id, now - it * 1000).row()) }
+                repeat(3) { app.library.dao.save(HistoryEntry(UUID.randomUUID().toString(), first.id, now).row()) }
             }
             compose.onNodeWithContentDescription("History").performClick()
-            compose.onNodeWithTag("history-${first.id}-${java.time.LocalDate.now()}").assert(hasText("3 sessions", substring = true))
+            val historyRow = hasTestTag("history-${first.id}-$historyDay") and hasText("3 sessions", substring = true)
+            compose.waitUntil(10_000) { compose.onAllNodes(historyRow).fetchSemanticsNodes().isNotEmpty() }
+            compose.onNode(historyRow).assertIsDisplayed()
             snapshot("history")
             compose.onNodeWithContentDescription("Clear history").performClick()
-            compose.onNodeWithText("Cancel").performClick()
+            compose.onNode(hasText("Cancel") and hasAnyAncestor(isDialog())).performClick()
         } finally {
-            snapshot("flow-final")
-            File(app.filesDir, "design-validation/flow-semantics.txt").writeText(compose.onRoot().printToString())
-            compose.runOnIdle { model.open(null) }
-            runBlocking { app.preferences.set(previous) }
+            try {
+                snapshot("flow-final")
+                File(app.filesDir, "design-validation/flow-semantics.txt").writeText(compose.onRoot().printToString())
+            } finally {
+                compose.runOnIdle { model.open(null) }
+                runBlocking { app.preferences.set(previous) }
+            }
         }
     }
 
@@ -125,10 +135,14 @@ class RedesignUiTest {
             compose.onNodeWithContentDescription("True black").performClick()
             compose.waitUntil(10_000) { runBlocking { app.preferences.current().trueBlack } }
             compose.activityRule.scenario.recreate()
+            compose.waitUntil(10_000) { compose.onAllNodes(hasContentDescription("True black") and
+                SemanticsMatcher.expectValue(SemanticsProperties.ToggleableState, ToggleableState.On)).fetchSemanticsNodes().isNotEmpty() }
             compose.onNodeWithContentDescription("True black").assertIsOn()
             snapshot("settings-black")
             compose.onNodeWithText("Light").performClick()
             compose.waitUntil(10_000) { runBlocking { app.preferences.current().theme == AppTheme.LIGHT } }
+            compose.waitUntil(10_000) { compose.onAllNodes(hasText("Light") and
+                SemanticsMatcher.expectValue(SemanticsProperties.Selected, true)).fetchSemanticsNodes().isNotEmpty() }
             snapshot("settings-light")
             compose.onNodeWithTag("settings-list").performScrollToNode(hasText("Open-source licenses"))
             snapshot("settings-scrolled")

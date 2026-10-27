@@ -31,6 +31,10 @@ import java.util.UUID
 class CustomCoverUiTest {
     @get:Rule val compose = createAndroidComposeRule<MainActivity>()
     private val app get() = compose.activity.application as PanelgroveApplication
+    private fun coverColor(book: Book): Color {
+        val pixels = compose.onNodeWithContentDescription("Cover of ${book.title}").capturePixels()
+        return pixels[pixels.width / 2, pixels.height / 3]
+    }
 
     @Test fun pickerCancellationSelectionAndRemovalRefreshTheVisibleCover() {
         val file = File(app.sources.managedDirectory, "cover-ui-${UUID.randomUUID()}.cbz")
@@ -62,23 +66,28 @@ class CustomCoverUiTest {
                     }
                 }
             }
+            compose.waitUntil(10_000) { compose.onAllNodesWithContentDescription("Cover of ${book.title}").fetchSemanticsNodes().isNotEmpty() }
+            val originalColor = coverColor(book)
+            assertNotEquals(Color.Magenta, originalColor)
             compose.onNodeWithText("Choose custom cover").performClick()
             compose.onNodeWithText("Remove custom cover").assertDoesNotExist()
             assertNull(runBlocking { app.library.book(book.id)!!.customCover })
             chosen = DocumentsContract.buildDocumentUri("dev.soto.panelgrove.test.documents", id)
             compose.onNodeWithText("Choose custom cover").performClick()
             compose.waitUntil(10_000) { runBlocking { app.library.book(book.id)?.customCover != null } }
-            compose.waitUntil(10_000) {
-                val pixels = compose.onNodeWithContentDescription("Cover of ${book.title}").capturePixels()
-                pixels[pixels.width / 2, pixels.height / 2] == Color.Magenta
-            }
+            compose.waitUntil(10_000) { coverColor(book) == Color.Magenta }
             val directory = File(app.filesDir, "display-validation").apply { mkdirs() }
             InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot().let { image ->
                 File(directory, "custom-cover.png").outputStream().use { image.compress(Bitmap.CompressFormat.PNG, 100, it) }; image.recycle()
             }
             compose.onNodeWithText("Remove custom cover").performClick()
-            compose.waitUntil(10_000) { runBlocking { app.library.book(book.id)?.customCover == null } }
+            // Room commits before its flow reaches Compose and the original bitmap finishes loading.
+            compose.waitUntil(10_000) {
+                compose.onAllNodesWithText("Remove custom cover").fetchSemanticsNodes().isEmpty() &&
+                    coverColor(book) == originalColor
+            }
             compose.onNodeWithText("Remove custom cover").assertDoesNotExist()
+            assertNull(runBlocking { app.library.book(book.id)!!.customCover })
         } finally {
             runBlocking { app.library.remove(book.id, false) }; file.delete()
             app.contentResolver.call(Uri.parse("content://dev.soto.panelgrove.test.documents"), "fixture", null,

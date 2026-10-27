@@ -38,8 +38,9 @@ class DisplayControlsUiTest {
     private fun previewPixels() = compose.onNodeWithTag("display-preview").capturePixels()
     private fun pagePixels() = compose.onNodeWithTag("rendered-page-1").captureToImage().toPixelMap()
     private fun changed(a: androidx.compose.ui.graphics.PixelMap, b: androidx.compose.ui.graphics.PixelMap): Boolean {
-        if (a.width != b.width || a.height != b.height) return false
-        return (1..9).any { x -> (1..9).any { y -> a[a.width * x / 10, a.height * y / 10] != b[b.width * x / 10, b.height * y / 10] } }
+        // The fixture's solid panel stays at these positions when system insets resize the viewport.
+        // Avoid borders and letterboxing, which can move without an appearance adjustment.
+        return (3..4).any { y -> a[a.width / 2, a.height * y / 10] != b[b.width / 2, b.height * y / 10] }
     }
 
     @Test fun previewCancelSaveRecreateAndResetRetainTheExpectedPixels() {

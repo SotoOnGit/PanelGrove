@@ -43,3 +43,17 @@ Follow-up validation: **2026-10-28**.
 CI exposed a Compose test limitation: `captureToImage()` cannot capture dialog windows before API 28. The cover and display preview assertions now use a shared test-only capture helper. On API 26–27 it crops a `UiAutomation` screen capture using the node's screen position, including the dialog window offset; API 28+ retains Compose capture. Reader-page assertions keep their existing activity capture so closing-sheet animations do not affect the comparison. Both tests retain their pixel assertions, with no SDK skips or application-code changes.
 
 Both previously failing tests passed on existing API 26 and API 32 / x86-64 emulators, exercising both capture paths. The emulators ran one at a time in read-only mode and were stopped afterward. Debug app/test builds and lint passed with zero errors. Local build and instrumentation logs, including the initial closing-animation comparison failure before restricting the fallback to dialog captures, are under `local-validation/dialog-capture-fix/`. These local runs do not constitute a rerun of remote CI or its full suite.
+
+## API 35 viewport and font-scale synchronization
+
+Follow-up validation: **2026-10-28**.
+
+The display-test timeout was reproduced on Android 15 / API 35. Its initial page capture was 1080×1920; after activity recreation, it was 1080×1794. The comparison returned `false` whenever capture dimensions differed, so it could never observe the saved appearance change. It now samples the generated fixture's solid color panel at normalized positions, avoiding movable image borders and letterboxing. Preview, Cancel, Save, recreation, reset and default-setting checks remain enabled.
+
+The large-text test changed system font scale while its activity was running, then immediately called `recreate()`. Android's configuration recreation could destroy that instance first. A JUnit rule now sets font scale and waits for the configuration before launching the Compose activity, then restores and waits for the original scale after the activity closes. The test still exercises large-text commands and background/resume behavior.
+
+The focused display and reader UI classes passed all three cases on API 35, and font scale was restored. Debug app/test builds and lint passed with zero errors. The official Google APIs x86-64 API 35 revision 9 image was checksum-verified and run using the existing Pixel 2 configuration with separate workspace data and read-only mode. The saved Android 36 data and PIN were not used or reset. Logs and baseline failure evidence are under ignored `local-validation/api35-fix/`.
+
+The complete API 35 instrumentation suite then passed **79 cases, with five expected skips and zero failures**, in **118.385 seconds**, using the existing 90-second per-test timeout. The runner reports `OK (84 tests)` including those five skips. The skipped cases are two optional private-archive checks, one optional local translation volume and the two separately invoked process-restart phases. These are local API 35 results; a new GitHub Actions result requires pushing the changes.
+
+The same three display/reader UI cases also passed on the existing API 26 / x86-64 emulator after these fixes. Font scale was restored on both versions, and each emulator was stopped before starting another. Application code and the CI workflow were unchanged.

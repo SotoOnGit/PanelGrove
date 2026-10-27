@@ -35,3 +35,11 @@ The physical device was a **Xiaomi M2012K11AG, Android 13 / API 33, ARM64**. Tes
 Local evidence is retained under ignored `local-validation/covers-display/`, including build logs, instrumentation output, original screenshots and picker hierarchy captures. Initial attempts retain the test-installation rejection, a corrected JUnit signature error and interrupted UI runs caused by MIUI's background-launch restriction. Reinstalling this app resets that restriction; successful UI runs require enabling it after installation. The original restriction is restored after testing.
 
 These are development-build checks on one physical phone. They do not establish a signed public update, runtime acceptance on every supported API, or human accessibility acceptance. A public release remains separate work.
+
+## API 26 dialog screenshot compatibility
+
+Follow-up validation: **2026-10-28**.
+
+CI exposed a Compose test limitation: `captureToImage()` cannot capture dialog windows before API 28. The cover and display preview assertions now use a shared test-only capture helper. On API 26–27 it crops a `UiAutomation` screen capture using the node's screen position, including the dialog window offset; API 28+ retains Compose capture. Reader-page assertions keep their existing activity capture so closing-sheet animations do not affect the comparison. Both tests retain their pixel assertions, with no SDK skips or application-code changes.
+
+Both previously failing tests passed on existing API 26 and API 32 / x86-64 emulators, exercising both capture paths. The emulators ran one at a time in read-only mode and were stopped afterward. Debug app/test builds and lint passed with zero errors. Local build and instrumentation logs, including the initial closing-animation comparison failure before restricting the fallback to dialog captures, are under `local-validation/dialog-capture-fix/`. These local runs do not constitute a rerun of remote CI or its full suite.

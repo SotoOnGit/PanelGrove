@@ -13,7 +13,6 @@ import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toPixelMap
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.core.app.ActivityOptionsCompat
@@ -70,7 +69,7 @@ class CustomCoverUiTest {
             compose.onNodeWithText("Choose custom cover").performClick()
             compose.waitUntil(10_000) { runBlocking { app.library.book(book.id)?.customCover != null } }
             compose.waitUntil(10_000) {
-                val pixels = compose.onNodeWithContentDescription("Cover of ${book.title}").captureToImage().toPixelMap()
+                val pixels = compose.onNodeWithContentDescription("Cover of ${book.title}").capturePixels()
                 pixels[pixels.width / 2, pixels.height / 2] == Color.Magenta
             }
             val directory = File(app.filesDir, "display-validation").apply { mkdirs() }

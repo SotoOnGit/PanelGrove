@@ -35,7 +35,7 @@ class DisplayControlsUiTest {
         compose.onNodeWithText("Display adjustments").performClick()
         compose.waitUntil(15_000) { compose.onNodeWithTag("display-preview").isDisplayed() }
     }
-    private fun previewPixels() = compose.onNodeWithTag("display-preview").captureToImage().toPixelMap()
+    private fun previewPixels() = compose.onNodeWithTag("display-preview").capturePixels()
     private fun pagePixels() = compose.onNodeWithTag("rendered-page-1").captureToImage().toPixelMap()
     private fun changed(a: androidx.compose.ui.graphics.PixelMap, b: androidx.compose.ui.graphics.PixelMap): Boolean {
         if (a.width != b.width || a.height != b.height) return false

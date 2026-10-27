@@ -1,5 +1,25 @@
 # Using Panelgrove
 
+## Install and update
+
+Panelgrove requires **Android 8.0 or newer**. The first public prerelease is [0.1.6](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.1.6), published on **2026-10-27**.
+
+1. Download [panelgrove-v0.1.6.apk](https://github.com/SotoOnGit/PanelGrove/releases/download/v0.1.6/panelgrove-v0.1.6.apk) on your Android device.
+2. Open the downloaded APK. If Android asks, allow installation from the browser or file manager you used, then complete the installation.
+3. Open Panelgrove and add your own books through **Library → Add manga**.
+
+Updates are manual: download the APK from a newer [GitHub release](https://github.com/SotoOnGit/PanelGrove/releases) and install it over the existing public version. Public updates use the same signing identity so Android can retain the app's library, progress, bookmarks, and settings. Export a backup before updating.
+
+### Moving from a local preview or debug build
+
+Local preview and debug builds use different signing keys from the public release. Android will reject an installation over an app signed with a different key. See [Android's signing guidance](https://developer.android.com/studio/publish/app-signing#considerations).
+
+Before switching, export a JSON backup through **Settings → Backup & restore**, keep it and your manga files outside the app's private storage, and confirm the backup file was saved. Then uninstall the local build, install the public APK, restore the backup, and select your book folders again through Android's picker. Uninstalling clears the app's private data; the JSON backup contains reading data, not manga files or file-access grants.
+
+### Release verification files
+
+Each public release includes `SHA256SUMS` for checking the downloaded APK's SHA-256 hash and `SIGNING-CERTIFICATE.txt` with the public signing-certificate fingerprint. These files are available beside the APK on the [release page](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.1.6).
+
 ## Add your manga
 
 In **Library**, choose **Add manga → Choose files**, or add a library folder. Android's picker grants access to the documents you select. Panelgrove supports CBZ/ZIP, CBR/RAR, PDF, and image folders containing PNG, JPEG, or WebP pages.

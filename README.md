@@ -6,9 +6,9 @@
 
 A free, open source manga reader for Android. Read CBZ, CBR, PDF, and image folders offline, with no ads, accounts, or analytics.
 
-**Android 8.0+ · Preview 0.1.6 · GPL-3.0-or-later**
+**Android 8.0+ · Prerelease 0.1.6 · GPL-3.0-or-later**
 
-[Releases](https://github.com/SotoOnGit/PanelGrove/releases) · [User guide](docs/USAGE.md) · [Build from source](docs/DEVELOPMENT.md) · [Report an issue](https://github.com/SotoOnGit/PanelGrove/issues)
+[Download APK](https://github.com/SotoOnGit/PanelGrove/releases/download/v0.1.6/panelgrove-v0.1.6.apk) · [Releases](https://github.com/SotoOnGit/PanelGrove/releases) · [User guide](docs/USAGE.md) · [Build from source](docs/DEVELOPMENT.md) · [Report an issue](https://github.com/SotoOnGit/PanelGrove/issues)
 
 ## Screenshots
 
@@ -45,11 +45,11 @@ Encrypted documents, multipart archives, EPUB, and CB7/7Z are not supported. Som
 
 ## Get started
 
-1. Download a signed APK from [GitHub Releases](https://github.com/SotoOnGit/PanelGrove/releases) when one is available, or [build from source](docs/DEVELOPMENT.md).
+1. Download and install [panelgrove-v0.1.6.apk](https://github.com/SotoOnGit/PanelGrove/releases/download/v0.1.6/panelgrove-v0.1.6.apk) from the [0.1.6 prerelease](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.1.6). See the [installation guide](docs/USAGE.md#install-and-update) for Android's installation prompt and updates.
 2. In **Library**, choose **Add manga → Choose files**, or add a library folder.
 3. Open a book. Tap the middle of a page to show controls; tap either edge or swipe to turn pages. The default reading direction is right-to-left.
 
-Updates are installed manually from GitHub Releases. See the [user guide](docs/USAGE.md) for reading controls, copies, backups, and recovering folder access.
+Updates are installed manually from GitHub Releases. Install future public updates over the existing app to retain reading data. If you used a local preview or debug build, follow the [signing-transition instructions](docs/USAGE.md#moving-from-a-local-preview-or-debug-build) before switching to the public APK.
 
 ## Files and privacy
 
@@ -61,11 +61,13 @@ Panelgrove does not include manga or provide a download catalog.
 
 ## Preview status
 
-The current version is **0.1.6**, version code **7**, with package ID `dev.soto.panelgrove`.
+The first public prerelease, [**0.1.6**](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.1.6), was published on **2026-10-27**. Its version code is **7** and package ID is `dev.soto.panelgrove`. The release includes the signed APK, `SHA256SUMS`, and `SIGNING-CERTIFICATE.txt`.
 
-Local validation recorded 49 passing core tests and 66 applicable Android test cases on each of API 26, 32, and 36. API 36 coverage spans two runs. Signed release launches and CBZ/RAR/PDF reading were also checked. These are recorded local results, not a GitHub Actions run or a guarantee for every device.
+[GitHub CI](https://github.com/SotoOnGit/PanelGrove/actions/runs/40413500147) passed the debug build, core tests, lint, package checks, and Android tests on API 26 and 35, with 66 passed and five deliberate skips on each API. The [release workflow](https://github.com/SotoOnGit/PanelGrove/actions/runs/40491207093) also passed core tests, release lint, the signed release build, signature verification, native/ZIP alignment checks, and checksum generation.
 
-Broader physical-device and storage-provider coverage, removable SD cards, actual 16 KB memory-page execution, accessibility review, and sustained reading sessions remain open. See the [validation summary](docs/VALIDATION.md) for the measured scope and limitations.
+Earlier local validation covered API 26, 32, and 36, including local-preview launches and CBZ/RAR/PDF reading. API 36 coverage spans two runs.
+
+Physical-device acceptance of the published APK, broader storage-provider coverage, removable SD cards, actual 16 KB memory-page execution, accessibility review, and sustained reading sessions remain open. See the [validation summary](docs/VALIDATION.md) for the measured scope and limitations.
 
 ## Development and feedback
 

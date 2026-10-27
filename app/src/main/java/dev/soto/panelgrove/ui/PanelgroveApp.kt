@@ -42,7 +42,7 @@ import dev.soto.panelgrove.core.*
         val context = LocalContext.current
         var tab by rememberSaveable { mutableIntStateOf(0) }
         var add by remember { mutableStateOf(false) }
-        var details by remember { mutableStateOf<String?>(null) }
+        var details by rememberSaveable { mutableStateOf<String?>(null) }
         val snackbar = remember { SnackbarHostState() }
         val pickFiles = rememberLauncherForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { uris -> uris.forEach { model.import(it) } }
         val pickRelink = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { model.relink(it) }

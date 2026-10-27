@@ -31,7 +31,7 @@ class DecodeService : Service() {
     private val decoder = object : IDocumentDecoder.Stub() {
         override fun abort() { android.os.Process.killProcess(android.os.Process.myPid()) }
         override fun index(source: ParcelFileDescriptor, kind: String): Bundle = reply { source.use {
-            if (kind == "RAR") Bundle().apply { putStringArray("entries", NativeArchive.list(source.fd)) }
+            if (kind == "RAR" || kind == "SEVEN_Z") Bundle().apply { putStringArray("entries", NativeArchive.list(source.fd)) }
             else PdfRenderer(ParcelFileDescriptor.dup(source.fileDescriptor)).use { pdf ->
                 require(pdf.pageCount in 1..ArchiveRules.MAX_ENTRIES) { strings[R.string.pdf_contains_too_many_pages] }
                 val widths = IntArray(pdf.pageCount); val heights = IntArray(pdf.pageCount)

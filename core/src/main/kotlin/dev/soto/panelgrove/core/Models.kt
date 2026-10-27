@@ -10,7 +10,7 @@ val PanelgroveJson = Json { ignoreUnknownKeys = true; encodeDefaults = true; exp
 @Serializable enum class FitMode { PAGE, WIDTH }
 @Serializable enum class AppTheme { SYSTEM, LIGHT, DARK }
 @Serializable enum class ReadingStatus { UNREAD, READING, READ }
-@Serializable enum class BookFormat { ZIP, RAR, PDF, FOLDER }
+@Serializable enum class BookFormat { ZIP, RAR, PDF, FOLDER, SEVEN_Z }
 @Serializable enum class AccessState { AVAILABLE, MISSING, NEEDS_PERMISSION }
 
 @Serializable data class ReaderSettings(
@@ -23,6 +23,8 @@ val PanelgroveJson = Json { ignoreUnknownKeys = true; encodeDefaults = true; exp
     val volumeKeys: Boolean = false,
     val keepAwake: Boolean = true,
     val rotationLock: Boolean = false,
+    val contrast: Float = 1f,
+    val gamma: Float = 1f,
 )
 
 @Serializable data class ReaderOverrides(
@@ -31,16 +33,19 @@ val PanelgroveJson = Json { ignoreUnknownKeys = true; encodeDefaults = true; exp
     val background: Long? = null, val brightness: Float? = null,
     val volumeKeys: Boolean? = null, val keepAwake: Boolean? = null,
     val rotationLock: Boolean? = null,
+    val contrast: Float? = null, val gamma: Float? = null,
 ) {
     fun applyTo(base: ReaderSettings) = ReaderSettings(
         direction ?: base.direction, mode ?: base.mode, fit ?: base.fit,
         spreads ?: base.spreads, background ?: base.background, brightness ?: base.brightness,
         volumeKeys ?: base.volumeKeys, keepAwake ?: base.keepAwake, rotationLock ?: base.rotationLock,
+        contrast ?: base.contrast, gamma ?: base.gamma,
     )
     companion object {
         fun from(settings: ReaderSettings) = ReaderOverrides(
             settings.direction, settings.mode, settings.fit, settings.spreads, settings.background,
             settings.brightness, settings.volumeKeys, settings.keepAwake, settings.rotationLock,
+            settings.contrast, settings.gamma,
         )
     }
 }
@@ -95,6 +100,7 @@ val PanelgroveJson = Json { ignoreUnknownKeys = true; encodeDefaults = true; exp
     val restoredKey: String? = null,
     val copyRootUri: String? = null,
     val copyRevision: String? = null,
+    val customCover: String? = null,
 )
 
 @Serializable data class Bookmark(
@@ -131,6 +137,7 @@ val PanelgroveJson = Json { ignoreUnknownKeys = true; encodeDefaults = true; exp
         require(books.all { it.id.isNotBlank() && it.uri.isNotBlank() && it.pageCount >= 0 }) { "Backup contains an invalid book." }
         val safeId = Regex("[A-Za-z0-9_-]{1,100}")
         require(books.all { safeId.matches(it.id) } && sources.all { safeId.matches(it.id) }) { "Backup contains an unsafe identifier." }
+        require(books.all { it.customCover == null || safeId.matches(it.customCover) }) { "Backup contains an unsafe cover identifier." }
         require(bookmarks.all { safeId.matches(it.id) } && history.all { safeId.matches(it.id) }) { "Backup contains an unsafe reading identifier." }
         val sourceIds = sources.map { it.id }.toSet()
         require(books.all { it.sourceId == null || it.sourceId in sourceIds }) { "Backup contains an orphaned folder reference." }
@@ -148,6 +155,10 @@ val PanelgroveJson = Json { ignoreUnknownKeys = true; encodeDefaults = true; exp
         require(preferences.reader.brightness in -1f..1f) { "Backup contains invalid brightness." }
         require(books.all { it.settings.brightness == null || it.settings.brightness in -1f..1f } &&
             preferences.seriesSettings.values.all { it.brightness == null || it.brightness in -1f..1f }) { "Backup contains invalid reader overrides." }
+        require(preferences.reader.contrast in .5f..2f && preferences.reader.gamma in .5f..2f) { "Backup contains invalid display adjustments." }
+        require((books.map { it.settings } + preferences.seriesSettings.values).all {
+            (it.contrast == null || it.contrast in .5f..2f) && (it.gamma == null || it.gamma in .5f..2f)
+        }) { "Backup contains invalid display overrides." }
     }
 }
 

@@ -13,6 +13,7 @@ object ArchiveRules {
             starts(0x52, 0x61, 0x72, 0x21, 0x1a, 0x07, 0x00) || starts(0x52, 0x61, 0x72, 0x21, 0x1a, 0x07, 0x01, 0x00) -> BookFormat.RAR
             starts(0x50, 0x4b, 0x03, 0x04) || starts(0x50, 0x4b, 0x05, 0x06) || starts(0x50, 0x4b, 0x07, 0x08) -> BookFormat.ZIP
             starts(0x25, 0x50, 0x44, 0x46, 0x2d) -> BookFormat.PDF
+            starts(0x37, 0x7a, 0xbc, 0xaf, 0x27, 0x1c) -> BookFormat.SEVEN_Z
             else -> null
         }
     }
@@ -32,6 +33,7 @@ object ArchiveRules {
     fun format(name: String): BookFormat? = when (name.substringAfterLast('.', "").lowercase()) {
         "cbz", "zip" -> BookFormat.ZIP
         "cbr", "rar" -> BookFormat.RAR
+        "cb7", "7z" -> BookFormat.SEVEN_Z
         "pdf" -> BookFormat.PDF
         else -> null
     }

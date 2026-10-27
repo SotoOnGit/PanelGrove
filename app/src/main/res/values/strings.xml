@@ -84,9 +84,9 @@
 
     <string name="cannot_zoom_this_image">Cannot zoom this image.</string>
 
-    <string name="cbz_cbr_pdf_and_image_folders">CBZ/ZIP, CBR/RAR, PDF and image folders</string>
+    <string name="cbz_cbr_pdf_and_image_folders">CBZ/ZIP, CBR/RAR, CB7/7Z, PDF and image folders</string>
 
-    <string name="cbz_cbr_pdf_image_folders">CBZ/ZIP · CBR/RAR · PDF · image folders</string>
+    <string name="cbz_cbr_pdf_image_folders">CBZ/ZIP · CBR/RAR · CB7/7Z · PDF · image folders</string>
 
     <string name="change">Change</string>
 
@@ -227,7 +227,7 @@
 
     <string name="import_cancelled_choose_a_copy_folder_before_importing_these">Import cancelled. Choose a copy folder before importing these files again.</string>
 
-    <string name="import_failed_check_that_the_file_is_a_readable">Import failed. Check that the file is a readable, unencrypted CBZ, ZIP, CBR, RAR or PDF and that storage is available.</string>
+    <string name="import_failed_check_that_the_file_is_a_readable">Import failed. Check that the file is a readable, unencrypted CBZ, ZIP, CBR, RAR, CB7, 7Z or PDF and that storage is available.</string>
 
     <string name="import_folder">Import folder</string>
 
@@ -334,7 +334,7 @@
 
     <string name="preparing_a_local_working_copy">Preparing a local working copy…</string>
 
-    <string name="preparing_the_rar_page_index">Preparing the RAR page index…</string>
+    <string name="preparing_the_archive_page_index">Preparing the archive page index…</string>
 
     <string name="preparing_your_library">Preparing your library…</string>
 
@@ -366,7 +366,7 @@
 
     <string name="panelgrove_could_not_create_its_library_storage_check_available">Panelgrove could not create its library storage. Check available space.</string>
 
-    <string name="about_panelgrove">Panelgrove is an offline manga reader. Manga stays on your device. Supports CBZ/ZIP, CBR/RAR, PDF and image folders. Encrypted and multipart documents are not supported.</string>
+    <string name="about_panelgrove">Panelgrove is an offline manga reader. Manga stays on your device. Supports CBZ/ZIP, CBR/RAR, CB7/7Z, PDF and image folders. Encrypted and multipart documents are not supported.</string>
 
     <string name="relink">Relink</string>
 
@@ -439,7 +439,7 @@
 
     <string name="storage">Storage %1$s</string>
 
-    <string name="supported_files_are_cbz_zip_cbr_rar_and_pdf">%1$s: supported files are CBZ, ZIP, CBR, RAR and PDF.</string>
+    <string name="supported_files_are_cbz_zip_cbr_rar_and_pdf">%1$s: supported files are CBZ, ZIP, CBR, RAR, CB7, 7Z and PDF.</string>
 
     <string name="switch_library_layout">Switch library layout</string>
 
@@ -467,7 +467,7 @@
 
     <string name="the_operation_could_not_be_completed_check_file_access">The operation could not be completed. Check file access and free storage, then try again.</string>
 
-    <string name="the_rar_page_index_could_not_be_read">The RAR page index could not be read.</string>
+    <string name="the_archive_page_index_could_not_be_read">The archive page index could not be read.</string>
 
     <string name="the_source_is_unavailable">The source is unavailable.</string>
 
@@ -574,6 +574,8 @@
 
     <string name="format_rar">CBR/RAR</string>
 
+    <string name="format_seven_z">CB7/7Z</string>
+
     <string name="format_pdf">PDF</string>
 
     <string name="format_folder">Image folder</string>
@@ -621,5 +623,18 @@
     <string name="relink_failed">The book could not be relinked. Choose its matching file, or use Find existing books in Settings to restore the import folder.</string>
     <string name="relinked_book">Relinked %1$s</string>
     <string name="relink_file_already_linked">This file is already linked to “%1$s”. Choose the file for “%2$s”, or use Find existing books in Settings to restore the import folder.</string>
+    <string name="choose_custom_cover">Choose custom cover</string>
+    <string name="remove_custom_cover">Remove custom cover</string>
+    <string name="cover_image_unreadable">Choose a readable image up to 32 MB.</string>
+    <string name="cover_could_not_be_saved">The cover could not be saved. Check free storage and try again.</string>
+    <string name="display_adjustments">Display adjustments</string>
+    <string name="reading_options">Reading options</string>
+    <string name="contrast">Contrast</string>
+    <string name="gamma">Gamma</string>
+    <string name="display_value">%1$s · %2$.2f</string>
+    <string name="display_adjustments_help">Adjust the page appearance. Gamma above 1 brightens midtones. Save to keep your changes.</string>
+    <string name="reset_display_adjustments">Reset display adjustments</string>
+    <string name="display_preview">Page appearance preview</string>
+    <string name="preview_unavailable">Preview unavailable</string>
 </resources>
 

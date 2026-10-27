@@ -22,7 +22,7 @@ Each public release includes `SHA256SUMS` for checking the downloaded APK's SHA-
 
 ## Add your manga
 
-In **Library**, choose **Add manga → Choose files**, or add a library folder. Android's picker grants access to the documents you select. Panelgrove supports CBZ/ZIP, CBR/RAR, PDF, and image folders containing PNG, JPEG, or WebP pages.
+In **Library**, choose **Add manga → Choose files**, or add a library folder. Android's picker grants access to the documents you select. Panelgrove supports CBZ/ZIP, CBR/RAR, PDF, and image folders containing PNG, JPEG, or WebP pages. The development build also reads CB7/7Z archives; this addition is pending release and is not included in public 0.1.6.
 
 Files stay where they are by default. A linked library folder can be rescanned from Library options or Settings. Shared or temporary documents may require a managed copy when Android cannot retain access to the original.
 
@@ -35,6 +35,16 @@ Pinch or double tap to zoom the reading viewport. Pan while zoomed; double tap a
 Long press a grid cover, or use a details button in list or history rows, to edit a book's series, volume number, favorites, and collections. Library options includes series and collection filters, grid/list views, and folder rescanning.
 
 **History** groups repeated opens of a book into one row per day, showing its latest time and session count. Clearing history keeps reading progress and bookmarks.
+
+## Custom covers and display adjustments (development build)
+
+These additions are pending release and are not included in public 0.1.6.
+
+Open **Book details → Choose custom cover** and select an image with Android's picker. The cover changes immediately and is retained through reopening, rescanning and relinking. **Remove custom cover** restores the document's generated cover. Images are copied into app storage, so access to the chosen image is not required afterward. PNG, JPEG and WebP images are supported; camera orientation is respected. Input images are limited to 32 MiB and are reduced to a thumbnail of at most 720 pixels per side. The source book and selected image are left intact.
+
+In a book, open **Reading settings → Display adjustments**. The current-page preview updates as you change **Contrast** and **Gamma** from 0.50 to 2.00. Neutral is 1.00; gamma above 1 brightens midtones. **Reset display adjustments** returns both controls to neutral. **Save** retains the draft for this book; **Cancel**, Back or dismissing the sheet discards it. **Use defaults** clears all book reading overrides, including these adjustments. Reader pages and zoom detail use the same adjustment curve; the book's images remain unchanged.
+
+Display adjustments are also available in default and series reading settings. Book overrides take precedence, followed by series settings and then defaults. Contrast and gamma settings are included in JSON backups. **Custom cover images are local to this installation and are not included in JSON backups.** Restoring on the same installation keeps existing local covers; choose them again after moving to a fresh installation.
 
 ## Save optional copies
 
@@ -64,6 +74,8 @@ Settings offers **System**, **Light**, **Dark**, and **True black**. New install
 
 If a folder or book becomes unavailable, select it again through Android's picker. Rescanning or explicitly relinking a corrected document refreshes its content while retaining surviving page positions and bookmarks. A bookmark whose page was removed opens the nearest remaining page and is labeled accordingly.
 
-Encrypted documents, multipart archives, EPUB, and CB7/7Z are unsupported. Corrupt documents need a sound replacement. RAR preparation can be slower than ZIP access, particularly for sequential archives.
+Encrypted documents, multipart archives, and EPUB are unsupported. Corrupt documents need a sound replacement. RAR and 7Z preparation can be slower than ZIP access, particularly for solid archives and jumps to later pages.
+
+Development CB7/7Z support covers LZMA, LZMA2, stored, Deflate, and PPMd compression, including solid archives, Unicode filenames, `ComicInfo.xml`, and `translation-manifest.json`. BZip2 and other unlisted compression methods are unsupported. Password-protected archives (including encrypted filenames) and split files such as `.7z.001` are unsupported. Existing extraction limits apply: 20,000 entries, 128 MiB per entry, and 8 GiB expanded in total. Pages use the same natural ordering, bookmarks, progress, and library organization as other comic archives.
 
 For a reproducible problem, [open an issue](https://github.com/SotoOnGit/PanelGrove/issues) with the app version, Android version, file format, and reproduction steps.

@@ -48,11 +48,13 @@ import dev.soto.panelgrove.core.*
 }
 
 @Composable fun ReaderSettingsDialog(title: String, initial: ReaderSettings, dismiss: () -> Unit,
-    save: (ReaderSettings) -> Unit, reset: (() -> Unit)? = null) {
+    save: (ReaderSettings) -> Unit, reset: (() -> Unit)? = null,
+    preview: (@Composable (ReaderSettings) -> Unit)? = null) {
     val strings = rememberStrings()
 
     var draft by rememberSaveable(initial, stateSaver = androidx.compose.runtime.saveable.Saver(
         save = { PanelgroveJson.encodeToString(it) }, restore = { PanelgroveJson.decodeFromString<ReaderSettings>(it) })) { mutableStateOf(initial) }
+    var display by rememberSaveable { mutableStateOf(false) }
     PanelgroveSheet(dismiss, footer = {
         FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             if (reset != null) TextButton({ reset(); dismiss() }) { Text(strings[R.string.use_defaults]) }
@@ -61,6 +63,22 @@ import dev.soto.panelgrove.core.*
         }
     }) {
         SheetTitle(title)
-        ReaderOptions(draft, { draft = it })
+        ActionRow(strings[if (display) R.string.reading_options else R.string.display_adjustments]) { display = !display }
+        if (display) {
+            if (preview != null) preview(draft)
+            DisplayOptions(draft) { draft = it }
+        } else ReaderOptions(draft, { draft = it })
     }
+}
+
+@Composable private fun DisplayOptions(settings: ReaderSettings, update: (ReaderSettings) -> Unit) {
+    val strings = rememberStrings()
+    Text(strings[R.string.display_adjustments_help], style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    Text(strings[R.string.display_value, strings[R.string.contrast], settings.contrast])
+    Slider(settings.contrast, { update(settings.copy(contrast = it)) },
+        modifier = Modifier.semantics { contentDescription = strings[R.string.contrast] }, valueRange = .5f..2f, steps = 29)
+    Text(strings[R.string.display_value, strings[R.string.gamma], settings.gamma])
+    Slider(settings.gamma, { update(settings.copy(gamma = it)) },
+        modifier = Modifier.semantics { contentDescription = strings[R.string.gamma] }, valueRange = .5f..2f, steps = 29)
+    TextButton({ update(settings.copy(contrast = 1f, gamma = 1f)) }) { Text(strings[R.string.reset_display_adjustments]) }
 }

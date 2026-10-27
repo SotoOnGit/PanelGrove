@@ -4,7 +4,7 @@
   <img src="branding/icon.svg" width="112" height="112" alt="Panelgrove icon">
 </p>
 
-A free, open source manga reader for Android. Read CBZ, CBR, PDF, and image folders offline, with no ads, accounts, or analytics.
+A free, open source manga reader for Android. Read CBZ, CBR, CB7/7Z, PDF, and image folders offline, with no ads, accounts, or analytics.
 
 **Android 8.0+ · Prerelease 0.1.6 · GPL-3.0-or-later**
 
@@ -36,12 +36,13 @@ Actual app screens using original demo books. [View all screenshots](docs/screen
 | --- | --- |
 | CBZ / ZIP | PNG, JPEG, and WebP pages |
 | CBR / RAR | RAR4, RAR5, and solid RAR5 archives |
+| CB7 / 7Z | Solid and non-solid LZMA/LZMA2, stored, Deflate, and PPMd archives (development build; not in public 0.1.6) |
 | PDF | Rendered with Android's PDF engine |
 | Image folders | PNG, JPEG, and WebP pages in selected directory trees |
 
 Panelgrove reads `ComicInfo.xml` and compatible `translation-manifest.json` metadata when available. Invalid optional metadata falls back to normal page ordering.
 
-Encrypted documents, multipart archives, EPUB, and CB7/7Z are not supported. Some RAR variants may be unsupported, and sequential RAR preparation can take longer than ZIP access.
+Encrypted documents, multipart archives, and EPUB are not supported. BZip2 and other unlisted 7Z compression methods are unsupported. Some RAR variants may be unsupported. Solid RAR and 7Z archives can take longer to prepare when jumping between pages because earlier compressed data must be read again. Archives retain the existing limits of 20,000 entries, 128 MiB per entry, and 8 GiB expanded in total.
 
 ## Get started
 
@@ -73,7 +74,7 @@ All **66 applicable automated cases** have passing phone results across separate
 
 ## Planned for 1.0
 
-The next feature priorities, in order, are **CB7/7Z support**, **custom covers**, **contrast and gamma controls**, **language editions grouped under the same series**, **page export**, and **local reading statistics**. These are planned additions to the current prerelease. See the [roadmap](docs/ROADMAP.md) for scope and deferred features.
+**CB7/7Z support** is implemented in the development build for the next release. The remaining feature priorities, in order, are **custom covers**, **contrast and gamma controls**, **language editions grouped under the same series**, **page export**, and **local reading statistics**. See the [roadmap](docs/ROADMAP.md) for scope and deferred features.
 
 ## Development and feedback
 

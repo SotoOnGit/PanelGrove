@@ -53,7 +53,7 @@ class DocumentEngine(private val context: Context, val sources: SourceAccess) {
         var opened: DocumentSession? = null
         try { return withContext(Dispatchers.IO) { when (book.format) {
             BookFormat.ZIP -> openZip(book, progress)
-            BookFormat.RAR -> openRar(book, progress)
+            BookFormat.RAR, BookFormat.SEVEN_Z -> openNativeArchive(book, progress)
             BookFormat.PDF -> openPdf(book, progress)
             BookFormat.FOLDER -> openFolder(book)
         }.also { opened = it; currentCoroutineContext().ensureActive() } }
@@ -123,11 +123,11 @@ class DocumentEngine(private val context: Context, val sources: SourceAccess) {
             }
         } catch (e: Exception) { zip.close(); stream.close(); throw e }
     }
-    private suspend fun openRar(book: Book, progress: suspend (String) -> Unit): DocumentSession {
-        progress(strings[R.string.preparing_the_rar_page_index])
+    private suspend fun openNativeArchive(book: Book, progress: suspend (String) -> Unit): DocumentSession {
+        progress(strings[R.string.preparing_the_archive_page_index])
         val names = sources.seekable(Uri.parse(book.uri), book.revision, progress).use { input ->
-            decoder.request { it.index(input, "RAR") }.getStringArray("entries")?.toList()
-                ?: error(strings[R.string.the_rar_page_index_could_not_be_read])
+            decoder.request { it.index(input, book.format.name) }.getStringArray("entries")?.toList()
+                ?: error(strings[R.string.the_archive_page_index_could_not_be_read])
         }
         names.forEach(ArchiveRules::safePath)
         require(names.size == names.distinct().size) { strings[R.string.archive_contains_duplicate_filenames] }

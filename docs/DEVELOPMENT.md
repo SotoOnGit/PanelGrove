@@ -9,7 +9,7 @@
 
 The Gradle wrapper and dependency versions are pinned. The app requires Android 8.0 (API 26), targets API 36, and packages `arm64-v8a`, `armeabi-v7a`, and `x86_64` native libraries. The x86_64 build is also used for emulator testing.
 
-Open the project in Android Studio, set `ANDROID_HOME`, or create an ignored `local.properties` with your SDK's `sdk.dir`. Native builds use the checksum-pinned `gradle/libarchive-3.8.10.tar.xz` source archive; CMake does not fetch libarchive from the network. Dependency resolution and the first Gradle-wrapper run require network access.
+Open the project in Android Studio, set `ANDROID_HOME`, or create an ignored `local.properties` with your SDK's `sdk.dir`. Native builds use checksum-pinned source archives for libarchive 3.8.10 and XZ Utils 5.8.4 (`gradle/libarchive-3.8.10.tar.xz` and `gradle/xz-5.8.4.tar.xz`). CMake builds and links liblzma statically for 7Z decoding without downloading native dependencies or searching for a host codec. The XZ command-line tools are disabled. Dependency resolution and the first Gradle-wrapper run require network access.
 
 ## Build and test
 
@@ -67,6 +67,10 @@ These tests create generated library entries and exercise settings, history, sto
 | `scripts/` | Fixture generation, package verification, and local validation helpers |
 
 Public test fixtures contain original geometric artwork. `scripts/prepare_fixtures.py` regenerates the ordinary fixtures with Pillow; regenerating RAR fixtures additionally needs a separately installed RAR CLI at the path configured in that script. The CLI is neither distributed nor a build/runtime dependency. `scripts/prepare_hardening_fixture.py` generates the large resource-test page with streaming PNG compression.
+
+`python scripts/prepare_7z_fixtures.py --seven-zip <path-to-7z>` regenerates the CB7/7Z fixtures from the original `sample.cbz` using a local 7-Zip CLI. The CLI is only a fixture-authoring tool. Checked-in fixtures cover solid LZMA2, non-solid LZMA, stored, Deflate, PPMd, Unicode names, metadata fallback, encrypted headers/data, invalid paths, oversized entries, corruption, CRC failure, and unsupported BZip2. `SevenZipInstrumentedTest` also checks provider staging, folder rescans, managed copies, reading-data retention, and Android MIME handling.
+
+XZ Utils source: [upstream 5.8.4 release](https://github.com/tukaani-project/xz/releases/tag/v5.8.4), SHA-256 `4ce24038fd4221e0d13bc1a2de7a4db56e90b92b3bf75321f6c14be73f65de4b`. The compiled liblzma component uses the BSD Zero Clause license; see `LICENSES/xz.txt` and the source archive for full licensing details.
 
 An optional local compatibility test accepts a private sample directory through the Gradle property `panelgroveSamples`. Samples are not needed for a normal checkout, build, or test run and must stay outside the published source. Use `local-validation/` for local samples, reports, and device-specific evidence.
 

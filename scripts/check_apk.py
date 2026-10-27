@@ -26,7 +26,7 @@ def main():
                 alignments = [entry[7] for entry in headers if entry[0] == 1]
             assert alignments and all(value >= 16384 and value % 16384 == 0 for value in alignments), (name, alignments)
             print(name, 'LOAD alignment:', ', '.join(hex(value) for value in alignments))
-        assert not any(name.lower().endswith(('.cbz', '.cbr', '.pdf', '.rar')) for name in archive.namelist()), 'A document was bundled in the application'
+        assert not any(name.lower().endswith(('.cbz', '.cbr', '.cb7', '.7z', '.pdf', '.rar')) for name in archive.namelist()), 'A document was bundled in the application'
         print('No manga/document archives are bundled in the APK.')
 
 if __name__ == '__main__': main()

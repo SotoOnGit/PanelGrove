@@ -57,7 +57,9 @@ fun mergeBackup(incoming: LibraryBackup, live: LibraryBackup, identity: (String)
             .let { merged ->
                 // A restored filename collision is an unavailable private placeholder, never ownership of the live file.
                 merged.copy(copyRootUri = if (uri.startsWith("panelgrove:")) null else if (match != null) match.copyRootUri else book.copyRootUri,
-                    copyRevision = if (match != null) match.copyRevision else book.copyRevision)
+                    copyRevision = if (match != null) match.copyRevision else book.copyRevision,
+                    // Cover files are local to this installation and are not part of JSON backups.
+                    customCover = match?.customCover)
             }
         register(books.getValue(id))
     }

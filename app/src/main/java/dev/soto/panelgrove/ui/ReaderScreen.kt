@@ -24,6 +24,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -61,7 +62,7 @@ import kotlinx.coroutines.launch
     val book = books.find { it.id == bookId } ?: session?.book
     val settings = book?.let { resolveSettings(preferences, it) } ?: preferences.reader
     var chrome by remember { mutableStateOf(true) }
-    var options by remember { mutableStateOf(false) }
+    var options by rememberSaveable(bookId) { mutableStateOf(false) }
     var contents by remember { mutableStateOf(false) }
     val activity = LocalActivity.current as MainActivity
     val lifecycle = LocalLifecycleOwner.current
@@ -165,7 +166,8 @@ import kotlinx.coroutines.launch
     }
     if (options && book != null) ReaderSettingsDialog(strings[R.string.this_book_s_settings], settings, { options = false },
         { updated -> library.change(book) { it.copy(settings = ReaderOverrides.from(updated)) } },
-        { library.change(book) { it.copy(settings = ReaderOverrides()) } })
+        { library.change(book) { it.copy(settings = ReaderOverrides()) } },
+        preview = { draft -> session?.let { DisplayPagePreview(it, current, model, draft) } })
     if (contents && session != null) ContentsSheet(session!!, current, bookmarks.filter { it.bookId == bookId }, model, library) { contents = false }
     if (end && book != null) {
         LaunchedEffect(book.id) { model.finish() }

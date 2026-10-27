@@ -195,6 +195,7 @@ class LibraryViewModel(application: Application, private val saved: SavedStateHa
     fun updatePreferences(transform: (AppPreferences) -> AppPreferences) = action { app.preferences.update(transform) }
     fun change(book: Book, transform: (Book) -> Book) = action { library.change(book.id, transform) }
     fun editMetadata(book: Book, transform: (Book) -> Book) = action { library.editMetadata(book.id, transform) }
+    fun customCover(book: Book, uri: Uri?) = action { library.setCustomCover(book.id, uri) }
     fun backup(uri: Uri, restore: Boolean) = action {
         operation.value = if (restore) strings[R.string.restoring_library] else strings[R.string.creating_backup]
         try {

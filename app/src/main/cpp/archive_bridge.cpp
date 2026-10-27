@@ -32,8 +32,9 @@ struct Reader {
         archive_read_support_filter_none(handle);
         archive_read_support_format_rar(handle);
         archive_read_support_format_rar5(handle);
+        archive_read_support_format_7zip(handle);
         if (archive_read_open_fd(handle, fd, 65536) != ARCHIVE_OK) {
-            std::string error = archive_error_string(handle) ? archive_error_string(handle) : "Cannot open this RAR archive.";
+            std::string error = archive_error_string(handle) ? archive_error_string(handle) : "Cannot open this archive.";
             archive_read_free(handle); handle = nullptr; close(fd); fd = -1;
             throw std::runtime_error(error);
         }
@@ -68,9 +69,9 @@ Java_dev_soto_panelgrove_engine_NativeArchive_list(JNIEnv *env, jobject, jint fd
                 throw std::runtime_error("Archive exceeds extraction limits.");
             total += size;
             if (archive_entry_filetype(entry) == AE_IFREG) names.push_back(name);
-            if (archive_read_data_skip(reader.handle) < ARCHIVE_WARN) throw std::runtime_error("Cannot index this RAR variant.");
+            if (archive_read_data_skip(reader.handle) < ARCHIVE_WARN) throw std::runtime_error("Cannot index this archive variant.");
         }
-        if (status != ARCHIVE_EOF) throw std::runtime_error(archive_error_string(reader.handle) ?: "Invalid RAR archive.");
+        if (status != ARCHIVE_EOF) throw std::runtime_error(archive_error_string(reader.handle) ?: "Invalid archive.");
         jobjectArray result = env->NewObjectArray(static_cast<jsize>(names.size()), env->FindClass("java/lang/String"), nullptr);
         for (size_t i = 0; i < names.size(); ++i) { jstring s = java_string(env, names[i]); if (!s) return nullptr; env->SetObjectArrayElement(result, i, s); env->DeleteLocalRef(s); }
         return result;
@@ -101,9 +102,9 @@ Java_dev_soto_panelgrove_engine_NativeArchive_extract(JNIEnv *env, jobject, jint
                 if (n < 0) throw std::runtime_error(archive_error_string(reader.handle) ?: "Corrupt archive page.");
                 return;
             }
-            if (archive_read_data_skip(reader.handle) < ARCHIVE_WARN) throw std::runtime_error("Cannot read this RAR variant.");
+            if (archive_read_data_skip(reader.handle) < ARCHIVE_WARN) throw std::runtime_error("Cannot read this archive variant.");
         }
-        if (status != ARCHIVE_EOF) throw std::runtime_error(archive_error_string(reader.handle) ?: "Invalid RAR archive.");
+        if (status != ARCHIVE_EOF) throw std::runtime_error(archive_error_string(reader.handle) ?: "Invalid archive.");
         throw std::runtime_error("Page is missing from this archive.");
     } catch (const std::exception &e) { fail(env, e.what()); }
 }

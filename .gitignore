@@ -62,3 +62,5 @@ captures/
 !/app/src/androidTest/assets/fixtures/*.cbr
 !/app/src/androidTest/assets/fixtures/*.rar
 !/app/src/androidTest/assets/fixtures/*.pdf
+!/app/src/androidTest/assets/fixtures/*.cb7
+!/app/src/androidTest/assets/fixtures/*.7z

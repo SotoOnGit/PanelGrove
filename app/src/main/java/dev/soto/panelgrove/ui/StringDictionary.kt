@@ -23,6 +23,7 @@ class StringDictionary(private val resources: Resources) {
     fun format(format: BookFormat): String = get(when (format) {
         BookFormat.ZIP -> R.string.format_zip
         BookFormat.RAR -> R.string.format_rar
+        BookFormat.SEVEN_Z -> R.string.format_seven_z
         BookFormat.PDF -> R.string.format_pdf
         BookFormat.FOLDER -> R.string.format_folder
     })

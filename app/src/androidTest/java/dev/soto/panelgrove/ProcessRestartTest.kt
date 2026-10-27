@@ -22,12 +22,22 @@ class ProcessRestartTest {
     private val instrumentation get() = InstrumentationRegistry.getInstrumentation()
     private val app get() = instrumentation.targetContext.applicationContext as PanelgroveApplication
     private suspend fun await(condition: suspend () -> Boolean) = withTimeout(20_000) { while (!condition()) delay(20) }
-    @Test fun prepare() = runBlocking {
+    @Test fun prepare() = runBlocking<Unit> {
         assumeTrue(InstrumentationRegistry.getArguments().getString("panelgroveProcessPhase") == "prepare")
         File(app.filesDir, "hardening-process-preferences.json").writeText(PanelgroveJson.encodeToString(app.preferences.current()))
         val file = File(app.sources.managedDirectory, "hardening-process.cbz")
         instrumentation.context.assets.open("fixtures/sample.cbz").use { input -> file.outputStream().use { input.copyTo(it) } }
         val book = app.library.importFile(Uri.parse("panelgrove://managed/${file.name}"))
+        val coverBytes = java.io.ByteArrayOutputStream().use { output ->
+            android.graphics.Bitmap.createBitmap(80, 120, android.graphics.Bitmap.Config.ARGB_8888).apply {
+                eraseColor(android.graphics.Color.MAGENTA); compress(android.graphics.Bitmap.CompressFormat.PNG, 100, output); recycle()
+            }; output.toByteArray()
+        }
+        app.contentResolver.call(Uri.parse("content://dev.soto.panelgrove.test.documents"), "fixture", null, Bundle().apply {
+            putString("id", "hardening/process-cover.png"); putByteArray("bytes", coverBytes)
+        })
+        app.library.setCustomCover(book.id, DocumentsContract.buildDocumentUri("dev.soto.panelgrove.test.documents", "hardening/process-cover.png"))
+        app.library.change(book.id) { it.copy(settings = ReaderOverrides(contrast = 1.2f, gamma = 1.4f)) }
         app.library.dao.deleteBookmarks(book.id)
         lateinit var model: ReaderViewModel
         instrumentation.runOnMainSync { model = ReaderViewModel(app); model.open(book.id) }
@@ -45,7 +55,9 @@ class ProcessRestartTest {
         File(app.filesDir, "hardening-process-abandoned.txt").writeText(abandoned.uri.toString())
         File(app.cacheDir, "copy-imports").apply { mkdirs() }.let { File(it, "interrupted-copy.cbz").writeText("Generated staging leftover") }
         // A committed DB restore with preferences still pending when the process is killed.
-        app.library.dao.save(RestoreJournal(preferences = PanelgroveJson.encodeToString(AppPreferences(theme = AppTheme.DARK, reader = ReaderSettings(mode = ReadingMode.VERTICAL)))))
+        app.library.dao.save(RestoreJournal(preferences = PanelgroveJson.encodeToString(AppPreferences(theme = AppTheme.DARK, reader = ReaderSettings(mode = ReadingMode.VERTICAL, contrast = .8f, gamma = 1.3f)))))
+        File(app.cacheDir, "cover-imports").apply { mkdirs(); File(this, "interrupted.image").writeText("Generated staging leftover") }
+        File(app.filesDir, "custom-covers").apply { mkdirs(); File(this, "uncommitted.png").writeText("Generated orphan"); File(this, "interrupted.part").writeText("Generated interrupted output") }
         listOf(File(app.filesDir, "books"), File(app.filesDir, "covers"), File(app.cacheDir, "sources"), File(app.cacheDir, "pages")).forEach {
             it.mkdirs(); File(it, "hardening-interrupted.part").writeText("Generated interrupted output")
         }
@@ -54,12 +66,25 @@ class ProcessRestartTest {
         // The external script terminates this still-running reader process at the saved boundary.
         delay(120_000)
     }
-    @Test fun verify() = runBlocking {
+    @Test fun verify() = runBlocking<Unit> {
         assumeTrue(InstrumentationRegistry.getArguments().getString("panelgroveProcessPhase") == "verify")
         val id = File(app.filesDir, "hardening-process-book.txt").readText()
         await { app.library.dao.pendingRestore() == null }
         assertEquals(AppTheme.DARK, app.preferences.current().theme)
         assertEquals(ReadingMode.VERTICAL, app.preferences.current().reader.mode)
+        assertEquals(.8f, app.preferences.current().reader.contrast)
+        assertEquals(1.3f, app.preferences.current().reader.gamma)
+        // Startup recovery keeps committed covers and removes only uncommitted generated leftovers.
+        await { !File(app.cacheDir, "cover-imports/interrupted.image").exists() }
+        assertFalse(File(app.filesDir, "custom-covers/uncommitted.png").exists())
+        assertFalse(File(app.filesDir, "custom-covers/interrupted.part").exists())
+        val retained = app.library.book(id)!!
+        assertNotNull(retained.customCover)
+        android.graphics.BitmapFactory.decodeFile(app.library.cover(retained).path).apply {
+            assertEquals(android.graphics.Color.MAGENTA, getPixel(0, 0)); recycle()
+        }
+        assertEquals(1.2f, retained.settings.contrast)
+        assertEquals(1.4f, retained.settings.gamma)
         assertFalse(File(app.cacheDir, "copy-imports/interrupted-copy.cbz").exists())
         val abandoned = Uri.parse(File(app.filesDir, "hardening-process-abandoned.txt").readText())
         // Preferences recovery finishes before provider cleanup in the startup coroutine.
@@ -78,5 +103,8 @@ class ProcessRestartTest {
         instrumentation.runOnMainSync { model.close() }
         val original = File(app.filesDir, "hardening-process-preferences.json")
         app.preferences.set(PanelgroveJson.decodeFromString(original.readText()))
+        app.contentResolver.call(Uri.parse("content://dev.soto.panelgrove.test.documents"), "fixture", null, Bundle().apply {
+            putString("id", "hardening/process-cover.png"); putBoolean("reset", true)
+        })
     }
 }

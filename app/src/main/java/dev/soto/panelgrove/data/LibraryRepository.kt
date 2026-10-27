@@ -33,7 +33,20 @@ class LibraryRepository(private val context: Context, private val database: Libr
     val bookmarks = dao.observeBookmarks().map { rows -> rows.map { it.bookmark() } }
     val history = dao.observeHistory().map { rows -> rows.map { it.entry() } }
     val coverDirectory = File(context.filesDir, "covers").apply { mkdirs() }
-    fun cover(book: Book) = File(coverDirectory, "${book.id}.png")
+    private val customCovers = CustomCoverStore(context)
+    private fun defaultCover(book: Book) = File(coverDirectory, "${book.id}.png")
+    fun cover(book: Book) = book.customCover?.let { customCovers.file(it).takeIf(File::exists) } ?: defaultCover(book)
+    suspend fun setCustomCover(id: String, uri: Uri?) = importMutex.withLock { withContext(Dispatchers.IO) {
+        val old = book(id) ?: error(strings[R.string.this_book_was_removed])
+        val key = uri?.let { customCovers.import(it) }
+        try {
+            database.withTransaction {
+                val current = book(id) ?: error(strings[R.string.this_book_was_removed])
+                dao.save(current.copy(customCover = key).row())
+            }
+        } catch (error: Exception) { key?.let { customCovers.file(it).delete() }; throw error }
+        old.customCover?.let { customCovers.file(it).delete() }
+    } }
     suspend fun book(id: String) = dao.book(id)?.book()
     suspend fun retainsCopyFor(uri: Uri, replaceId: String?): Boolean {
         val identity = sources.identity(uri.toString())
@@ -59,7 +72,7 @@ class LibraryRepository(private val context: Context, private val database: Libr
         val details = sources.details(uri)
         val format = if (folder) BookFormat.FOLDER else sources.format(uri) ?: ArchiveRules.format(details.name)
             ?: error(strings[R.string.supported_files_are_cbz_zip_cbr_rar_and_pdf, details.name])
-        require(!Regex("(?i)\\.part\\d+\\.rar$|\\.r\\d\\d$").containsMatchIn(details.name)) { strings[R.string.multipart_archives_are_not_supported] }
+        require(!Regex("(?i)\\.part\\d+\\.rar$|\\.r\\d\\d$|\\.(7z|cb7)\\.\\d+$").containsMatchIn(details.name)) { strings[R.string.multipart_archives_are_not_supported] }
         val matches = dao.books().map { it.book() }.filter {
             sources.identity(it.uri) == sources.identity(uri.toString()) || it.originUri?.let(sources::identity) == sources.identity(uri.toString()) ||
                 (root != null && it.sourceId == root.id && it.relativePath == relativePath)
@@ -160,6 +173,7 @@ class LibraryRepository(private val context: Context, private val database: Libr
                         pageCount = session.index.pages.size, position = remapPosition(current?.position, session.index.pages),
                         favorite = current?.favorite ?: false, collections = current?.collections ?: emptyList(),
                         status = current?.status ?: ReadingStatus.UNREAD, settings = current?.settings ?: ReaderOverrides(),
+                        customCover = current?.customCover,
                         addedAt = current?.addedAt ?: shell.addedAt, lastOpenedAt = current?.lastOpenedAt ?: 0,
                     ).also {
                         currentCoroutineContext().ensureActive()
@@ -168,7 +182,7 @@ class LibraryRepository(private val context: Context, private val database: Libr
                     }
                 }
                 published?.let(sources.copies::committed)
-                duplicate?.let { cover(it).delete() }
+                duplicate?.let { defaultCover(it).delete(); it.customCover?.let { key -> customCovers.file(key).delete() } }
                 if (published != null && existing?.managed == true && existing.uri != imported.uri)
                     runCatching { sources.deleteCopy(existing) }
                 runCatching {
@@ -177,7 +191,7 @@ class LibraryRepository(private val context: Context, private val database: Libr
                     val partial = File(coverDirectory, "${imported.id}.part")
                     try {
                         partial.outputStream().use { check(bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)) }
-                        check(partial.renameTo(cover(imported)))
+                        check(partial.renameTo(defaultCover(imported)))
                     } finally { partial.delete() }
                 }.onFailure { if (it is CancellationException) throw it }
                 return@withContext imported
@@ -290,21 +304,23 @@ class LibraryRepository(private val context: Context, private val database: Libr
         if (existing != null) dao.deleteBookmark(existing.id)
         else dao.save(Bookmark(UUID.randomUUID().toString(), book.id, page.id, index).row())
     }
-    suspend fun remove(id: String, deleteCopy: Boolean) = withContext(Dispatchers.IO) {
+    suspend fun remove(id: String, deleteCopy: Boolean) = importMutex.withLock { withContext(Dispatchers.IO) {
         val book = book(id) ?: return@withContext
         database.withTransaction { dao.deleteBookmarks(id); dao.deleteHistory(id); dao.deleteBook(id) }
-        cover(book).delete()
+        defaultCover(book).delete()
+        book.customCover?.let { customCovers.file(it).delete() }
         if (deleteCopy && book.managed) check(sources.deleteCopy(book)) { strings[R.string.the_library_entry_was_removed_but_its_file_could] }
-    }
+    } }
     suspend fun exportBackup(uri: Uri) = withContext(Dispatchers.IO) {
         val backup = database.withTransaction { LibraryBackup(preferences = preferences.current(),
-            sources = dao.sources().map { it.source() }, books = dao.books().map { it.book() },
+            sources = dao.sources().map { it.source() }, books = dao.books().map { it.book().copy(customCover = null) },
             bookmarks = dao.bookmarks().map { it.bookmark() }, history = dao.history().map { it.entry() }) }
         val bytes = PanelgroveJson.encodeToString(backup).toByteArray()
         context.contentResolver.openOutputStream(uri, "wt")?.use { it.write(bytes) } ?: error(strings[R.string.cannot_write_the_backup])
     }
     suspend fun recoverRestore() = importMutex.withLock {
         finishPendingRestore()
+        withContext(Dispatchers.IO) { customCovers.recover(dao.books().mapNotNull { it.book().customCover }.toSet()) }
         sources.copies.recover(dao.books().map { it.uri }.toSet())
     }
     /** Reads granted documents in place. Recovery never recopies or deletes user files. */

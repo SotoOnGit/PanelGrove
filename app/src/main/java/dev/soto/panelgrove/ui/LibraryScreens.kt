@@ -2,6 +2,8 @@ package dev.soto.panelgrove.ui
 
 import dev.soto.panelgrove.R
 import android.graphics.BitmapFactory
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -43,7 +45,7 @@ import java.util.Date
 @Composable fun BookCover(book: Book, model: LibraryViewModel, modifier: Modifier = Modifier) {
     val strings = rememberStrings()
 
-    val cover by produceState<android.graphics.Bitmap?>(null, book.id, book.revision) {
+    val cover by produceState<android.graphics.Bitmap?>(null, book.id, book.revision, book.customCover) {
         value = withContext(Dispatchers.IO) { BitmapFactory.decodeFile(model.library.cover(book).path) }
     }
     Box(modifier.clip(RoundedCornerShape(10.dp)).background(MaterialTheme.colorScheme.surfaceContainerHigh)) {
@@ -257,6 +259,9 @@ private enum class LibraryFilter(val label: Int) { ALL(R.string.all), READING(R.
     var deleting by remember { mutableStateOf(false) }
     var deleteCopy by remember { mutableStateOf(false) }
     var seriesOptions by remember { mutableStateOf(false) }
+    val chooseCover = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) model.customCover(book, uri)
+    }
     val preferences by model.preferences.collectAsStateWithLifecycle()
     PanelgroveSheet(dismiss, footer = {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
@@ -271,6 +276,10 @@ private enum class LibraryFilter(val label: Int) { ALL(R.string.all), READING(R.
                 SheetTitle(strings[R.string.book_details])
                 Text(strings[R.string.book_file_summary, book.pageCount, strings.format(book.format), book.displayName], style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
+        }
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedButton({ chooseCover.launch(arrayOf("image/*")) }) { Text(strings[R.string.choose_custom_cover]) }
+            if (book.customCover != null) TextButton({ model.customCover(book, null) }) { Text(strings[R.string.remove_custom_cover]) }
         }
         OutlinedTextField(title, { title = it }, Modifier.fillMaxWidth(), label = { Text(strings[R.string.title]) }, singleLine = true, shape = RoundedCornerShape(12.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {

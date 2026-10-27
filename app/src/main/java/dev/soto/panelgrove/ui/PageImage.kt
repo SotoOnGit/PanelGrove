@@ -58,6 +58,8 @@ import kotlin.math.*
     val baseHeight = sourceHeight * base
     val left = (size.width - baseWidth) / 2f
     val top = (size.height - baseHeight) / 2f
+    val displayed = rememberDisplayBitmap(bitmap, settings)
+    val displayedTile = rememberDisplayBitmap(tile?.second, settings)
     LaunchedEffect(size, session, index, retry) {
         if (size.width == 0 || size.height == 0) return@LaunchedEffect
         error = null
@@ -101,14 +103,14 @@ import kotlin.math.*
             CustomAccessibilityAction(strings[R.string.reset_zoom]) { viewport?.reset(); true },
         )
     }, contentAlignment = Alignment.Center) {
-        val image = bitmap
+        val image = displayed
         if (image != null) Canvas(Modifier.fillMaxSize().testTag("rendered-page-${index + 1}")) {
             drawImage(image.asImageBitmap(), dstOffset = IntOffset(left.roundToInt(), top.roundToInt()),
                 dstSize = IntSize(baseWidth.roundToInt().coerceAtLeast(1), baseHeight.roundToInt().coerceAtLeast(1)), filterQuality = FilterQuality.High)
-            tile?.let { (crop, high) ->
+            tile?.first?.let { crop -> displayedTile?.let { high ->
                 drawImage(high.asImageBitmap(), dstOffset = IntOffset((left + crop.left * baseWidth).roundToInt(), (top + crop.top * baseHeight).roundToInt()),
                     dstSize = IntSize(((crop.right - crop.left) * baseWidth).roundToInt().coerceAtLeast(1), ((crop.bottom - crop.top) * baseHeight).roundToInt().coerceAtLeast(1)), filterQuality = FilterQuality.High)
-            }
+            } }
         } else if (error == null) CircularProgressIndicator(Modifier.size(28.dp))
         if (error != null) Surface(Modifier.padding(24.dp), shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)) {
             Column(Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -117,6 +119,20 @@ import kotlin.math.*
                 Row { TextButton({ retry++ }) { Text(strings[R.string.retry]) }; TextButton({ model.move(index + 1) }) { Text(strings[R.string.skip_page]) } }
             }
         }
+    }
+}
+
+@Composable fun DisplayPagePreview(session: DocumentSession, index: Int, model: ReaderViewModel, settings: ReaderSettings) {
+    val strings = rememberStrings()
+    val source by produceState<Bitmap?>(null, session, index) {
+        try { value = model.app.engine.render(session, index, 480, 640) }
+        catch (error: Exception) { if (error is CancellationException) throw error }
+    }
+    val image = rememberDisplayBitmap(source, settings)
+    Box(Modifier.fillMaxWidth().height(160.dp).background(Color(settings.background)), contentAlignment = Alignment.Center) {
+        if (image != null) Image(image.asImageBitmap(), strings[R.string.display_preview],
+            Modifier.fillMaxSize().testTag("display-preview"), contentScale = ContentScale.Fit)
+        else Text(strings[R.string.preview_unavailable], color = Color.White)
     }
 }
 

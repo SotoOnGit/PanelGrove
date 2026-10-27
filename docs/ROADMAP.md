@@ -6,12 +6,16 @@ Updated **2026-10-27**. The current public prerelease is **0.1.6**. The existing
 
 | Priority | Feature | Intended scope | Status |
 | --- | --- | --- | --- |
-| 1 | CB7 / 7Z formats | Read image-based CB7 and 7Z archives with the existing ordering, navigation and reading-data behavior. Document supported archive variants and limits. | Planned |
-| 2 | Custom covers | Choose and remove a book's custom library cover; preserve the choice through reopening and rescanning without changing the source document. | Planned |
-| 3 | Contrast and gamma controls | Preview, adjust, reset and retain display adjustments in the reader. Keep source images unchanged. | Planned |
+| 1 | CB7 / 7Z formats | Read image-based CB7 and 7Z archives with the existing ordering, navigation and reading-data behavior. Document supported archive variants and limits. | Implemented in development; pending release |
+| 2 | Custom covers | Choose and remove a book's custom library cover; preserve the choice through reopening and rescanning without changing the source document. | Implemented in development; pending release |
+| 3 | Contrast and gamma controls | Preview, adjust, reset and retain display adjustments in the reader. Keep source images unchanged. | Implemented in development; pending release |
 | 4 | Different languages for the same series | Attribute separate books in any supported format to one shared series, identify their language editions and make those editions easy to select. | Planned |
 | 5 | Page export | Save or share a selected page as a full-page image through Android's system controls. Keep the source document unchanged. | Planned |
 | 6 | Statistics | Add local reading statistics with clearly defined measurements and retained aggregates. Define the initial measures before implementation. | Planned |
+
+CB7/7Z implementation scope and checks are recorded in [development validation](CB7_VALIDATION.md).
+
+Custom covers and display adjustments are available in development builds. Covers are copied to private app storage; removing a custom cover restores the document's generated cover. Display adjustments follow default, series and book settings, including JSON backup and restore. Custom cover images stay on the current installation and are not included in JSON backups. See the [user guide](USAGE.md#custom-covers-and-display-adjustments-development-build) and [feature validation](COVERS_DISPLAY_VALIDATION.md).
 
 ### Series and language editions
 

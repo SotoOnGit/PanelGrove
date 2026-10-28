@@ -16,6 +16,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModelProvider
 import androidx.test.platform.app.InstrumentationRegistry
@@ -174,8 +175,10 @@ class EditionsExportUiTest {
             assertTrue(app.pageExports.file(exported).isFile)
             assertTrue(reader.exportDispatched)
             // ActivityScenario.recreate first demands RESUMED, which a real external picker prevents.
-            InstrumentationRegistry.getInstrumentation().runOnMainSync { originalActivity.recreate() }
+            // AndroidX also handles the API 26/27 platform relaunch/stop ordering bugs.
+            InstrumentationRegistry.getInstrumentation().runOnMainSync { ActivityCompat.recreate(originalActivity) }
             compose.waitUntil(10_000) { originalActivity.isDestroyed }
+            assertTrue("The save picker must remain open while the reader is recreated", pickerVisible())
             assertEquals(pending, originalReader.pendingExport.value)
             assertTrue(originalReader.exportDispatched)
             repeat(3) {

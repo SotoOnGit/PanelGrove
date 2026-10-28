@@ -53,8 +53,23 @@ The initial existing-emulator attempt rejected the debug APK because the install
 
 An intermediate full run had one remaining test failure when checking the reader immediately after picker cancellation. The test now stops sending Back once the result arrives and waits for the reader to resume. Its isolated retry and the final full suite above passed; the earlier logs remain preserved. No export implementation change was required.
 
+## API 26 picker recreation compatibility — 2026-10-28
+
+CI reported a 10-second timeout in `androidDocumentPickerCancellationAfterRecreationKeepsTheSelectedSnapshot`. That wait checks destruction of the original reader activity while Android's save picker is in front. The test now calls `ActivityCompat.recreate` instead of calling the platform method directly. AndroidX supplies the older-platform recreation path, including API 26/27 relaunch/stop-order handling; see the [AndroidX implementation](https://raw.githubusercontent.com/androidx/androidx/androidx-main/core/core/src/main/java/androidx/core/app/ActivityCompat.java).
+
+The 10-second wait and pending-export/snapshot/page checks are retained. An additional assertion verifies that the save picker remains open after recreation. The change is limited to the test and this validation record.
+
+Local API 26 baseline runs of the unchanged isolated test and all six edition/export UI cases passed, including with animations disabled to match CI. The reported CI timeout was therefore not reproduced deterministically. After the compatibility change:
+
+- The affected case passed **three consecutive API 26 runs**.
+- The full **API 26 / Android 8.0** suite passed: **92 passed, 5 expected skips, 0 failures**, 97 discovered cases, **105.468 seconds**, with animations disabled.
+- The **API 32** edition/export UI class passed: **6 passed, 0 failures**, **36.101 seconds**, with animations disabled.
+- Test APK compilation and debug lint passed: **0 errors, 49 warnings**.
+
+Both emulators used fresh app/data directories. Logs are retained in ignored `local-validation/api26-export-recreation/`. Remote CI confirmation remains pending.
+
 ## Remaining acceptance
 
 - Physical-device testing with real document providers, removable storage, and external share receivers remains open. No physical phone was connected in this session.
 - The export chooser/URI contract and document-provider saves are covered separately from actual receiver-app behavior. Cache eviction can require retrying an unfinished export.
-- Older/newer API coverage and signed public-release acceptance remain separate from the API 32 development checks. No release version was bumped or published.
+- Broader device/API coverage and signed public-release acceptance remain separate from these local emulator checks. No release version was bumped or published.

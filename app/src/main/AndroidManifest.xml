@@ -31,5 +31,9 @@
             </intent-filter>
         </activity>
         <service android:name=".engine.DecodeService" android:isolatedProcess="true" android:exported="false" android:process=":decoder"/>
+        <provider android:name="androidx.core.content.FileProvider" android:authorities="${applicationId}.pageexports"
+            android:exported="false" android:grantUriPermissions="true">
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/page_export_paths" />
+        </provider>
     </application>
 </manifest>

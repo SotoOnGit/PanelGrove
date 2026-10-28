@@ -106,6 +106,7 @@ import dev.soto.panelgrove.engine.DocumentSession
                 Spacer(Modifier.height(8.dp))
                 SectionLabel(strings[R.string.finished])
                 Text(book.title, style = MaterialTheme.typography.displaySmall, textAlign = TextAlign.Center)
+                Text(languageLabel(book.editionLanguage, strings), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Text(listOfNotNull(book.series.takeIf { it.isNotBlank() }, book.number.takeIf { it.isNotBlank() }?.let { strings[R.string.vol, it] }, strings[R.string.page_count, book.pageCount]).joinToString(" · "),
                     textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Spacer(Modifier.height(8.dp))
@@ -113,7 +114,7 @@ import dev.soto.panelgrove.engine.DocumentSession
                     Card(Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)) {
                         Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                             BookCover(next, library, Modifier.width(44.dp).aspectRatio(2f / 3f))
-                            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) { SectionLabel(strings[R.string.up_next]); Text(next.title) }
+                            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) { SectionLabel(strings[R.string.up_next]); Text(next.title); Text(languageLabel(next.editionLanguage, strings), style = MaterialTheme.typography.bodySmall) }
                         }
                     }
                     Button({ readNext(next) }, Modifier.fillMaxWidth()) { Text(strings[R.string.read_next]) }

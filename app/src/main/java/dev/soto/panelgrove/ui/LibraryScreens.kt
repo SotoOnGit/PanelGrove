@@ -60,8 +60,11 @@ import java.util.Date
             modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth().height(3.dp), gapSize = 0.dp, drawStopIndicator = {})
     }
 }
-private fun bookProgress(book: Book) = if (book.status == ReadingStatus.READ) 1f else
-    (((book.position?.index ?: 0) + 1).toFloat() / book.pageCount.coerceAtLeast(1)).coerceIn(0f, 1f)
+internal fun bookProgress(book: Book) = when (book.status) {
+    ReadingStatus.UNREAD -> 0f
+    ReadingStatus.READ -> 1f
+    ReadingStatus.READING -> (((book.position?.index ?: 0) + 1).toFloat() / book.pageCount.coerceAtLeast(1)).coerceIn(0f, 1f)
+}
 
 private val bookOrder = Comparator<Book> { a, b ->
     NaturalOrder.compare(a.series, b.series).takeIf { it != 0 }
@@ -78,14 +81,21 @@ private enum class LibraryFilter(val label: Int) { ALL(R.string.all), READING(R.
     var filter by rememberSaveable { mutableStateOf(LibraryFilter.ALL) }
     var series by rememberSaveable { mutableStateOf("") }
     var collection by rememberSaveable { mutableStateOf("") }
+    var language by rememberSaveable { mutableStateOf<String?>(null) }
+    var languageMenu by remember { mutableStateOf(false) }
     var overflow by remember { mutableStateOf(false) }
     var seriesMenu by remember { mutableStateOf(false) }
     var collectionMenu by remember { mutableStateOf(false) }
-    val visible = books.filter { book ->
-        (query.isBlank() || listOf(book.title, book.series, book.displayName).any { it.contains(query, true) }) &&
-            (series.isBlank() || book.series == series) && (collection.isBlank() || collection in book.collections) &&
-            when (filter) { LibraryFilter.FAVORITES -> book.favorite; LibraryFilter.READING -> book.status == ReadingStatus.READING; LibraryFilter.UNREAD -> book.status == ReadingStatus.UNREAD; LibraryFilter.FINISHED -> book.status == ReadingStatus.READ; else -> true }
-    }.sortedWith(bookOrder)
+    var versionGroup by rememberSaveable { mutableStateOf<String?>(null) }
+    val visible = groupLanguageEditions(books.sortedWith(bookOrder)).mapNotNull { group ->
+        val matching = group.editions.filter { book ->
+            (query.isBlank() || listOf(book.title, book.series, book.displayName).any { it.contains(query, true) }) &&
+                (series.isBlank() || book.series == series) && (collection.isBlank() || collection in book.collections) &&
+                (language == null || book.editionLanguage == language) &&
+                when (filter) { LibraryFilter.FAVORITES -> book.favorite; LibraryFilter.READING -> book.status == ReadingStatus.READING; LibraryFilter.UNREAD -> book.status == ReadingStatus.UNREAD; LibraryFilter.FINISHED -> book.status == ReadingStatus.READ; else -> true }
+        }
+        matching.takeIf { it.isNotEmpty() }?.let { group.copy(editions = it) }
+    }
     val continuing = books.filter { it.status == ReadingStatus.READING }.maxByOrNull { it.lastOpenedAt }
     Column(Modifier.fillMaxSize()) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -111,6 +121,7 @@ private enum class LibraryFilter(val label: Int) { ALL(R.string.all), READING(R.
                     DropdownMenuItem(text = { Text(strings[R.string.rescan_library_folders]) }, onClick = { overflow = false; model.refresh(true) })
                     DropdownMenuItem(text = { Text(strings[R.string.filter_by_series]) }, onClick = { overflow = false; seriesMenu = true })
                     DropdownMenuItem(text = { Text(strings[R.string.filter_by_collection]) }, onClick = { overflow = false; collectionMenu = true })
+                    DropdownMenuItem(text = { Text(strings[R.string.filter_by_language]) }, onClick = { overflow = false; languageMenu = true })
                 }
             }
         }
@@ -124,34 +135,53 @@ private enum class LibraryFilter(val label: Int) { ALL(R.string.all), READING(R.
                             selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer))
                 }
             }
-            if (series.isNotBlank() || collection.isNotBlank()) Row(Modifier.padding(horizontal = 16.dp)) {
+            if (series.isNotBlank() || collection.isNotBlank() || language != null) FlowRow(Modifier.padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 InputChip(series.isNotBlank(), { seriesMenu = true }, { Text(series.ifBlank { strings[R.string.all_series] }) })
                 Spacer(Modifier.width(8.dp))
                 InputChip(collection.isNotBlank(), { collectionMenu = true }, { Text(collection.ifBlank { strings[R.string.all_collections] }) })
-                IconButton({ series = ""; collection = "" }) { Icon(Icons.Default.Close, strings[R.string.clear_series_and_collection_filters]) }
+                if (language != null) InputChip(true, { languageMenu = true }, { Text(languageLabel(language!!, strings)) })
+                IconButton({ series = ""; collection = ""; language = null }) { Icon(Icons.Default.Close, strings[R.string.clear_library_filters]) }
             }
             if (grid) LazyVerticalGrid(GridCells.Fixed(3), Modifier.weight(1f).testTag("library-shelf"),
                 contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 88.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                if (continuing != null && query.isBlank() && filter == LibraryFilter.ALL && series.isBlank() && collection.isBlank())
+                if (continuing != null && query.isBlank() && filter == LibraryFilter.ALL && series.isBlank() && collection.isBlank() && language == null)
                     item(key = "continue", span = { GridItemSpan(maxLineSpan) }) { ContinueReading(continuing, model) }
                 if (visible.isEmpty()) item(span = { GridItemSpan(maxLineSpan) }) { Text(strings[R.string.no_books_match_these_filters], Modifier.padding(vertical = 32.dp)) }
-                visible.groupBy { it.series }.forEach { (name, grouped) ->
+                visible.groupBy { it.representative.series }.forEach { (name, grouped) ->
                     item(key = "series:${name}", span = { GridItemSpan(maxLineSpan) }) { Text(name.ifBlank { strings[R.string.unsorted] }, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 4.dp)) }
-                    items(grouped, key = { it.id }) { BookCard(it, model, details) }
+                    items(grouped, key = { it.key }) { group ->
+                        if (group.editions.size > 1) EditionGroupCard(group, model) { versionGroup = group.key }
+                        else BookCard(group.representative, model, details)
+                    }
                 }
             } else LazyColumn(Modifier.weight(1f).testTag("library-shelf"), contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 88.dp)) {
-                if (continuing != null && query.isBlank() && filter == LibraryFilter.ALL && series.isBlank() && collection.isBlank()) item { ContinueReading(continuing, model) }
+                if (continuing != null && query.isBlank() && filter == LibraryFilter.ALL && series.isBlank() && collection.isBlank() && language == null) item { ContinueReading(continuing, model) }
                 if (visible.isEmpty()) item { Text(strings[R.string.no_books_match_these_filters], Modifier.padding(vertical = 32.dp)) }
-                visible.groupBy { it.series }.forEach { (name, grouped) ->
+                visible.groupBy { it.representative.series }.forEach { (name, grouped) ->
                     item(key = "series:${name}") { Text(name.ifBlank { strings[R.string.unsorted] }, Modifier.padding(vertical = 16.dp), style = MaterialTheme.typography.titleMedium) }
-                    items(grouped, key = { it.id }) { BookListRow(it, model, details) }
+                    items(grouped, key = { it.key }) { group ->
+                        if (group.editions.size > 1) EditionGroupRow(group, model) { versionGroup = group.key }
+                        else BookListRow(group.representative, model, details)
+                    }
                 }
             }
         }
     }
+    visible.find { it.key == versionGroup }?.let { group ->
+        LanguageEditionsDialog(null, group.editions.sortedWith(compareBy<Book> { it.editionLanguage }.thenBy { it.title }), model,
+            { versionGroup = null }, { model.open(it.id) }, details)
+    }
     if (seriesMenu) ChoiceDialog(strings[R.string.series], listOf("") + books.map { it.series }.filter { it.isNotBlank() }.distinct().sortedWith(NaturalOrder), strings[R.string.all_series], { seriesMenu = false }) { series = it }
     if (collectionMenu) ChoiceDialog(strings[R.string.collections], listOf("") + books.flatMap { it.collections }.distinct().sortedWith(NaturalOrder), strings[R.string.all_collections], { collectionMenu = false }) { collection = it }
+    if (languageMenu) AlertDialog(onDismissRequest = { languageMenu = false }, title = { Text(strings[R.string.language]) }, text = {
+        LazyColumn {
+            item { TextButton({ language = null; languageMenu = false }) { Text(strings[R.string.all_languages]) } }
+            items(books.map { it.editionLanguage }.distinct().sorted()) { code ->
+                TextButton({ language = code; languageMenu = false }) { Text(languageLabel(code, strings)) }
+            }
+        }
+    }, confirmButton = { TextButton({ languageMenu = false }) { Text(strings[R.string.close]) } })
 }
 
 @Composable private fun ContinueReading(book: Book, model: LibraryViewModel) {
@@ -163,6 +193,7 @@ private enum class LibraryFilter(val label: Int) { ALL(R.string.all), READING(R.
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 SectionLabel(strings[R.string.continue_reading])
                 Text(book.title, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                Text(languageLabel(book.editionLanguage, strings), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Text(strings[R.string.page_of, (book.position?.index ?: 0) + 1, book.pageCount], style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 LinearProgressIndicator(progress = { bookProgress(book) }, modifier = Modifier.fillMaxWidth().height(4.dp), trackColor = MaterialTheme.colorScheme.outlineVariant, gapSize = 0.dp, drawStopIndicator = {})
             }
@@ -205,6 +236,7 @@ private enum class LibraryFilter(val label: Int) { ALL(R.string.all), READING(R.
         Row(verticalAlignment = Alignment.Top) {
             Column(Modifier.weight(1f).padding(top = 8.dp)) {
                 Text(book.title, style = MaterialTheme.typography.bodySmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                Text(languageLabel(book.editionLanguage, strings), style = MaterialTheme.typography.labelSmall, maxLines = 1, overflow = TextOverflow.Ellipsis, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Text(if (book.access != AccessState.AVAILABLE) strings[R.string.relink_source] else strings[R.string.book_page_format, book.pageCount, strings.format(book.format)], style = MaterialTheme.typography.labelSmall, maxLines = 1, overflow = TextOverflow.Ellipsis, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
@@ -217,6 +249,7 @@ private enum class LibraryFilter(val label: Int) { ALL(R.string.all), READING(R.
         BookCover(book, model, Modifier.width(52.dp).aspectRatio(2f / 3f))
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(book.title, maxLines = 2, overflow = TextOverflow.Ellipsis)
+            Text(languageLabel(book.editionLanguage, strings), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Text(if (book.access != AccessState.AVAILABLE) strings[R.string.source_unavailable_relink_in_details] else strings[R.string.book_page_format, book.pageCount, strings.format(book.format)], style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         IconButton({ details(book.id) }) { Icon(Icons.Default.MoreVert, strings[R.string.details_for, book.title]) }
@@ -239,6 +272,7 @@ private enum class LibraryFilter(val label: Int) { ALL(R.string.all), READING(R.
                         BookCover(book, model, Modifier.width(44.dp).aspectRatio(2f / 3f))
                         Column(Modifier.weight(1f)) {
                             Text(book.title, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                            Text(languageLabel(book.editionLanguage, strings), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             Text(strings.quantity(R.plurals.reading_session_count, sessions.size, DateFormat.getTimeInstance(DateFormat.SHORT).format(Date(sessions.maxOf { it.openedAt })), sessions.size), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                         IconButton({ details(book.id) }) { Icon(Icons.Default.MoreVert, strings[R.string.details_for, book.title]) }
@@ -255,6 +289,13 @@ private enum class LibraryFilter(val label: Int) { ALL(R.string.all), READING(R.
     var title by rememberSaveable(book.id) { mutableStateOf(book.title) }
     var series by rememberSaveable(book.id) { mutableStateOf(book.series) }
     var number by rememberSaveable(book.id) { mutableStateOf(book.number) }
+    var language by rememberSaveable(book.id) { mutableStateOf(book.editionLanguage) }
+    var languageOverride by rememberSaveable(book.id) { mutableStateOf(book.language) }
+    var languageMenu by remember { mutableStateOf(false) }
+    var seriesMenu by remember { mutableStateOf(false) }
+    var editionsMenu by remember { mutableStateOf(false) }
+    val books by model.books.collectAsStateWithLifecycle()
+    val editions = languageEditions(book, books)
     var collections by rememberSaveable(book.id) { mutableStateOf(book.collections.joinToString(", ")) }
     var deleting by remember { mutableStateOf(false) }
     var deleteCopy by remember { mutableStateOf(false) }
@@ -267,7 +308,7 @@ private enum class LibraryFilter(val label: Int) { ALL(R.string.all), READING(R.
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
             TextButton(dismiss) { Text(strings[R.string.close]) }
             Spacer(Modifier.width(16.dp))
-            Button({ model.editMetadata(book) { it.copy(title = title.trim().ifBlank { book.title }, series = series.trim(), number = number.trim(), collections = collections.split(',').map(String::trim).filter(String::isNotEmpty).distinct(), metadataEdited = true) }; dismiss() }) { Text(strings[R.string.save]) }
+            Button({ model.editMetadata(book) { it.copy(title = title.trim().ifBlank { book.title }, series = series.trim(), number = number.trim(), language = languageOverride?.let(::normalizeLanguage), collections = collections.split(',').map(String::trim).filter(String::isNotEmpty).distinct(), metadataEdited = true) }; dismiss() }) { Text(strings[R.string.save]) }
         }
     }) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -285,6 +326,15 @@ private enum class LibraryFilter(val label: Int) { ALL(R.string.all), READING(R.
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             OutlinedTextField(series, { series = it }, Modifier.weight(1.7f), label = { Text(strings[R.string.series]) }, singleLine = true, shape = RoundedCornerShape(12.dp))
             OutlinedTextField(number, { number = it }, Modifier.weight(1f), label = { Text(strings[R.string.vol_ch]) }, singleLine = true, shape = RoundedCornerShape(12.dp))
+        }
+        TextButton({ seriesMenu = true }) { Text(strings[R.string.choose_existing_series]) }
+        OutlinedTextField(language, { language = it; languageOverride = it }, Modifier.fillMaxWidth(), label = { Text(strings[R.string.language_code]) },
+            placeholder = { Text(strings[R.string.language_code_examples]) }, singleLine = true, shape = RoundedCornerShape(12.dp),
+            supportingText = { Text(strings[R.string.shared_series_language_help]) })
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            TextButton({ languageMenu = true }) { Text(strings[R.string.choose_language]) }
+            TextButton({ language = normalizeLanguage(book.metadata.language.orEmpty()); languageOverride = null }) { Text(strings[R.string.use_document_language]) }
+            if (editions.size > 1) TextButton({ editionsMenu = true }) { Text(strings[R.string.language_editions]) }
         }
         OutlinedTextField(collections, { collections = it }, Modifier.fillMaxWidth(), label = { Text(strings[R.string.collections]) }, placeholder = { Text(strings[R.string.separate_with_commas]) }, shape = RoundedCornerShape(12.dp))
         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -304,4 +354,11 @@ private enum class LibraryFilter(val label: Int) { ALL(R.string.all), READING(R.
     if (seriesOptions) ReaderSettingsDialog(strings[R.string.series_settings, book.series], preferences.seriesSettings[book.series]?.applyTo(preferences.reader) ?: preferences.reader,
         { seriesOptions = false }, { settings -> model.updatePreferences { it.copy(seriesSettings = it.seriesSettings + (book.series to ReaderOverrides.from(settings))) } },
         { model.updatePreferences { it.copy(seriesSettings = it.seriesSettings - book.series) } })
+    if (seriesMenu) ChoiceDialog(strings[R.string.series], books.map { it.series }.filter { it.isNotBlank() }.distinct().sortedWith(NaturalOrder), strings[R.string.unsorted], { seriesMenu = false }) { series = it }
+    if (languageMenu) {
+        val choices = (listOf("", "en", "ja", "fr", "de", "es", "it", "pt", "ro", "ko", "zh-hans", "zh-hant") + books.map { it.editionLanguage }).distinct()
+        val labels = choices.associateBy { languageLabel(it, strings) }
+        ChoiceDialog(strings[R.string.language], labels.keys.toList(), strings[R.string.language_unspecified], { languageMenu = false }) { language = labels.getValue(it); languageOverride = language }
+    }
+    if (editionsMenu) LanguageEditionsDialog(book, editions, model, { editionsMenu = false }, { edition -> dismiss(); model.open(edition.id) })
 }

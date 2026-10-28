@@ -21,6 +21,7 @@ class PanelgroveApplication : Application() {
     val preferences by lazy { PreferencesStore(this) }
     val sources by lazy { SourceAccess(this) }
     val engine by lazy { DocumentEngine(this, sources) }
+    val pageExports by lazy { dev.soto.panelgrove.storage.PageExportStore(this, engine) }
     val library by lazy { LibraryRepository(this, database, preferences, sources, engine) }
     override fun onCreate() {
         super.onCreate()
@@ -29,6 +30,7 @@ class PanelgroveApplication : Application() {
             directory.listFiles().orEmpty().filter { it.isFile && it.name.endsWith(".part") }.forEach { it.delete() }
         }
         File(cacheDir, "copy-imports").listFiles().orEmpty().filter { it.isFile }.forEach { it.delete() }
+        pageExports.cleanExpired()
         applicationScope.launch(Dispatchers.IO) {
             runCatching { library.recoverRestore() }.onFailure {
                 FailureMessages.recoverable(it, strings[R.string.backup_preferences_recovery_will_be_retried_on_next_launch])

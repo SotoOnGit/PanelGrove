@@ -2,6 +2,8 @@
 
 This summary covers **0.1.6**, version code **7**, package `dev.soto.panelgrove`. The [first public prerelease](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.1.6) was published on **2026-10-27**. Physical-phone checks, earlier local-preview emulator results, and remote CI/release results are recorded separately below.
 
+Development work on **2026-10-28** adds [language editions and page export](EDITIONS_EXPORT_VALIDATION.md). That record covers the new source/build/emulator checks; these features are not part of the public 0.1.6 validation below.
+
 ## Physical phone — 2026-10-27
 
 **Xiaomi M2012K11AG (alioth), Android 13 / API 33, ARM64, 4096-byte runtime memory pages.** Panelgrove was absent before testing. Debug/test APKs were built from commit `60f6391b96a8b8f648c3ac8c510484a20c10c3e2`; app/core sources match the public release tag. The debug installation was then replaced with the unchanged published signed APK, whose hash and certificate are recorded below.

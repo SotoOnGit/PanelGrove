@@ -211,6 +211,18 @@ class DocumentEngine(private val context: Context, val sources: SourceAccess) {
             bitmap
         }
     }
+    /** Copy the full source image; PDFs render at 2x points within the decoder's size limits. */
+    suspend fun exportPage(session: DocumentSession, page: Int, destination: File) = withContext(Dispatchers.IO) {
+        lock.withLock {
+            require(page in session.index.pages.indices) { strings[R.string.this_page_is_no_longer_in_the_book] }
+            val ref = session.index.pages[page]
+            val source = if (session.book.format == BookFormat.PDF) {
+                val scale = minOf(2.0, 2048.0 / ref.width.coerceAtLeast(1), 3072.0 / ref.height.coerceAtLeast(1))
+                session.pdf(page, (ref.width * scale).toInt().coerceAtLeast(1), (ref.height * scale).toInt().coerceAtLeast(1), PageRegion())
+            } else session.pageFile(page)
+            source.inputStream().use { input -> destination.outputStream().use { copyBounded(input, it, ArchiveRules.MAX_PAGE_BYTES) } }
+        }
+    }
     @Suppress("DEPRECATION")
     private fun decode(file: File, width: Int, height: Int, region: PageRegion): Bitmap {
         val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }

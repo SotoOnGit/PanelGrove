@@ -174,6 +174,7 @@ class LibraryRepository(private val context: Context, private val database: Libr
                         favorite = current?.favorite ?: false, collections = current?.collections ?: emptyList(),
                         status = current?.status ?: ReadingStatus.UNREAD, settings = current?.settings ?: ReaderOverrides(),
                         customCover = current?.customCover,
+                        language = current?.language,
                         addedAt = current?.addedAt ?: shell.addedAt, lastOpenedAt = current?.lastOpenedAt ?: 0,
                     ).also {
                         currentCoroutineContext().ensureActive()

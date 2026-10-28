@@ -101,6 +101,8 @@ val PanelgroveJson = Json { ignoreUnknownKeys = true; encodeDefaults = true; exp
     val copyRootUri: String? = null,
     val copyRevision: String? = null,
     val customCover: String? = null,
+    // Null follows document metadata; an empty string explicitly means unspecified.
+    val language: String? = null,
 )
 
 @Serializable data class Bookmark(
@@ -195,6 +197,7 @@ fun pageGroups(pages: List<PageRef>, spreads: Boolean): List<List<Int>> {
 
 fun nextUnread(current: Book, books: List<Book>): Book? = books.filter {
     current.series.isNotBlank() && it.id != current.id && it.series == current.series && it.status == ReadingStatus.UNREAD &&
+        it.editionLanguage == current.editionLanguage &&
         (current.metadata.kind == null || it.metadata.kind == null || it.metadata.kind == current.metadata.kind) &&
         NaturalOrder.compare(it.number, current.number) > 0
 }.minWithOrNull { a, b -> NaturalOrder.compare(a.number, b.number) }

@@ -46,6 +46,28 @@ In a book, open **Reading settings → Display adjustments**. The current-page p
 
 Display adjustments are also available in default and series reading settings. Book overrides take precedence, followed by series settings and then defaults. Contrast and gamma settings are included in JSON backups. **Custom cover images are local to this installation and are not included in JSON backups.** Restoring on the same installation keeps existing local covers; choose them again after moving to a fresh installation.
 
+## Language editions (development build)
+
+This addition is pending release and is not included in public 0.1.6.
+
+Import each edition separately, in any supported format. In **Book details**, give editions the same **Series** and **Vol/ch** number. **Choose existing series** helps match translated titles to an existing series. Select a language with **Choose language**, or enter a language code such as `en`, `ja`, or `zh-Hant`. Leave the field blank for unspecified, or choose **Use document language** to follow `ComicInfo.xml` or translation-manifest metadata. Choose **Save** to retain the assignment.
+
+On the shelf, editions of the same volume/chapter appear as one stacked-cover item in both grid and list views. It uses the most recently opened edition's cover and shows a version-count badge. Each volume/chapter has its own item; a whole series is not collapsed into one stack. Tap a stack to open **Choose version**, with a cover thumbnail, language, reading status, progress bar and saved-page percentage for each edition. The **⋮** button beside an edition opens its Book details.
+
+Individual books, Continue reading and History show language labels. **Library options → Filter by language** narrows each stack to matching editions, including unspecified; a single matching edition appears as an ordinary book and opens directly. Other library filters work the same way. **Language editions** in Book details or **Reader actions (⋮)** also switches between editions. Unnumbered books remain separate on the shelf; enter a volume/chapter number to link them as editions. **Continue reading** resumes its displayed edition directly.
+
+Every edition retains its own source, reading position, bookmarks, history, favorites and book reading settings. Switching editions resumes that edition's saved place. **Read next** stays in the same language; a regional/script tag such as `zh-Hant` is distinct from `zh-Hans`, and unspecified does not guess a language. Series reading overrides still apply across the shared series. Language assignments survive rescans, relinking and JSON backups/restores.
+
+## Page export (development build)
+
+This addition is pending release and is not included in public 0.1.6.
+
+In the reader, open **Reader actions (⋮) → Export page**. The page field starts at the current page; enter another page number if needed, including either individual page in a spread. **Save image** opens Android's document picker to choose a location. **Share page** opens Android's share sheet. Cancelling either control returns to reading without changing your place.
+
+Archive and folder pages retain their original PNG, JPEG or WebP bytes and dimensions. PDF pages export as full-page PNGs, rendered at twice their dimensions in points, reduced proportionally if needed to fit 2048 × 3072 pixels. Exported images exclude zoom/cropping, spread composition and display adjustments. Filenames include the book title, language when known, and page number. Export never modifies the source book or marks it read.
+
+Sharing grants the receiving app temporary read access to an export snapshot. These snapshots are kept in app cache and expire during a later app startup after 24 hours. Save the image to retain a lasting copy. A staged save survives activity recreation; if Android has removed its cache, retry the export.
+
 ## Save optional copies
 
 Enable **Settings → Files & storage → Copy imported files** and choose a writable folder. Cancelling the folder picker leaves copying disabled. Temporary imports and **Make a managed copy** also ask for a destination when needed.

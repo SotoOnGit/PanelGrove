@@ -2,6 +2,9 @@ package dev.soto.panelgrove.ui
 
 import dev.soto.panelgrove.R
 import android.content.pm.ActivityInfo
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import android.view.WindowManager
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
@@ -43,6 +46,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.soto.panelgrove.MainActivity
 import dev.soto.panelgrove.core.*
 import dev.soto.panelgrove.engine.DocumentSession
+import dev.soto.panelgrove.storage.ExportedPage
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
@@ -64,6 +68,30 @@ import kotlinx.coroutines.launch
     var chrome by remember { mutableStateOf(true) }
     var options by rememberSaveable(bookId) { mutableStateOf(false) }
     var contents by remember { mutableStateOf(false) }
+    var actions by remember { mutableStateOf(false) }
+    var editionsMenu by rememberSaveable(bookId) { mutableStateOf(false) }
+    var exportMenu by rememberSaveable(bookId) { mutableStateOf(false) }
+    val preparingExport by model.preparingExport.collectAsStateWithLifecycle()
+    val pendingExport by model.pendingExport.collectAsStateWithLifecycle()
+    val editions = book?.let { languageEditions(it, books) }.orEmpty()
+    val exportLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        model.exportResult(if (result.resultCode == Activity.RESULT_OK) result.data?.data else null)
+    }
+    LaunchedEffect(pendingExport) {
+        pendingExport?.let { payload ->
+            if (!model.exportDispatched) {
+                try {
+                    val exported = PanelgroveJson.decodeFromString<ExportedPage>(payload)
+                    val intent = model.app.pageExports.intent(exported)
+                    model.exportDispatched()
+                    exportLauncher.launch(intent)
+                } catch (error: Exception) {
+                    model.exportResult(null)
+                    model.message.value = dev.soto.panelgrove.FailureMessages.user(error, strings[R.string.page_export_failed])
+                }
+            }
+        }
+    }
     val activity = LocalActivity.current as MainActivity
     val lifecycle = LocalLifecycleOwner.current
     fun close() { model.close(); leave() }
@@ -127,8 +155,21 @@ import kotlinx.coroutines.launch
                                 if (marked) strings[R.string.remove_bookmark] else strings[R.string.bookmark_page], tint = if (marked) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onSurface)
                         }
                         IconButton({ options = true }) { Icon(Icons.Default.Tune, strings[R.string.reading_settings]) }
+                        Box {
+                            IconButton({ actions = true }) { Icon(Icons.Default.MoreVert, strings[R.string.reader_actions]) }
+                            DropdownMenu(actions, { actions = false }) {
+                                DropdownMenuItem(text = { Text(strings[R.string.language_editions]) }, enabled = editions.size > 1,
+                                    onClick = { actions = false; editionsMenu = true })
+                                DropdownMenuItem(text = { Text(strings[R.string.export_page]) }, enabled = s != null && !preparingExport && pendingExport == null,
+                                    onClick = { actions = false; exportMenu = true })
+                            }
+                        }
                     }
                     if (s != null && error != null) Text(error!!, Modifier.padding(horizontal = 16.dp, vertical = 4.dp), style = MaterialTheme.typography.bodySmall)
+                    if (preparingExport) {
+                        Text(strings[R.string.preparing_page_export], Modifier.padding(horizontal = 16.dp), style = MaterialTheme.typography.bodySmall)
+                        LinearProgressIndicator(Modifier.fillMaxWidth())
+                    }
                 }
             }
             if (s != null) Surface(Modifier.align(Alignment.BottomCenter).fillMaxWidth(), color = MaterialTheme.colorScheme.surfaceContainer,
@@ -169,6 +210,10 @@ import kotlinx.coroutines.launch
         { library.change(book) { it.copy(settings = ReaderOverrides()) } },
         preview = { draft -> session?.let { DisplayPagePreview(it, current, model, draft) } })
     if (contents && session != null) ContentsSheet(session!!, current, bookmarks.filter { it.bookId == bookId }, model, library) { contents = false }
+    if (exportMenu && session != null) PageExportDialog(current, session!!.index.pages.size, { exportMenu = false }, model::prepareExport)
+    if (editionsMenu && book != null) LanguageEditionsDialog(book, editions, library, { editionsMenu = false }, { edition ->
+        if (edition.id != book.id) { model.close(); library.open(edition.id) }
+    })
     if (end && book != null) {
         LaunchedEffect(book.id) { model.finish() }
         FinishBookScreen(book, nextUnread(book, books), library,

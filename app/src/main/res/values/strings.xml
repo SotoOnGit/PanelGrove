@@ -118,7 +118,6 @@
 
     <string name="clear_reading_history">Clear reading history?</string>
 
-    <string name="clear_series_and_collection_filters">Clear series and collection filters</string>
 
     <string name="close">Close</string>
 
@@ -636,5 +635,42 @@
     <string name="reset_display_adjustments">Reset display adjustments</string>
     <string name="display_preview">Page appearance preview</string>
     <string name="preview_unavailable">Preview unavailable</string>
+    <string name="language">Language</string>
+    <string name="language_code">Language code</string>
+    <string name="language_code_examples" translatable="false">en, ja, zh-Hant</string>
+    <string name="language_unspecified">Language unspecified</string>
+    <string name="choose_language">Choose language</string>
+    <string name="use_document_language">Use document language</string>
+    <string name="choose_existing_series">Choose existing series</string>
+    <string name="shared_series_language_help">Use the same series and volume/chapter number to link editions. Language codes include en (English) and ja (Japanese). Leave blank for unspecified.</string>
+    <string name="language_editions">Language editions</string>
+    <string name="selected_edition">Current edition</string>
+    <string name="editions_keep_separate_progress">Each edition opens at its own saved place and keeps its own bookmarks.</string>
+    <string name="choose_version">Choose version</string>
+    <plurals name="choose_group_version">
+        <item quantity="one">%1$s: choose from %2$d version</item>
+        <item quantity="other">%1$s: choose from %2$d versions</item>
+    </plurals>
+    <string name="last_read_edition">Last read</string>
+    <string name="edition_file">%1$s · %2$s</string>
+    <string name="edition_reading_progress">%1$d%% · Page %2$d of %3$d</string>
+    <string name="volume_chapter_number">Vol/ch %1$s</string>
+    <plurals name="edition_version_count">
+        <item quantity="one">%1$d version</item>
+        <item quantity="other">%1$d versions</item>
+    </plurals>
+    <string name="filter_by_language">Filter by language</string>
+    <string name="all_languages">All languages</string>
+    <string name="clear_library_filters">Clear library filters</string>
+    <string name="reader_actions">Reader actions</string>
+    <string name="export_page">Export page</string>
+    <string name="page_to_export">Page to export</string>
+    <string name="page_export_range">Enter a page from 1 to %1$d.</string>
+    <string name="page_export_description">Save or share one full page. Images keep their original quality; PDF pages are rendered as PNG. Zoom, spreads and display adjustments are excluded.</string>
+    <string name="save_image">Save image</string>
+    <string name="share_page">Share page</string>
+    <string name="preparing_page_export">Preparing page image…</string>
+    <string name="page_saved">Page image saved.</string>
+    <string name="page_export_failed">The page image could not be exported. Check file access and free storage, then try again.</string>
 </resources>
 

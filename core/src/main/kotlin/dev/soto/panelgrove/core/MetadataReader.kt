@@ -24,6 +24,7 @@ object MetadataReader {
             metadata = t.copy(
                 title = t.title ?: metadata.title, series = t.series ?: metadata.series,
                 number = t.number ?: metadata.number, direction = t.direction ?: metadata.direction,
+                language = t.language ?: metadata.language,
                 coverIndex = metadata.coverIndex,
             )
             pages = parsed.second

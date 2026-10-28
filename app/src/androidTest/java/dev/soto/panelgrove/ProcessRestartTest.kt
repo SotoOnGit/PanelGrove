@@ -40,7 +40,7 @@ class ProcessRestartTest {
         app.library.change(book.id) { it.copy(settings = ReaderOverrides(contrast = 1.2f, gamma = 1.4f)) }
         app.library.dao.deleteBookmarks(book.id)
         lateinit var model: ReaderViewModel
-        instrumentation.runOnMainSync { model = ReaderViewModel(app); model.open(book.id) }
+        instrumentation.runOnMainSync { model = ReaderViewModel(app, androidx.lifecycle.SavedStateHandle()); model.open(book.id) }
         await { model.session.value != null }
         instrumentation.runOnMainSync { model.move(2, .375f); model.bookmark(); model.finish() }
         await { app.library.book(book.id)?.let { it.position == ReadingPosition("test/3", 2, .375f) && it.status == ReadingStatus.READ } == true && app.library.dao.bookmarks().any { it.bookId == book.id } }
@@ -94,7 +94,7 @@ class ProcessRestartTest {
             assertFalse(File(it, "hardening-interrupted.part").exists())
         }
         lateinit var model: ReaderViewModel
-        instrumentation.runOnMainSync { model = ReaderViewModel(app); model.open(id) }
+        instrumentation.runOnMainSync { model = ReaderViewModel(app, androidx.lifecycle.SavedStateHandle()); model.open(id) }
         await { model.session.value != null }
         assertEquals(2, model.page.value); assertEquals(.375f, model.offset.value, .001f)
         assertEquals("test/3", app.library.book(id)!!.position!!.pageId)

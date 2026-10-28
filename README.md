@@ -74,7 +74,7 @@ All **66 applicable automated cases** have passing phone results across separate
 
 ## Planned for 1.0
 
-**CB7/7Z support** is implemented in the development build for the next release. The remaining feature priorities, in order, are **custom covers**, **contrast and gamma controls**, **language editions grouped under the same series**, **page export**, and **local reading statistics**. See the [roadmap](docs/ROADMAP.md) for scope and deferred features.
+Development builds now include **CB7/7Z support**, **custom covers**, **contrast and gamma controls**, **language editions grouped under the same series**, and **page export**. These additions are pending release and are absent from public 0.1.6. The next priority is **local reading statistics**, whose initial measurements still need defining. See the [roadmap](docs/ROADMAP.md), [usage guide](docs/USAGE.md#language-editions-development-build), and [edition/export validation](docs/EDITIONS_EXPORT_VALIDATION.md).
 
 ## Development and feedback
 

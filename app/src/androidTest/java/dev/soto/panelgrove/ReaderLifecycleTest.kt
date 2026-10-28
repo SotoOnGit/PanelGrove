@@ -28,7 +28,7 @@ class ReaderLifecycleTest {
         suspend fun await(condition: suspend () -> Boolean) = withTimeout(20_000) { while (!condition()) delay(10) }
         val first = book("first"); val second = book("second")
         lateinit var reader: ReaderViewModel
-        instrumentation.runOnMainSync { reader = ReaderViewModel(app); reader.open(first.id) }
+        instrumentation.runOnMainSync { reader = ReaderViewModel(app, androidx.lifecycle.SavedStateHandle()); reader.open(first.id) }
         await { reader.session.value?.book?.id == first.id }
         instrumentation.runOnMainSync { reader.move(2, .45f); reader.bookmark(); reader.finish(); reader.open(second.id) }
         await { reader.session.value?.book?.id == second.id && reader.loading.value == null }

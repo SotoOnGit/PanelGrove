@@ -85,31 +85,3 @@ Debug builds show diagnostic details. Release builds log technical failures, kee
 On Windows, `scripts/build-preview.ps1` builds and checks a signed, minified local preview in ignored `dist/`. It keeps its generated validation signing files in ignored `local-validation/`; these are not public-release credentials.
 
 Use `-RunAndroidTests` to test all connected, unlocked devices. `-FullKotlinRebuild` disables incremental Kotlin compilation when local compiler state needs rebuilding. Neither option is required for a normal source build.
-
-## Release signing
-
-The first signed public prerelease, [v0.1.6](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.1.6), was published on **2026-10-27** from commit `8d28a4716ca1de8be15cb10027b8021251aa6745`. Its [release workflow](https://github.com/SotoOnGit/PanelGrove/actions/runs/40491207093) completed successfully. Keep using this release's signing identity for future public updates; the generated local-preview key is separate.
-
-Set the following environment variables before running `./gradlew :app:assembleRelease`:
-
-| Variable | Value |
-| --- | --- |
-| `PANELGROVE_KEYSTORE` | Absolute path to the release keystore |
-| `PANELGROVE_STORE_PASSWORD` | Keystore password |
-| `PANELGROVE_KEY_ALIAS` | Signing-key alias |
-| `PANELGROVE_KEY_PASSWORD` | Signing-key password |
-
-Without signing configuration, release APKs are unsigned. Keep the release key and a secure backup outside source control. Use the same signing identity for future public updates.
-
-The GitHub release workflow uses repository Actions secrets named `PANELGROVE_KEYSTORE_BASE64`, `PANELGROVE_STORE_PASSWORD`, `PANELGROVE_KEY_ALIAS`, and `PANELGROVE_KEY_PASSWORD`. A pushed `v*` tag triggers core tests, release lint, a signed APK build, signature verification, ELF/ZIP alignment checks, and checksum generation. It creates a **draft** release with the APK, `SHA256SUMS`, and `SIGNING-CERTIFICATE.txt`.
-
-### Publishing an update
-
-1. Update `versionName` and increase `versionCode` in `app/build.gradle.kts`. The initial public release uses `0.1.6` / `7`.
-2. Commit and push the changes, then check the ordinary CI results.
-3. Create and push a new `v<versionName>` tag at the intended commit. Use a new tag for each version.
-4. Wait for the signed release workflow and review its draft, APK, checksum, and signing-certificate information. Confirm the tag matches the app's built version and the certificate matches the previous public release.
-5. Test the draft APK on a physical device, including installation over the previous public version and retention of reading data. Keep a backup before testing.
-6. Describe the changes and known limits, mark preview builds as **prereleases**, and publish the reviewed draft.
-
-The ordinary CI workflow builds and checks debug APKs and runs Android tests on API 26 and 35. The [CI run verified on 2026-10-27](https://github.com/SotoOnGit/PanelGrove/actions/runs/40413500147) completed successfully on its second attempt, with 66 passing Android cases and five deliberate skips on each API. Remote results, published-package details, and the separate local-preview checks are recorded in the [validation summary](VALIDATION.md).

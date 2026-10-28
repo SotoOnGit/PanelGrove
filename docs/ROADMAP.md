@@ -1,6 +1,8 @@
 # Panelgrove roadmap
 
-Updated **2026-10-28**. The current public prerelease is **0.1.6**. The existing offline reader is the foundation for 1.0; the following additions are not yet available in that prerelease.
+Updated **2026-10-29**. The current public prerelease is **0.1.6**. The next release candidate is **0.9**, version code **8**; it is being prepared for publication. The existing offline reader is the foundation for 1.0; the following additions are not yet available in the public prerelease.
+
+The [0.9 release notes](releases/0.9.md) describe the candidate. Statistics are the remaining planned feature for 1.0; release validation also includes testing the signed APK as an update over the previous public release.
 
 ## Priorities for 1.0
 

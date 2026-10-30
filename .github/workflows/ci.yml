@@ -30,6 +30,7 @@ jobs:
   android-tests:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         api: [26, 35]
     steps:
@@ -54,9 +55,12 @@ jobs:
           arch: x86_64
           profile: pixel_2
           disable-animations: true
-          script: bash gradlew :app:connectedDebugAndroidTest --console=plain
+          script: bash scripts/run-android-tests.sh
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: android-tests-${{ matrix.api }}
-          path: app/build/reports/androidTests/
+          path: |
+            app/build/reports/androidTests/
+            app/build/outputs/androidTest-results/
+            app/build/outputs/android-test-diagnostics/

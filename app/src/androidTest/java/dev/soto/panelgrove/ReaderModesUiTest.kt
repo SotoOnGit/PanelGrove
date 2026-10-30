@@ -73,7 +73,16 @@ class ReaderModesUiTest {
             position != null && position.offset > .05f && System.nanoTime() - unchangedSince >= 300_000_000L
         }
         val savedPosition = checkNotNull(before)
+        fun visibleOffset(): Float {
+            val bounds = page(savedPosition.index + 1).getUnclippedBoundsInRoot()
+            val viewport = compose.onNodeWithTag("reader-viewport").getUnclippedBoundsInRoot()
+            return (viewport.top.value - bounds.top.value) / (bounds.bottom.value - bounds.top.value)
+        }
+        assertEquals(savedPosition.offset, visibleOffset(), .04f)
         compose.activityRule.scenario.recreate()
+        compose.waitUntil(20_000) {
+            page(savedPosition.index + 1).isDisplayed() && kotlin.math.abs(visibleOffset() - savedPosition.offset) < .04f
+        }
         compose.waitUntil(20_000) {
             val position = runBlocking { app.library.book(book.id)?.position }
             position != null && position.pageId == savedPosition.pageId && kotlin.math.abs(position.offset - savedPosition.offset) < .04f

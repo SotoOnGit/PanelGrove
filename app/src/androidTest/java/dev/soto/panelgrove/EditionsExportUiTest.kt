@@ -114,7 +114,9 @@ class EditionsExportUiTest {
             }
         }
         val owner = object : ActivityResultRegistryOwner { override val activityResultRegistry = registry }
-        compose.activity.setContent { CompositionLocalProvider(LocalActivityResultRegistryOwner provides owner) { PanelgroveApp(libraryModel) } }
+        compose.runOnIdle {
+            compose.activity.setContent { CompositionLocalProvider(LocalActivityResultRegistryOwner provides owner) { PanelgroveApp(libraryModel) } }
+        }
         try {
             open(book)
             exportDialog()
@@ -200,16 +202,18 @@ class EditionsExportUiTest {
         val english = book("en", 1)
         val japanese = book("en", 2)
         var dismissed = false
-        compose.activity.setContent {
-            val books by app.library.books.collectAsState(initial = emptyList())
-            PanelgroveTheme(AppTheme.DARK) { books.find { it.id == japanese.id }?.let { BookDetails(it, libraryModel, { dismissed = true }, {}) } }
+        compose.runOnIdle {
+            compose.activity.setContent {
+                val books by app.library.books.collectAsState(initial = emptyList())
+                PanelgroveTheme(AppTheme.DARK) { books.find { it.id == japanese.id }?.let { BookDetails(it, libraryModel, { dismissed = true }, {}) } }
+            }
         }
         compose.waitUntil(10_000) { compose.onAllNodesWithText("Language code").fetchSemanticsNodes().isNotEmpty() }
         compose.onNodeWithText("Language code").performScrollTo().performTextReplacement("ja")
         compose.onNodeWithText("Save").performClick()
         compose.waitUntil(10_000) { dismissed && runBlocking { app.library.book(japanese.id)?.editionLanguage == "ja" } }
         assertEquals(2, runBlocking { app.library.book(japanese.id)!!.position!!.index })
-        compose.activity.setContent { PanelgroveApp(libraryModel) }
+        compose.runOnIdle { compose.activity.setContent { PanelgroveApp(libraryModel) } }
         compose.onNodeWithContentDescription("Search your shelf").performTextInput(group)
         compose.onNodeWithContentDescription("Library options").performClick()
         compose.onNodeWithText("Filter by language").performClick()

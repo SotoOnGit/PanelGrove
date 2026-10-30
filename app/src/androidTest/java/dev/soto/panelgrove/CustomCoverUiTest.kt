@@ -56,12 +56,14 @@ class CustomCoverUiTest {
         }
         val owner = object : ActivityResultRegistryOwner { override val activityResultRegistry = registry }
         try {
-            compose.activity.setContent {
-                val books by app.library.books.collectAsState(initial = emptyList())
-                CompositionLocalProvider(LocalActivityResultRegistryOwner provides owner) {
-                    PanelgroveTheme(AppTheme.DARK) {
-                        books.find { it.id == book.id }?.let {
-                            BookDetails(it, ViewModelProvider(compose.activity)[LibraryViewModel::class.java], {}, {})
+            compose.runOnIdle {
+                compose.activity.setContent {
+                    val books by app.library.books.collectAsState(initial = emptyList())
+                    CompositionLocalProvider(LocalActivityResultRegistryOwner provides owner) {
+                        PanelgroveTheme(AppTheme.DARK) {
+                            books.find { it.id == book.id }?.let {
+                                BookDetails(it, ViewModelProvider(compose.activity)[LibraryViewModel::class.java], {}, {})
+                            }
                         }
                     }
                 }

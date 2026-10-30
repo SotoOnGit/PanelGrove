@@ -356,7 +356,12 @@ import kotlinx.coroutines.delay
     }
     LaunchedEffect(list, session) {
         snapshotFlow { list.layoutInfo.visibleItemsInfo.firstOrNull() }.collect { first ->
-            if (first != null && !restored) { restored = true; list.scrollToItem(initial, (initialOffset * first.size).toInt()) }
+            if (first != null && !restored) {
+                // Layout observation can resume during measure. Request the position for
+                // the next measure instead of forcing a nested measure with scrollToItem.
+                list.requestScrollToItem(initial, (initialOffset * first.size).toInt())
+                restored = true
+            }
         }
     }
     LaunchedEffect(list, restored) {
@@ -365,7 +370,7 @@ import kotlinx.coroutines.delay
             list.firstVisibleItemIndex to (list.firstVisibleItemScrollOffset.toFloat() / (first?.size ?: 1).coerceAtLeast(1))
         }.distinctUntilChanged().collect { (page, fraction) -> model.move(page.coerceAtMost(session.index.pages.lastIndex), fraction) }
     }
-    LaunchedEffect(current) { if (restored && !list.isScrollInProgress && current != list.firstVisibleItemIndex) list.scrollToItem(current) }
+    LaunchedEffect(current) { if (restored && !list.isScrollInProgress && current != list.firstVisibleItemIndex) list.requestScrollToItem(current) }
     ReaderViewport(listOf(session, settings.mode), tap = { toggle() }) { zoomed ->
     BoxWithConstraints(Modifier.fillMaxSize()) {
         val width = maxWidth

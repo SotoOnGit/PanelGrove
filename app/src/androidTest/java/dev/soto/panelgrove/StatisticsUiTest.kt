@@ -108,9 +108,11 @@ class StatisticsUiTest {
         snapshot("statistics-week-light")
         val libraryModel = model
         val density = app.resources.displayMetrics.density
-        compose.activity.setContent {
-            CompositionLocalProvider(LocalDensity provides Density(density, 1.5f)) {
-                PanelgroveApp(libraryModel)
+        compose.runOnIdle {
+            compose.activity.setContent {
+                CompositionLocalProvider(LocalDensity provides Density(density, 1.5f)) {
+                    PanelgroveApp(libraryModel)
+                }
             }
         }
         compose.onNodeWithContentDescription("Statistics").performClick()

@@ -31,6 +31,7 @@ class LibraryViewModel(application: Application, private val saved: SavedStateHa
     val sources = library.roots.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     val bookmarks = library.bookmarks.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     val history = library.history.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    val statistics = library.statistics.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ReadingStatistics())
     val preferences = app.preferences.flow.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AppPreferences())
     val work = WorkManager.getInstance(app).getWorkInfosByTagFlow("library").stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     private val sessionStartedAt = System.currentTimeMillis()

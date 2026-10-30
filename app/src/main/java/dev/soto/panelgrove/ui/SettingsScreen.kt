@@ -71,6 +71,20 @@ import dev.soto.panelgrove.storage.ImportWorker
         }
         item {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                SectionLabel(strings[R.string.statistics])
+                Text(strings[R.string.statistics_idle_explanation], style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(strings[R.string.statistics_idle_timeout])
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    listOf(1, 3, 5, 10, 30).forEach { minutes ->
+                        FilterChip(preferences.statisticsIdleMinutes == minutes,
+                            { model.updatePreferences { it.copy(statisticsIdleMinutes = minutes) } },
+                            { Text(strings[R.string.statistics_minutes, minutes]) })
+                    }
+                }
+            }
+        }
+        item {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 SectionLabel(strings[R.string.backup_restore])
                 Text(strings[R.string.saves_progress_bookmarks_collections_and_settings_manga_files_are], color = MaterialTheme.colorScheme.onSurfaceVariant)
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

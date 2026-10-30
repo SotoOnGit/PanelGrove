@@ -23,6 +23,63 @@ class ReaderViewModel(application: Application, private val saved: SavedStateHan
     val loading = MutableStateFlow<String?>(null)
     val end = MutableStateFlow(false)
     val dimensions = MutableStateFlow<Map<String, Pair<Int, Int>>>(emptyMap())
+    val statisticsPaused = MutableStateFlow(false)
+    val statisticsIdle = MutableStateFlow(false)
+    private var readingTracker: ReadingTracker? = null
+    private var statisticsJob: Job? = null
+    private var foreground = false
+    private var blocked = false
+    private var idleMinutes = 5
+    private var shownPages = emptyList<Int>()
+    private val readyPages = mutableSetOf<Int>()
+    private var completionId: String? = null
+    private var completed = false
+
+    fun readingVisibility(resumed: Boolean, covered: Boolean, timeout: Int) {
+        if (foreground == resumed && blocked == covered && idleMinutes == timeout) return
+        foreground = resumed; blocked = covered; idleMinutes = timeout
+        updateStatistics()
+    }
+    fun readingInteraction() { updateStatistics(interaction = true) }
+    fun pauseStatistics() { statisticsPaused.value = !statisticsPaused.value; updateStatistics(interaction = true) }
+    fun visiblePages(indices: List<Int>) {
+        if (shownPages == indices) return
+        shownPages = indices; updateStatistics()
+    }
+    fun pageReady(opened: DocumentSession, index: Int, ready: Boolean) {
+        if (session.value !== opened) return
+        if (ready) readyPages += index else readyPages -= index
+        updateStatistics()
+    }
+    fun checkpointStatistics() { updateStatistics(flush = true) }
+    fun statisticsTick() { updateStatistics() }
+    private fun updateStatistics(interaction: Boolean = false, flush: Boolean = false) {
+        val tracker = readingTracker ?: return
+        val visible = shownPages.filter { it in readyPages }
+        tracker.update(android.os.SystemClock.elapsedRealtime(), System.currentTimeMillis(), visible,
+            foreground && !blocked && !statisticsPaused.value && visible.isNotEmpty(), interaction, idleMinutes)
+        statisticsIdle.value = tracker.isIdle
+        if (flush) {
+            val records = tracker.checkpoint()
+            if (records.isNotEmpty()) {
+                val opened = session.value ?: return
+                val chapters = opened.index.pages.indices.groupBy { tracker.chapters[it] }.filterKeys { it != null }
+                    .map { (chapter, indices) -> chapter!! to indices.map { opened.index.pages[it].id }.toSet() }.toMap()
+                val previous = statisticsJob
+                statisticsJob = app.applicationScope.launch {
+                    previous?.join()
+                    try { app.library.saveReading(records, chapters) }
+                    catch (error: Exception) { if (error is CancellationException) throw error; message.value = strings[R.string.statistics_save_failed] }
+                }
+            }
+        }
+    }
+    fun readAgain() {
+        completed = false; completionId = java.util.UUID.randomUUID().toString()
+        val opened = session.value ?: return
+        app.applicationScope.launch { app.library.change(opened.book.id) { it.copy(status = ReadingStatus.READING) } }
+        move(0)
+    }
     val preparingExport = MutableStateFlow(false)
     val pendingExport = saved.getStateFlow<String?>("pageExport", null)
     val exportDispatched: Boolean get() = saved["pageExportDispatched"] ?: false
@@ -65,6 +122,8 @@ class ReaderViewModel(application: Application, private val saved: SavedStateHan
         if (!force && id == bookId && (session.value != null || job?.isActive == true)) return
         val request = ++generation
         save()
+        readingTracker = null; readyPages.clear(); shownPages = emptyList(); completed = false
+        completionId = java.util.UUID.randomUUID().toString(); statisticsIdle.value = false
         job?.cancel(); session.value?.let(app.engine::release); session.value = null
         id = bookId; end.value = false; message.value = null; dimensions.value = emptyMap()
         job = viewModelScope.launch {
@@ -79,6 +138,9 @@ class ReaderViewModel(application: Application, private val saved: SavedStateHan
                 page.value = position?.index?.coerceIn(opened.index.pages.indices) ?: 0
                 offset.value = position?.offset ?: 0f
                 session.value = opened
+                readingTracker = ReadingTracker(ReadingSubject.from(opened.book), opened.index.pages)
+                shownPages = listOf(page.value)
+                updateStatistics(interaction = true)
                 pending = null
                 opened.index.warnings.forEach { android.util.Log.w("PanelgroveMetadata", it) }
                 message.value = if (dev.soto.panelgrove.BuildConfig.DEBUG) opened.index.warnings.firstOrNull() else null
@@ -92,6 +154,7 @@ class ReaderViewModel(application: Application, private val saved: SavedStateHan
         val opened = session.value ?: return
         if (index >= opened.index.pages.size) { end.value = true; return }
         if (index < 0) return
+        readingInteraction()
         page.value = index; offset.value = fraction.coerceIn(0f, 1f); end.value = false
         persist(opened, index, fraction)
     }
@@ -118,13 +181,19 @@ class ReaderViewModel(application: Application, private val saved: SavedStateHan
     }
     fun finish() {
         val s = session.value ?: return
+        if (completed) return
+        completed = true
+        checkpointStatistics()
+        val previousStatistics = statisticsJob
+        val finishId = completionId ?: java.util.UUID.randomUUID().toString()
         app.applicationScope.launch {
-            try { app.library.change(s.book.id) { it.copy(status = ReadingStatus.READ) } }
+            previousStatistics?.join()
+            try { app.library.finishReading(s.book.id, finishId) }
             catch (error: Exception) { if (error is CancellationException) throw error; message.value = strings[R.string.completion_could_not_be_saved_check_free_storage] }
         }
         end.value = true
     }
-    fun save() { val s = session.value ?: return; persist(s, page.value, offset.value) }
-    fun close() { save(); ++generation; job?.cancel(); job = null; id = null; loading.value = null; session.value?.let(app.engine::release); session.value = null }
-    override fun onCleared() { save(); ++generation; job?.cancel(); session.value?.let(app.engine::release) }
+    fun save() { checkpointStatistics(); val s = session.value ?: return; persist(s, page.value, offset.value) }
+    fun close() { save(); readingTracker = null; readyPages.clear(); ++generation; job?.cancel(); job = null; id = null; loading.value = null; session.value?.let(app.engine::release); session.value = null }
+    override fun onCleared() { close() }
 }

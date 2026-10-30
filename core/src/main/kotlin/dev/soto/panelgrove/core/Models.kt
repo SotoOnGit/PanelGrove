@@ -56,6 +56,7 @@ val PanelgroveJson = Json { ignoreUnknownKeys = true; encodeDefaults = true; exp
     val seriesSettings: Map<String, ReaderOverrides> = emptyMap(),
     val copyFolderUri: String? = null, val copyFolderName: String? = null,
     val trueBlack: Boolean = false,
+    val statisticsIdleMinutes: Int = 5,
 )
 
 @Serializable data class LibrarySource(
@@ -103,6 +104,7 @@ val PanelgroveJson = Json { ignoreUnknownKeys = true; encodeDefaults = true; exp
     val customCover: String? = null,
     // Null follows document metadata; an empty string explicitly means unspecified.
     val language: String? = null,
+    val statisticsId: String = id,
 )
 
 @Serializable data class Bookmark(
@@ -114,10 +116,11 @@ val PanelgroveJson = Json { ignoreUnknownKeys = true; encodeDefaults = true; exp
     val id: String, val bookId: String, val openedAt: Long = System.currentTimeMillis(),
 )
 @Serializable data class LibraryBackup(
-    val version: Int = 1, val exportedAt: Long = System.currentTimeMillis(),
+    val version: Int = 2, val exportedAt: Long = System.currentTimeMillis(),
     val preferences: AppPreferences = AppPreferences(),
     val sources: List<LibrarySource> = emptyList(), val books: List<Book> = emptyList(),
     val bookmarks: List<Bookmark> = emptyList(), val history: List<HistoryEntry> = emptyList(),
+    val statistics: ReadingStatistics = ReadingStatistics(),
 ) {
     /** Only the previous preview's private managed-file scheme is migrated; unsafe paths still fail validation. */
     fun withCurrentLocations(): LibraryBackup = copy(books = books.map { book ->
@@ -127,7 +130,9 @@ val PanelgroveJson = Json { ignoreUnknownKeys = true; encodeDefaults = true; exp
     })
 
     fun validate() {
-        require(version == 1) { "This backup version is not supported." }
+        require(version in 1..2) { "This backup version is not supported." }
+        statistics.validate()
+        require(preferences.statisticsIdleMinutes in 1..30) { "Invalid statistics idle timeout." }
         require(books.size <= 100_000 && bookmarks.size <= 500_000 && sources.size <= 1_000 && history.size <= 500) { "Backup exceeds library limits." }
         require(books.map { it.id }.distinct().size == books.size) { "Backup contains duplicate book IDs." }
         require(books.map { it.uri }.distinct().size == books.size) { "Backup contains duplicate source locations." }
@@ -138,6 +143,7 @@ val PanelgroveJson = Json { ignoreUnknownKeys = true; encodeDefaults = true; exp
         require(bookmarks.all { it.bookId in bookIds } && history.all { it.bookId in bookIds }) { "Backup contains orphaned reading data." }
         require(books.all { it.id.isNotBlank() && it.uri.isNotBlank() && it.pageCount >= 0 }) { "Backup contains an invalid book." }
         val safeId = Regex("[A-Za-z0-9_-]{1,100}")
+        require(books.all { safeId.matches(it.statisticsId) }) { "Invalid statistics book identity." }
         require(books.all { safeId.matches(it.id) } && sources.all { safeId.matches(it.id) }) { "Backup contains an unsafe identifier." }
         require(books.all { it.customCover == null || safeId.matches(it.customCover) }) { "Backup contains an unsafe cover identifier." }
         require(bookmarks.all { safeId.matches(it.id) } && history.all { safeId.matches(it.id) }) { "Backup contains an unsafe reading identifier." }

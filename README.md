@@ -76,7 +76,7 @@ Physical validation of the signed 0.9 update over 0.1.6, edition/export flows wi
 
 ## Planned for 1.0
 
-**Local reading statistics** are the remaining planned feature for 1.0; their initial measurements still need defining. CB7/7Z, custom covers, contrast/gamma, language editions, and page export are included in 0.9. See the [roadmap](docs/ROADMAP.md), [usage guide](docs/USAGE.md#language-editions), and [edition/export validation](docs/EDITIONS_EXPORT_VALIDATION.md).
+Development builds now include **local reading statistics** for 1.0: week/month time graphs and comparisons, chapter breakdowns, pages viewed, completions, streaks, rankings, sessions, language breakdowns, and an activity calendar. Statistics remain on the device and travel with JSON backups. CB7/7Z, custom covers, contrast/gamma, language editions, and page export are included in 0.9. See the [roadmap](docs/ROADMAP.md) and [statistics guide](docs/USAGE.md#reading-statistics-development-build).
 
 ## Development and feedback
 

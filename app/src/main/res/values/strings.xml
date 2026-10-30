@@ -406,7 +406,7 @@
 
     <string name="saved_in_your_folder_organized_by_series">Saved in your folder, organized by series</string>
 
-    <string name="saves_progress_bookmarks_collections_and_settings_manga_files_are">Saves progress, bookmarks, collections and settings. Manga files are not included, and a new device needs permission to access its folders.</string>
+    <string name="saves_progress_bookmarks_collections_and_settings_manga_files_are">Saves progress, bookmarks, collections, reading statistics and settings. Manga files are not included, and a new device needs permission to access its folders.</string>
 
     <string name="saving_in">Saving %1$s in %2$s…</string>
 
@@ -672,5 +672,63 @@
     <string name="preparing_page_export">Preparing page image…</string>
     <string name="page_saved">Page image saved.</string>
     <string name="page_export_failed">The page image could not be exported. Check file access and free storage, then try again.</string>
+    <string name="statistics">Statistics</string>
+    <string name="statistics_week">Week</string>
+    <string name="statistics_month">Month</string>
+    <string name="statistics_previous_period">Previous period</string>
+    <string name="statistics_next_period">Next period</string>
+    <string name="statistics_older_comparison">Compare with an older period</string>
+    <string name="statistics_newer_comparison">Compare with a newer period</string>
+    <string name="statistics_all_languages">All languages</string>
+    <string name="statistics_seconds">%1$d sec</string>
+    <string name="statistics_minutes">%1$d min</string>
+    <string name="statistics_hours_minutes">%1$d h %2$d min</string>
+    <string name="statistics_no_comparison">No reading time in the comparison period</string>
+    <string name="statistics_comparison">%1$s%2$s (%3$s) compared with the earlier period</string>
+    <string name="statistics_compare_with">Compare with %1$s</string>
+    <string name="statistics_comparison_through">Comparing through %1$s on day %2$d of each period</string>
+    <string name="statistics_chart_legend">Solid: selected period · Light: comparison. Tap a day for details.</string>
+    <string name="statistics_daily_maximum">Daily scale: %1$s</string>
+    <string name="statistics_day_bar">%1$s: %2$s reading time; comparison %3$s</string>
+    <string name="statistics_empty_period">No reading recorded in this period yet.</string>
+    <string name="statistics_pages">Pages viewed</string>
+    <string name="statistics_reading_days">Reading days</string>
+    <string name="statistics_volumes">Volumes finished</string>
+    <string name="statistics_chapters">Chapters finished</string>
+    <string name="statistics_editions_rereads">%1$s · %2$s</string>
+    <string name="statistics_page_definition">Pages count after two seconds of viewing, once per edition in this period. Skipped pages do not count. Finishes count from reading; marking a book Read manually does not add a finish.</string>
+    <string name="statistics_streaks">Reading streaks · all time</string>
+    <string name="statistics_current_streak">Current streak</string>
+    <string name="statistics_longest_streak">Longest streak</string>
+    <plurals name="statistics_day_count"><item quantity="one">%d day</item><item quantity="other">%d days</item></plurals>
+    <plurals name="statistics_edition_finishes"><item quantity="one">%d edition finished</item><item quantity="other">%d editions finished</item></plurals>
+    <plurals name="statistics_reread_count"><item quantity="one">%d reread</item><item quantity="other">%d rereads</item></plurals>
+    <plurals name="statistics_page_count"><item quantity="one">%d page viewed</item><item quantity="other">%d pages viewed</item></plurals>
+    <string name="statistics_sessions">Reading sessions</string>
+    <string name="statistics_session_count">Sessions in this period</string>
+    <string name="statistics_average_session">Average session time</string>
+    <string name="statistics_longest_session">Longest session time</string>
+    <string name="statistics_most_read_series">Most-read series</string>
+    <string name="statistics_most_read_books">Most-read volumes / chapters</string>
+    <string name="statistics_no_series">Other books</string>
+    <string name="statistics_languages">Reading by language</string>
+    <string name="statistics_activity_calendar">Activity calendar</string>
+    <string name="statistics_previous_year">Previous calendar year</string>
+    <string name="statistics_next_year">Next calendar year</string>
+    <string name="statistics_calendar_day">%1$s: %2$s reading time</string>
+    <string name="statistics_calendar_hint">Monday at the top, Sunday at the bottom. Stronger color means more reading time. Scroll across the year; tap a day for details.</string>
+    <string name="statistics_tracking_since">Tracking since %1$s</string>
+    <string name="statistics_local_note">Statistics stay on this device and are included in JSON backups. Opening history cannot reconstruct earlier reading time. Removing a book or clearing history keeps its statistics.</string>
+    <string name="statistics_chapter_details">Expand chapter and session details</string>
+    <string name="statistics_unassigned_chapter">Pages without chapter information</string>
+    <string name="statistics_session_detail">%1$s · %2$s · %3$s</string>
+    <string name="statistics_finished_in_period">Finished in this period</string>
+    <string name="statistics_idle_explanation">Time counts while readable pages are visible. Loading, menus, background use and manual pauses are excluded. After inactivity, the timer pauses until you interact again. Brief breaks stay in the same session; breaks at least as long as this timeout start a new session.</string>
+    <string name="statistics_idle_timeout">Pause after no interaction for</string>
+    <string name="statistics_pause_timer">Pause reading timer</string>
+    <string name="statistics_resume_timer">Resume reading timer</string>
+    <string name="statistics_timer_paused">Reading timer paused</string>
+    <string name="statistics_timer_idle">Reading timer paused due to inactivity. Interact to resume.</string>
+    <string name="statistics_save_failed">Reading statistics could not be saved. Check free storage.</string>
 </resources>
 

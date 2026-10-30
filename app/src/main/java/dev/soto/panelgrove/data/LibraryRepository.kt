@@ -14,6 +14,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -32,6 +34,43 @@ class LibraryRepository(private val context: Context, private val database: Libr
     val roots = dao.observeSources().map { rows -> rows.map { it.source() } }
     val bookmarks = dao.observeBookmarks().map { rows -> rows.map { it.bookmark() } }
     val history = dao.observeHistory().map { rows -> rows.map { it.entry() } }
+    val statistics = combine(dao.observeReadingRecords(), dao.observeReadingCompletions(), dao.observeStatisticsStart()) { records, completions, start ->
+        ReadingStatistics(start?.startedAt, records.map { it.record() }, completions.map { it.completion() })
+    }.flowOn(Dispatchers.Default)
+    private suspend fun statisticsSnapshot() = ReadingStatistics(dao.statisticsStart()?.startedAt,
+        dao.readingRecords().map { it.record() }, dao.readingCompletions().map { it.completion() })
+
+    suspend fun saveReading(records: List<ReadingRecord>, chapters: Map<String, Set<String>>) = database.withTransaction {
+        records.forEach { row ->
+            val old = dao.readingRecord(row.id)?.record()
+            val merged = if (old == null) row else mergeStatistics(ReadingStatistics(records = listOf(row)), ReadingStatistics(records = listOf(old))).records.single()
+            dao.save(merged.row())
+        }
+        records.groupBy { it.subject.editionId }.forEach { (editionId, changed) ->
+            val all = dao.readingRecordsForEdition(editionId).map { it.record() }
+            val completions = dao.readingCompletionsForEdition(editionId).map { it.completion() }
+            changed.mapNotNull { it.chapter }.distinct().forEach chapterLoop@ { chapter ->
+                val expected = chapters[chapter].orEmpty()
+                if (expected.isEmpty() || chapter in listOf("frontmatter", "backmatter")) return@chapterLoop
+                val after = completions.filter { it.chapter == chapter }.maxOfOrNull { it.completedAt } ?: 0
+                val viewed = all.filter { it.chapter == chapter }.flatMap { it.pages.entries }.filter { it.value > after }
+                if (viewed.map { it.key }.toSet().containsAll(expected)) {
+                    val finishedAt = viewed.maxOf { it.value }
+                    val date = all.first { row -> row.pages.values.any { it == finishedAt } }.date
+                    val id = UUID.nameUUIDFromBytes("$editionId:$chapter:$finishedAt".toByteArray(Charsets.UTF_8)).toString()
+                    dao.save(ReadingCompletion(id, changed.last().subject, date, finishedAt, chapter).row())
+                }
+            }
+        }
+    }
+
+    suspend fun finishReading(id: String, completionId: String) = database.withTransaction {
+        val book = book(id) ?: return@withTransaction
+        dao.save(book.copy(status = ReadingStatus.READ).row())
+        if (dao.readingCompletion(completionId) != null) return@withTransaction
+        val time = System.currentTimeMillis()
+        dao.save(ReadingCompletion(completionId, ReadingSubject.from(book), java.time.LocalDate.now().toString(), time).row())
+    }
     val coverDirectory = File(context.filesDir, "covers").apply { mkdirs() }
     private val customCovers = CustomCoverStore(context)
     private fun defaultCover(book: Book) = File(coverDirectory, "${book.id}.png")
@@ -175,6 +214,7 @@ class LibraryRepository(private val context: Context, private val database: Libr
                         status = current?.status ?: ReadingStatus.UNREAD, settings = current?.settings ?: ReaderOverrides(),
                         customCover = current?.customCover,
                         language = current?.language,
+                        statisticsId = current?.statisticsId ?: shell.statisticsId,
                         addedAt = current?.addedAt ?: shell.addedAt, lastOpenedAt = current?.lastOpenedAt ?: 0,
                     ).also {
                         currentCoroutineContext().ensureActive()
@@ -315,7 +355,7 @@ class LibraryRepository(private val context: Context, private val database: Libr
     suspend fun exportBackup(uri: Uri) = withContext(Dispatchers.IO) {
         val backup = database.withTransaction { LibraryBackup(preferences = preferences.current(),
             sources = dao.sources().map { it.source() }, books = dao.books().map { it.book().copy(customCover = null) },
-            bookmarks = dao.bookmarks().map { it.bookmark() }, history = dao.history().map { it.entry() }) }
+            bookmarks = dao.bookmarks().map { it.bookmark() }, history = dao.history().map { it.entry() }, statistics = statisticsSnapshot()) }
         val bytes = PanelgroveJson.encodeToString(backup).toByteArray()
         context.contentResolver.openOutputStream(uri, "wt")?.use { it.write(bytes) } ?: error(strings[R.string.cannot_write_the_backup])
     }
@@ -388,12 +428,12 @@ class LibraryRepository(private val context: Context, private val database: Libr
     }
     suspend fun restoreBackup(uri: Uri) = importMutex.withLock { withContext(Dispatchers.IO) {
         val output = java.io.ByteArrayOutputStream()
-        sources.input(uri).use { copyBounded(it, output, 32L * 1024 * 1024) }
+        sources.input(uri).use { copyBounded(it, output, 128L * 1024 * 1024) }
         val backup = PanelgroveJson.decodeFromString<LibraryBackup>(output.toString("UTF-8")).withCurrentLocations(); backup.validate()
         finishPendingRestore()
         database.withTransaction {
             val live = LibraryBackup(sources = dao.sources().map { it.source() }, books = dao.books().map { it.book() },
-                bookmarks = dao.bookmarks().map { it.bookmark() }, history = dao.history().map { it.entry() })
+                bookmarks = dao.bookmarks().map { it.bookmark() }, history = dao.history().map { it.entry() }, statistics = statisticsSnapshot())
             val merged = mergeBackup(backup, live, sources::identity)
             merged.sources.forEach { source ->
                 val accessible = runCatching { TreeAccess(context).children(TreeAccess(context).root(Uri.parse(source.uri))) }.isSuccess
@@ -404,6 +444,9 @@ class LibraryRepository(private val context: Context, private val database: Libr
             }
             merged.bookmarks.forEach { dao.save(it.row()) }
             merged.history.forEach { dao.save(it.row()) }
+            merged.statistics.records.forEach { dao.save(it.row()) }
+            merged.statistics.completions.forEach { dao.save(it.row()) }
+            merged.statistics.trackingSince?.let { dao.save(StatisticsStart(startedAt = it)) }
             dao.trimHistory()
             dao.save(RestoreJournal(preferences = PanelgroveJson.encodeToString(backup.preferences)))
         }

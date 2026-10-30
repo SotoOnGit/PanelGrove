@@ -2,7 +2,7 @@
 
 Updated **2026-10-30**. The current public prerelease is [**0.9**](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.9), version code **8**, published on **2026-10-29**. It includes the first five feature priorities below.
 
-The [0.9 release notes](releases/0.9.md) describe the shipped features. Statistics are the remaining planned feature for 1.0. Outstanding acceptance work, including a signed 0.9 update over 0.1.6, is tracked in the [validation summary](VALIDATION.md).
+The [0.9 release notes](releases/0.9.md) describe the shipped features. Local reading statistics are implemented in development for 1.0. Outstanding acceptance work, including a signed 0.9 update over 0.1.6, is tracked in the [validation summary](VALIDATION.md).
 
 ## Priorities for 1.0
 
@@ -13,7 +13,7 @@ The [0.9 release notes](releases/0.9.md) describe the shipped features. Statisti
 | 3 | Contrast and gamma controls | Preview, adjust, reset and retain display adjustments in the reader. Keep source images unchanged. | Released in 0.9 |
 | 4 | Different languages for the same series | Attribute separate books in any supported format to one shared series, identify their language editions and make those editions easy to select. | Released in 0.9 |
 | 5 | Page export | Save or share a selected page as a full-page image through Android's system controls. Keep the source document unchanged. | Released in 0.9 |
-| 6 | Statistics | Add local reading statistics with clearly defined measurements and retained aggregates. Define the initial measures before implementation. | Planned |
+| 6 | Statistics | Reading time and comparisons, pages viewed, completions, streaks, rankings, sessions, language breakdowns and an activity calendar, retained locally and included in backups. | Implemented in development; pending release |
 
 CB7/7Z implementation scope and checks are recorded in [feature validation](CB7_VALIDATION.md).
 
@@ -33,4 +33,8 @@ Version 0.9 provides **Reader actions → Export page**, with a page-number choi
 
 ### Statistics scope
 
-Suggested initial measures are reading time, pages read and books completed, with a clear definition for each. The current history stores a bounded set of opening events; it cannot reconstruct accurate lifetime reading totals. New statistics should record the needed data going forward and identify any limited historical coverage. All statistics remain local.
+Development builds include weekly/monthly time graphs with older-period comparisons and day → book → chapter → session details; pages viewed; unique volumes/chapters completed, editions and rereads; reading days/current and best streaks; most-read series/books; session count/average/longest duration; language filters and breakdowns; and a yearly activity heatmap. See the [measurement rules](USAGE.md#reading-statistics-development-build).
+
+Statistics use dedicated Room tables and version 2 JSON backups; version 1 backups remain importable. Records are retained after removing a book or clearing opening history. Existing opening history cannot reconstruct past reading time, so tracking starts with the feature. Reading goals and time-remaining estimates are outside this release; goals may be considered in a later gamification update.
+
+See [statistics validation](STATISTICS_VALIDATION.md) for the measured implementation and verification scope.

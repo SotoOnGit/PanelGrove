@@ -52,8 +52,8 @@ import dev.soto.panelgrove.core.*
         val export = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { it?.let { model.backup(it, false) } }
         val restore = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { it?.let { model.backup(it, true) } }
         LaunchedEffect(message) { message?.let { snackbar.showSnackbar(it); model.message.value = null } }
-        val icons = listOf(Icons.Default.LibraryBooks, Icons.Default.History, Icons.Default.LightMode)
-        val labels = listOf(strings[R.string.library], strings[R.string.history], strings[R.string.settings])
+        val icons = listOf(Icons.Default.LibraryBooks, Icons.Default.History, Icons.Default.BarChart, Icons.Default.LightMode)
+        val labels = listOf(strings[R.string.library], strings[R.string.history], strings[R.string.statistics], strings[R.string.settings])
         var clearHistory by remember { mutableStateOf(false) }
         val tasks = work.filter { !it.state.isFinished }
         val failed by model.importFailures.collectAsStateWithLifecycle()
@@ -105,7 +105,8 @@ import dev.soto.panelgrove.core.*
                             0 -> LibraryScreen(books, preferences.grid, model, { details = it },
                                 { pickFiles.launch(arrayOf("*/*")) }, { model.beginRelinkRoot(null); pickFolder.launch(null) })
                             1 -> HistoryScreen(history, books, model, { details = it })
-                            2 -> SettingsScreen(preferences, roots, books, model,
+                            2 -> StatisticsScreen(model)
+                            3 -> SettingsScreen(preferences, roots, books, model,
                                 { export.launch(strings[R.string.backup_filename]) }, { restore.launch(arrayOf("application/json", "application/octet-stream")) },
                                 { id -> model.beginRelinkRoot(id); pickFolder.launch(null) },
                                 { id -> model.beginRelinkBook(id)

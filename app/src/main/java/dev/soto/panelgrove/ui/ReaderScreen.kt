@@ -33,9 +33,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -49,6 +52,7 @@ import dev.soto.panelgrove.engine.DocumentSession
 import dev.soto.panelgrove.storage.ExportedPage
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable fun ReaderScreen(bookId: String, model: ReaderViewModel, library: LibraryViewModel, leave: () -> Unit) {
@@ -73,6 +77,8 @@ import kotlinx.coroutines.launch
     var exportMenu by rememberSaveable(bookId) { mutableStateOf(false) }
     val preparingExport by model.preparingExport.collectAsStateWithLifecycle()
     val pendingExport by model.pendingExport.collectAsStateWithLifecycle()
+    val timerPaused by model.statisticsPaused.collectAsStateWithLifecycle()
+    val timerIdle by model.statisticsIdle.collectAsStateWithLifecycle()
     val editions = book?.let { languageEditions(it, books) }.orEmpty()
     val exportLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         model.exportResult(if (result.resultCode == Activity.RESULT_OK) result.data?.data else null)
@@ -94,14 +100,47 @@ import kotlinx.coroutines.launch
     }
     val activity = LocalActivity.current as MainActivity
     val lifecycle = LocalLifecycleOwner.current
+    val view = LocalView.current
+    var focused by remember(view) { mutableStateOf(view.hasWindowFocus()) }
+    var resumed by remember(lifecycle) { mutableStateOf(lifecycle.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) }
+    val covered = options || contents || actions || editionsMenu || exportMenu || preparingExport || pendingExport != null || end
+    val latestCovered by rememberUpdatedState(covered)
+    val latestTimeout by rememberUpdatedState(preferences.statisticsIdleMinutes)
+    SideEffect { model.readingVisibility(resumed && focused, covered, preferences.statisticsIdleMinutes) }
+    val latestResumed by rememberUpdatedState(resumed)
+    DisposableEffect(view) {
+        val listener = android.view.ViewTreeObserver.OnWindowFocusChangeListener { hasFocus ->
+            focused = hasFocus
+            model.readingVisibility(latestResumed && hasFocus, latestCovered, latestTimeout)
+            if (!hasFocus) model.save()
+        }
+        view.viewTreeObserver.addOnWindowFocusChangeListener(listener)
+        onDispose { if (view.viewTreeObserver.isAlive) view.viewTreeObserver.removeOnWindowFocusChangeListener(listener) }
+    }
+    LaunchedEffect(session) {
+        if (session != null) {
+            var ticks = 0
+            while (true) {
+                delay(1_000); model.statisticsTick()
+                if (++ticks % 15 == 0) model.checkpointStatistics()
+            }
+        }
+    }
     fun close() { model.close(); leave() }
     LaunchedEffect(bookId) { model.open(bookId) }
     LaunchedEffect(book?.uri, session?.book?.uri) {
         if (session != null && book != null && session!!.book.uri != book.uri) model.open(bookId, force = true)
     }
-    DisposableEffect(bookId) { onDispose { model.close() } }
+    DisposableEffect(bookId) { onDispose {
+        if (activity.isChangingConfigurations) { model.readingVisibility(false, true, latestTimeout); model.save() }
+        else model.close()
+    } }
     DisposableEffect(lifecycle) {
-        val observer = LifecycleEventObserver { _, event -> if (event == Lifecycle.Event.ON_STOP) model.save() }
+        val observer = LifecycleEventObserver { _, event ->
+            resumed = lifecycle.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
+            model.readingVisibility(resumed && view.hasWindowFocus(), latestCovered, latestTimeout)
+            if (event == Lifecycle.Event.ON_PAUSE || event == Lifecycle.Event.ON_STOP) model.save()
+        }
         lifecycle.lifecycle.addObserver(observer)
         onDispose { lifecycle.lifecycle.removeObserver(observer) }
     }
@@ -127,7 +166,14 @@ import kotlinx.coroutines.launch
     // Keep hardware navigation current without resetting window flags on every page.
     SideEffect { activity.readerKey = if (settings.volumeKeys) { next -> model.move(model.page.value + if (next) 1 else -1) } else null }
     BackHandler { close() }
-    BoxWithConstraints(Modifier.fillMaxSize().background(Color(settings.background))) {
+    BoxWithConstraints(Modifier.fillMaxSize().background(Color(settings.background)).pointerInput(model) {
+        awaitPointerEventScope {
+            while (true) {
+                val event = awaitPointerEvent(PointerEventPass.Initial)
+                if (event.changes.any { it.pressed }) model.readingInteraction()
+            }
+        }
+    }) {
         val spread = settings.spreads && (maxWidth > maxHeight || maxWidth >= 840.dp)
         val s = session
         if (s != null) {
@@ -155,6 +201,10 @@ import kotlinx.coroutines.launch
                                 if (marked) strings[R.string.remove_bookmark] else strings[R.string.bookmark_page], tint = if (marked) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onSurface)
                         }
                         IconButton({ options = true }) { Icon(Icons.Default.Tune, strings[R.string.reading_settings]) }
+                        IconButton({ model.pauseStatistics() }, enabled = s != null) {
+                            Icon(if (timerPaused) Icons.Default.PlayArrow else Icons.Default.Pause,
+                                strings[if (timerPaused) R.string.statistics_resume_timer else R.string.statistics_pause_timer])
+                        }
                         Box {
                             IconButton({ actions = true }) { Icon(Icons.Default.MoreVert, strings[R.string.reader_actions]) }
                             DropdownMenu(actions, { actions = false }) {
@@ -166,6 +216,8 @@ import kotlinx.coroutines.launch
                         }
                     }
                     if (s != null && error != null) Text(error!!, Modifier.padding(horizontal = 16.dp, vertical = 4.dp), style = MaterialTheme.typography.bodySmall)
+                    if (timerPaused || timerIdle) Text(strings[if (timerPaused) R.string.statistics_timer_paused else R.string.statistics_timer_idle],
+                        Modifier.padding(horizontal = 16.dp, vertical = 4.dp), style = MaterialTheme.typography.bodySmall)
                     if (preparingExport) {
                         Text(strings[R.string.preparing_page_export], Modifier.padding(horizontal = 16.dp), style = MaterialTheme.typography.bodySmall)
                         LinearProgressIndicator(Modifier.fillMaxWidth())
@@ -220,7 +272,7 @@ import kotlinx.coroutines.launch
             close = { model.end.value = false },
             readNext = { next -> model.close(); library.open(next.id) },
             back = { close() },
-            again = { library.change(book) { it.copy(status = ReadingStatus.READING) }; model.move(0); model.end.value = false })
+            again = { model.readAgain(); model.end.value = false })
     }
 }
 
@@ -233,6 +285,7 @@ import kotlinx.coroutines.launch
         dimensions[page.id]?.let { page.copy(width = it.first, height = it.second) } ?: page
     }, spread) }
     val selectedGroup = groups.indexOfFirst { current in it }.coerceAtLeast(0)
+    LaunchedEffect(session, groups, selectedGroup) { model.visiblePages(groups[selectedGroup]) }
     val pager = rememberPagerState(initialPage = selectedGroup, pageCount = { groups.size })
     var aligned by remember(session, groups) { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -292,6 +345,15 @@ import kotlinx.coroutines.launch
     val list = rememberLazyListState(initialFirstVisibleItemIndex = initial)
     val density = LocalDensity.current
     var restored by remember(session) { mutableStateOf(false) }
+    LaunchedEffect(list, session) {
+        snapshotFlow {
+            val layout = list.layoutInfo
+            layout.visibleItemsInfo.filter { item ->
+                val visible = minOf(item.offset + item.size, layout.viewportEndOffset) - maxOf(item.offset, layout.viewportStartOffset)
+                item.index in session.index.pages.indices && visible >= minOf(item.size, layout.viewportEndOffset - layout.viewportStartOffset) / 2
+            }.map { it.index }
+        }.distinctUntilChanged().collect(model::visiblePages)
+    }
     LaunchedEffect(list, session) {
         snapshotFlow { list.layoutInfo.visibleItemsInfo.firstOrNull() }.collect { first ->
             if (first != null && !restored) { restored = true; list.scrollToItem(initial, (initialOffset * first.size).toInt()) }

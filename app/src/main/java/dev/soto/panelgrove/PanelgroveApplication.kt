@@ -16,7 +16,7 @@ class PanelgroveApplication : Application() {
     val database by lazy {
         val directory = getDatabasePath("panelgrove.db").parentFile!!
         check(directory.isDirectory || directory.mkdirs()) { strings[R.string.panelgrove_could_not_create_its_library_storage_check_available] }
-        Room.databaseBuilder(this, LibraryDatabase::class.java, "panelgrove.db").addMigrations(LibraryDatabase.MIGRATION_1_2).build()
+        Room.databaseBuilder(this, LibraryDatabase::class.java, "panelgrove.db").addMigrations(LibraryDatabase.MIGRATION_1_2, LibraryDatabase.MIGRATION_2_3).build()
     }
     val preferences by lazy { PreferencesStore(this) }
     val sources by lazy { SourceAccess(this) }
@@ -32,7 +32,10 @@ class PanelgroveApplication : Application() {
         File(cacheDir, "copy-imports").listFiles().orEmpty().filter { it.isFile }.forEach { it.delete() }
         pageExports.cleanExpired()
         applicationScope.launch(Dispatchers.IO) {
-            runCatching { library.recoverRestore() }.onFailure {
+            runCatching {
+                library.dao.startStatistics(StatisticsStart(startedAt = System.currentTimeMillis()))
+                library.recoverRestore()
+            }.onFailure {
                 FailureMessages.recoverable(it, strings[R.string.backup_preferences_recovery_will_be_retried_on_next_launch])
                 restoreIssue.value = strings[R.string.backup_preferences_still_need_restoring_check_free_storage_then]
             }

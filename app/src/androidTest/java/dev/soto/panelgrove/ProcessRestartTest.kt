@@ -28,6 +28,10 @@ class ProcessRestartTest {
         val file = File(app.sources.managedDirectory, "hardening-process.cbz")
         instrumentation.context.assets.open("fixtures/sample.cbz").use { input -> file.outputStream().use { input.copyTo(it) } }
         val book = app.library.importFile(Uri.parse("panelgrove://managed/${file.name}"))
+        val readingStart = System.currentTimeMillis() - 45_000
+        app.library.saveReading(listOf(ReadingRecord("process-statistics-${book.id}", "process-session-${book.id}",
+            ReadingSubject.from(book), java.time.LocalDate.now().toString(), "1", readingStart, readingStart + 45_000,
+            45_000, mapOf("test/3" to readingStart + 30_000))), emptyMap())
         val coverBytes = java.io.ByteArrayOutputStream().use { output ->
             android.graphics.Bitmap.createBitmap(80, 120, android.graphics.Bitmap.Config.ARGB_8888).apply {
                 eraseColor(android.graphics.Color.MAGENTA); compress(android.graphics.Bitmap.CompressFormat.PNG, 100, output); recycle()
@@ -79,6 +83,10 @@ class ProcessRestartTest {
         assertFalse(File(app.filesDir, "custom-covers/uncommitted.png").exists())
         assertFalse(File(app.filesDir, "custom-covers/interrupted.part").exists())
         val retained = app.library.book(id)!!
+        val reading = app.library.dao.readingRecord("process-statistics-$id")!!.record()
+        assertEquals(45_000L, reading.activeMillis)
+        assertEquals(setOf("test/3"), reading.pages.keys)
+        assertTrue(app.library.dao.readingCompletionsForEdition(retained.statisticsId).any { it.completion().chapter == null })
         assertNotNull(retained.customCover)
         android.graphics.BitmapFactory.decodeFile(app.library.cover(retained).path).apply {
             assertEquals(android.graphics.Color.MAGENTA, getPixel(0, 0)); recycle()

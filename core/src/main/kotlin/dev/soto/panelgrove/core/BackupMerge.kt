@@ -33,6 +33,7 @@ fun mergeBackup(incoming: LibraryBackup, live: LibraryBackup, identity: (String)
     }
     live.books.forEach(::register)
     val bookIds = mutableMapOf<String, String>()
+    val editionIds = mutableMapOf<String, String>()
     incoming.books.forEach { book ->
         val token = book.restoredKey ?: key("book", book.id, book.uri)
         val locations = listOfNotNull(book.uri, book.originUri).map(identity).toSet()
@@ -43,6 +44,7 @@ fun mergeBackup(incoming: LibraryBackup, live: LibraryBackup, identity: (String)
             }
         val id = match?.id ?: freeId(book.id, token, books.keys)
         bookIds[book.id] = id
+        editionIds[book.statisticsId] = match?.statisticsId ?: book.statisticsId
         // A different managed file at the same private filename must never be mistaken for the backup's bytes.
         val uri = match?.uri ?: if (book.uri in byUri) {
             require(book.managed) { "Conflicting source locations in backup." }
@@ -59,7 +61,7 @@ fun mergeBackup(incoming: LibraryBackup, live: LibraryBackup, identity: (String)
                 merged.copy(copyRootUri = if (uri.startsWith("panelgrove:")) null else if (match != null) match.copyRootUri else book.copyRootUri,
                     copyRevision = if (match != null) match.copyRevision else book.copyRevision,
                     // Cover files are local to this installation and are not part of JSON backups.
-                    customCover = match?.customCover)
+                    customCover = match?.customCover, statisticsId = match?.statisticsId ?: book.statisticsId)
             }
         register(books.getValue(id))
     }
@@ -81,6 +83,7 @@ fun mergeBackup(incoming: LibraryBackup, live: LibraryBackup, identity: (String)
         history[id] = entry.copy(id = id, bookId = bookId)
         byVisit[bookId to entry.openedAt] = id
     }
-    return incoming.copy(sources = roots.values.toList(), books = books.values.toList(), bookmarks = marks.values.toList(),
-        history = history.values.sortedByDescending { it.openedAt }.take(500))
+    return incoming.copy(version = 2, sources = roots.values.toList(), books = books.values.toList(), bookmarks = marks.values.toList(),
+        history = history.values.sortedByDescending { it.openedAt }.take(500),
+        statistics = mergeStatistics(incoming.statistics, live.statistics, bookIds, editionIds))
 }

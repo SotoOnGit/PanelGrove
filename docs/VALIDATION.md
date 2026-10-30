@@ -2,6 +2,10 @@
 
 Updated **2026-10-30**. The current public prerelease is [**0.9**](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.9), version code **8**, package `dev.soto.panelgrove`, published on **2026-10-29**. Release dates here use Europe/Bucharest; GitHub records the publication timestamp as 2026-10-28 22:36 UTC. Current release checks and historical physical-phone/local-preview results are recorded separately below.
 
+## Reading statistics — 1.0 development
+
+Local reading statistics are implemented in development and are absent from public 0.9. The [statistics validation record](STATISTICS_VALIDATION.md) covers measurement rules, database/backup changes, JVM checks, Android 8/API 26 and Android 12/API 32 regression/feature suites, screenshots, and externally forced process-restart checks. These local results are separate from the published-release evidence below.
+
 ## Version 0.9 — release and feature checks
 
 Both release workflows ran successfully at commit `d4eb4bcb2cbf433d022aca5ff380d72365aeb6f7`, the commit tagged `v0.9`. Public release metadata, workflow/job conclusions, checksum text and signing-certificate text were checked on **2026-10-30**.

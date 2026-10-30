@@ -60,6 +60,10 @@ import kotlin.math.*
     val top = (size.height - baseHeight) / 2f
     val displayed = rememberDisplayBitmap(bitmap, settings)
     val displayedTile = rememberDisplayBitmap(tile?.second, settings)
+    DisposableEffect(session, index, bitmap != null) {
+        if (bitmap != null) model.pageReady(session, index, true)
+        onDispose { if (bitmap != null) model.pageReady(session, index, false) }
+    }
     LaunchedEffect(size, session, index, retry) {
         if (size.width == 0 || size.height == 0) return@LaunchedEffect
         error = null

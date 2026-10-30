@@ -2,13 +2,13 @@
 
 ## Install and update
 
-Panelgrove requires **Android 8.0 or newer**. The first public prerelease is [0.1.6](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.1.6), published on **2026-10-27**.
+Panelgrove requires **Android 8.0 or newer**. The current public prerelease is [0.9](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.9), published on **2026-10-29**. See the [release notes](releases/0.9.md) for the additions since 0.1.6.
 
-1. Download [panelgrove-v0.1.6.apk](https://github.com/SotoOnGit/PanelGrove/releases/download/v0.1.6/panelgrove-v0.1.6.apk) on your Android device.
+1. Download [panelgrove-v0.9.apk](https://github.com/SotoOnGit/PanelGrove/releases/download/v0.9/panelgrove-v0.9.apk) on your Android device.
 2. Open the downloaded APK. If Android asks, allow installation from the browser or file manager you used, then complete the installation.
 3. Open Panelgrove and add your own books through **Library → Add manga**.
 
-Updates are manual: download the APK from a newer [GitHub release](https://github.com/SotoOnGit/PanelGrove/releases) and install it over the existing public version. Public updates use the same signing identity so Android can retain the app's library, progress, bookmarks, and settings. Export a backup before updating.
+Updates are manual: download the APK from a newer [GitHub release](https://github.com/SotoOnGit/PanelGrove/releases) and install it over the existing public version. Public 0.1.6 and 0.9 use the same signing identity so Android can retain the app's library, progress, bookmarks, and settings. Export a JSON backup before updating and keep your manga files separately; uninstalling is not part of a public-version update.
 
 ### Moving from a local preview or debug build
 
@@ -18,11 +18,11 @@ Before switching, export a JSON backup through **Settings → Backup & restore**
 
 ### Release verification files
 
-Each public release includes `SHA256SUMS` for checking the downloaded APK's SHA-256 hash and `SIGNING-CERTIFICATE.txt` with the public signing-certificate fingerprint. These files are available beside the APK on the [release page](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.1.6).
+Each public release includes `SHA256SUMS` for checking the downloaded APK's SHA-256 hash and `SIGNING-CERTIFICATE.txt` with the public signing-certificate fingerprint. These files are available beside the APK on the [release page](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.9).
 
 ## Add your manga
 
-In **Library**, choose **Add manga → Choose files**, or add a library folder. Android's picker grants access to the documents you select. Panelgrove supports CBZ/ZIP, CBR/RAR, PDF, and image folders containing PNG, JPEG, or WebP pages. The development build also reads CB7/7Z archives; this addition is pending release and is not included in public 0.1.6.
+In **Library**, choose **Add manga → Choose files**, or add a library folder. Android's picker grants access to the documents you select. Panelgrove supports CBZ/ZIP, CBR/RAR, CB7/7Z, PDF, and image folders containing PNG, JPEG, or WebP pages.
 
 Files stay where they are by default. A linked library folder can be rescanned from Library options or Settings. Shared or temporary documents may require a managed copy when Android cannot retain access to the original.
 
@@ -36,9 +36,7 @@ Long press a grid cover, or use a details button in list or history rows, to edi
 
 **History** groups repeated opens of a book into one row per day, showing its latest time and session count. Clearing history keeps reading progress and bookmarks.
 
-## Custom covers and display adjustments (development build)
-
-These additions are pending release and are not included in public 0.1.6.
+## Custom covers and display adjustments
 
 Open **Book details → Choose custom cover** and select an image with Android's picker. The cover changes immediately and is retained through reopening, rescanning and relinking. **Remove custom cover** restores the document's generated cover. Images are copied into app storage, so access to the chosen image is not required afterward. PNG, JPEG and WebP images are supported; camera orientation is respected. Input images are limited to 32 MiB and are reduced to a thumbnail of at most 720 pixels per side. The source book and selected image are left intact.
 
@@ -46,9 +44,7 @@ In a book, open **Reading settings → Display adjustments**. The current-page p
 
 Display adjustments are also available in default and series reading settings. Book overrides take precedence, followed by series settings and then defaults. Contrast and gamma settings are included in JSON backups. **Custom cover images are local to this installation and are not included in JSON backups.** Restoring on the same installation keeps existing local covers; choose them again after moving to a fresh installation.
 
-## Language editions (development build)
-
-This addition is pending release and is not included in public 0.1.6.
+## Language editions
 
 Import each edition separately, in any supported format. In **Book details**, give editions the same **Series** and **Vol/ch** number. **Choose existing series** helps match translated titles to an existing series. Select a language with **Choose language**, or enter a language code such as `en`, `ja`, or `zh-Hant`. Leave the field blank for unspecified, or choose **Use document language** to follow `ComicInfo.xml` or translation-manifest metadata. Choose **Save** to retain the assignment.
 
@@ -58,9 +54,7 @@ Individual books, Continue reading and History show language labels. **Library o
 
 Every edition retains its own source, reading position, bookmarks, history, favorites and book reading settings. Switching editions resumes that edition's saved place. **Read next** stays in the same language; a regional/script tag such as `zh-Hant` is distinct from `zh-Hans`, and unspecified does not guess a language. Series reading overrides still apply across the shared series. Language assignments survive rescans, relinking and JSON backups/restores.
 
-## Page export (development build)
-
-This addition is pending release and is not included in public 0.1.6.
+## Page export
 
 In the reader, open **Reader actions (⋮) → Export page**. The page field starts at the current page; enter another page number if needed, including either individual page in a spread. **Save image** opens Android's document picker to choose a location. **Share page** opens Android's share sheet. Cancelling either control returns to reading without changing your place.
 
@@ -80,9 +74,9 @@ Removing a library entry never deletes an external original. Deleting an owned m
 
 ## Back up and restore
 
-Use **Settings → Backup & restore** to export or restore a JSON backup. It includes library organization, reading positions, bookmarks, history, settings, and references to the copy destination and managed copies.
+Use **Settings → Backup & restore** to export or restore a JSON backup. It includes library organization, language assignments, reading positions, bookmarks, history, settings (including contrast and gamma), and references to the copy destination and managed copies.
 
-**Backups do not contain manga files or Android file-access grants.** Keep the books themselves separately. When moving to another installation, keep the original installation and files until the restored books open successfully.
+**Backups do not contain manga files, custom cover images, or Android file-access grants.** Keep the books themselves separately. Choose custom covers again on a fresh installation. When moving to another installation, keep the original installation and files until the restored books open successfully.
 
 After restoring, **Restore import folder** asks you to select the folder again through Android's picker, even if copying was off. If the folder moved, choose its new location. Panelgrove scans existing files in place, reconnects matching documents and uniquely matching copies by their saved content hashes, and adds other readable books it finds. This recovery does not move, recopy, or delete those files.
 
@@ -98,6 +92,6 @@ If a folder or book becomes unavailable, select it again through Android's picke
 
 Encrypted documents, multipart archives, and EPUB are unsupported. Corrupt documents need a sound replacement. RAR and 7Z preparation can be slower than ZIP access, particularly for solid archives and jumps to later pages.
 
-Development CB7/7Z support covers LZMA, LZMA2, stored, Deflate, and PPMd compression, including solid archives, Unicode filenames, `ComicInfo.xml`, and `translation-manifest.json`. BZip2 and other unlisted compression methods are unsupported. Password-protected archives (including encrypted filenames) and split files such as `.7z.001` are unsupported. Existing extraction limits apply: 20,000 entries, 128 MiB per entry, and 8 GiB expanded in total. Pages use the same natural ordering, bookmarks, progress, and library organization as other comic archives.
+CB7/7Z support covers LZMA, LZMA2, stored, Deflate, and PPMd compression, including solid archives, Unicode filenames, `ComicInfo.xml`, and `translation-manifest.json`. BZip2 and other unlisted compression methods are unsupported. Password-protected archives (including encrypted filenames) and split files such as `.7z.001` are unsupported. Existing extraction limits apply: 20,000 entries, 128 MiB per entry, and 8 GiB expanded in total. Pages use the same natural ordering, bookmarks, progress, and library organization as other comic archives.
 
 For a reproducible problem, [open an issue](https://github.com/SotoOnGit/PanelGrove/issues) with the app version, Android version, file format, and reproduction steps.

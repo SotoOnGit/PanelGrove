@@ -2,6 +2,8 @@
 
 Captured from the signed **Panelgrove 0.1.6** preview on an **Android 12L / API 32** emulator on **2026-10-26**. Each image is an unedited **1080 × 2340** Android screen capture. Click an image to view it at full size.
 
+The current public prerelease is [0.9](../releases/0.9.md). These earlier captures show the reader's foundation; they do not picture the language-edition stacks/picker, page export, custom-cover controls, or contrast/gamma controls added in 0.9.
+
 The books use original geometric demo artwork created for these screenshots. The artwork is included in the images under the project's GPL-3.0-or-later license. No private manga, personal library, or earlier development screenshots are used.
 
 | Dark library | Light library |

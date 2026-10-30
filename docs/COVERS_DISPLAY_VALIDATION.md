@@ -1,6 +1,6 @@
 # Custom covers and display adjustments
 
-Implemented after public 0.1.6, pending release. Validation date: **2026-10-27**.
+Included in public [0.9](releases/0.9.md). Initial development-build validation date: **2026-10-27**, with test follow-ups below from **2026-10-28**. Current CI and signed-release results are in the [validation summary](VALIDATION.md#version-09--release-and-feature-checks).
 
 ## Behavior
 
@@ -34,7 +34,7 @@ The physical device was a **Xiaomi M2012K11AG, Android 13 / API 33, ARM64**. Tes
 
 Local evidence is retained under ignored `local-validation/covers-display/`, including build logs, instrumentation output, original screenshots and picker hierarchy captures. Initial attempts retain the test-installation rejection, a corrected JUnit signature error and interrupted UI runs caused by MIUI's background-launch restriction. Reinstalling this app resets that restriction; successful UI runs require enabling it after installation. The original restriction is restored after testing.
 
-These are development-build checks on one physical phone. They do not establish a signed public update, runtime acceptance on every supported API, or human accessibility acceptance. A public release remains separate work.
+These are development-build checks on one physical phone. They do not establish a signed public update, runtime acceptance on every supported API, or human accessibility acceptance. The subsequent 0.9 publication and release-workflow results are recorded separately in the validation summary.
 
 ## API 26 dialog screenshot compatibility
 
@@ -54,7 +54,7 @@ The large-text test changed system font scale while its activity was running, th
 
 The focused display and reader UI classes passed all three cases on API 35, and font scale was restored. Debug app/test builds and lint passed with zero errors. The official Google APIs x86-64 API 35 revision 9 image was checksum-verified and run using the existing Pixel 2 configuration with separate workspace data and read-only mode. The saved Android 36 data and PIN were not used or reset. Logs and baseline failure evidence are under ignored `local-validation/api35-fix/`.
 
-The complete API 35 instrumentation suite then passed **79 cases, with five expected skips and zero failures**, in **118.385 seconds**, using the existing 90-second per-test timeout. The runner reports `OK (84 tests)` including those five skips. The skipped cases are two optional private-archive checks, one optional local translation volume and the two separately invoked process-restart phases. These are local API 35 results; a new GitHub Actions result requires pushing the changes.
+The complete API 35 instrumentation suite then passed **79 cases, with five expected skips and zero failures**, in **118.385 seconds**, using the existing 90-second per-test timeout. The runner reports `OK (84 tests)` including those five skips. The skipped cases are two optional private-archive checks, one optional local translation volume and the two separately invoked process-restart phases. These are local API 35 results from that follow-up; the later passing v0.9 GitHub Actions jobs are recorded separately in the validation summary.
 
 The same three display/reader UI cases also passed on the existing API 26 / x86-64 emulator after these fixes. Font scale was restored on both versions, and each emulator was stopped before starting another. Application code and the CI workflow were unchanged.
 

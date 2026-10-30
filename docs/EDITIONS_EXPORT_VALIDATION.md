@@ -1,6 +1,6 @@
-# Language editions and page export — development validation
+# Language editions and page export — validation
 
-Updated **2026-10-28**. These features are implemented in the working tree for a future release. Public **0.1.6 / version code 7** does not include them.
+Updated **2026-10-30**. These features are included in public [**0.9 / version code 8**](releases/0.9.md). The local development-build checks below were performed on **2026-10-28**; subsequent CI and release results are recorded separately in the [validation summary](VALIDATION.md#version-09--release-and-feature-checks). Public 0.1.6 does not include these features.
 
 ## Implemented behavior
 
@@ -66,10 +66,10 @@ Local API 26 baseline runs of the unchanged isolated test and all six edition/ex
 - The **API 32** edition/export UI class passed: **6 passed, 0 failures**, **36.101 seconds**, with animations disabled.
 - Test APK compilation and debug lint passed: **0 errors, 49 warnings**.
 
-Both emulators used fresh app/data directories. Logs are retained in ignored `local-validation/api26-export-recreation/`. Remote CI confirmation remains pending.
+Both emulators used fresh app/data directories. Logs are retained in ignored `local-validation/api26-export-recreation/`. Subsequent [v0.9 CI](https://github.com/SotoOnGit/PanelGrove/actions/runs/40780054553) passed both API 26 and API 35 Android test jobs at the release commit.
 
 ## Remaining acceptance
 
 - Physical-device testing with real document providers, removable storage, and external share receivers remains open. No physical phone was connected in this session.
 - The export chooser/URI contract and document-provider saves are covered separately from actual receiver-app behavior. Cache eviction can require retrying an unfinished export.
-- Broader device/API coverage and signed public-release acceptance remain separate from these local emulator checks. No release version was bumped or published.
+- Broader device/API coverage and physical acceptance of the signed 0.9 APK remain separate from these local emulator checks. The later public release and successful signing/package workflow do not establish an executed update-install or receiver-app check.

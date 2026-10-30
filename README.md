@@ -6,13 +6,15 @@
 
 A free, open source manga reader for Android. Read CBZ, CBR, CB7/7Z, PDF, and image folders offline, with no ads, accounts, or analytics.
 
-**Android 8.0+ · Prerelease 0.1.6 · GPL-3.0-or-later**
+**Android 8.0+ · Prerelease 0.9 · GPL-3.0-or-later**
 
-[Download APK](https://github.com/SotoOnGit/PanelGrove/releases/download/v0.1.6/panelgrove-v0.1.6.apk) · [Releases](https://github.com/SotoOnGit/PanelGrove/releases) · [User guide](docs/USAGE.md) · [Build from source](docs/DEVELOPMENT.md) · [Report an issue](https://github.com/SotoOnGit/PanelGrove/issues)
+[Download APK](https://github.com/SotoOnGit/PanelGrove/releases/download/v0.9/panelgrove-v0.9.apk) · [Release notes](docs/releases/0.9.md) · [Releases](https://github.com/SotoOnGit/PanelGrove/releases) · [User guide](docs/USAGE.md) · [Build from source](docs/DEVELOPMENT.md) · [Report an issue](https://github.com/SotoOnGit/PanelGrove/issues)
+
+**New in 0.9:** language editions grouped by volume or chapter, page export, custom covers, contrast and gamma controls, and CB7/7Z support. Local reading statistics are planned for 1.0.
 
 ## Screenshots
 
-Actual app screens using original demo books. [View all screenshots](docs/screenshots/README.md), including the light theme and book details.
+Actual app screens using original demo books, captured from 0.1.6. The new 0.9 controls are not pictured. [View all screenshots](docs/screenshots/README.md), including the light theme and book details.
 
 | Library | Reader | Bookmarks |
 | --- | --- | --- |
@@ -25,9 +27,11 @@ Actual app screens using original demo books. [View all screenshots](docs/screen
 - **Read your own files.** Add individual books or library folders through Android's file picker. Files stay in their original locations by default.
 - **Choose how you read.** Right-to-left or left-to-right page turns, continuous vertical scrolling, landscape spreads, fit options, pinch and double-tap zoom, and volume-key navigation.
 - **Pick up where you left off.** Continue reading, saved positions, bookmarks, chapter navigation, and reading history.
-- **Organize your collection.** Search, favorites, reading-status filters, series, collections, editable book details, and grid or list views.
+- **Organize your collection.** Search, favorites, reading-status and language filters, series, collections, editable book details, and grid or list views. Language editions share a volume/chapter stack while keeping separate reading progress.
+- **Choose your covers.** Set a custom library cover without changing the source book.
+- **Save or share a page.** Export full pages through Android; archive and folder images retain their original bytes, and PDF pages export as PNG.
 - **Keep copies where you want them.** Optional managed copies live in a folder you choose, organized as `Series / Book file` and accessible through your file manager.
-- **Make it comfortable.** Light, dark, system, and true-black appearance options, plus brightness and orientation controls.
+- **Make it comfortable.** Light, dark, system, and true-black appearance options, plus brightness, orientation, contrast, and gamma controls.
 - **Back up your reading data.** Export and restore library organization, reading progress, bookmarks, history, and settings as JSON.
 
 ## Supported formats
@@ -36,7 +40,7 @@ Actual app screens using original demo books. [View all screenshots](docs/screen
 | --- | --- |
 | CBZ / ZIP | PNG, JPEG, and WebP pages |
 | CBR / RAR | RAR4, RAR5, and solid RAR5 archives |
-| CB7 / 7Z | Solid and non-solid LZMA/LZMA2, stored, Deflate, and PPMd archives (development build; not in public 0.1.6) |
+| CB7 / 7Z | Solid and non-solid LZMA/LZMA2, stored, Deflate, and PPMd archives |
 | PDF | Rendered with Android's PDF engine |
 | Image folders | PNG, JPEG, and WebP pages in selected directory trees |
 
@@ -46,35 +50,33 @@ Encrypted documents, multipart archives, and EPUB are not supported. BZip2 and o
 
 ## Get started
 
-1. Download and install [panelgrove-v0.1.6.apk](https://github.com/SotoOnGit/PanelGrove/releases/download/v0.1.6/panelgrove-v0.1.6.apk) from the [0.1.6 prerelease](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.1.6). See the [installation guide](docs/USAGE.md#install-and-update) for Android's installation prompt and updates.
+1. Download and install [panelgrove-v0.9.apk](https://github.com/SotoOnGit/PanelGrove/releases/download/v0.9/panelgrove-v0.9.apk) from the [0.9 prerelease](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.9). See the [installation guide](docs/USAGE.md#install-and-update) for Android's installation prompt and updates.
 2. In **Library**, choose **Add manga → Choose files**, or add a library folder.
 3. Open a book. Tap the middle of a page to show controls; tap either edge or swipe to turn pages. The default reading direction is right-to-left.
 
-Updates are installed manually from GitHub Releases. Install future public updates over the existing app to retain reading data. If you used a local preview or debug build, follow the [signing-transition instructions](docs/USAGE.md#moving-from-a-local-preview-or-debug-build) before switching to the public APK.
+Updates are installed manually from GitHub Releases. Export a JSON backup before updating from public 0.1.6, then install 0.9 over the existing app. Both releases use the same public signing identity. If you used a local preview or debug build, follow the [signing-transition instructions](docs/USAGE.md#moving-from-a-local-preview-or-debug-build) before switching to the public APK.
 
 ## Files and privacy
 
 Panelgrove works locally and requests neither internet access nor all-files access. Android's file and folder pickers control which documents it can read.
 
-Removing a library entry leaves its external original intact. Deleting a managed copy is a separate choice. Backups contain reading data, not manga files or Android file-access grants; after restoring, select the relevant folders again to restore access.
+Removing a library entry leaves its external original intact. Deleting a managed copy is a separate choice. Backups contain reading data, language assignments, and display settings; they exclude manga files, custom cover images, and Android file-access grants. After restoring on a fresh installation, select the relevant folders again and choose custom covers again.
 
 Panelgrove does not include manga or provide a download catalog.
 
 ## Preview status
 
-The first public prerelease, [**0.1.6**](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.1.6), was published on **2026-10-27**. Its version code is **7** and package ID is `dev.soto.panelgrove`. The release includes the signed APK, `SHA256SUMS`, and `SIGNING-CERTIFICATE.txt`.
+The current public prerelease, [**0.9**](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.9), was published on **2026-10-29**. Its version code is **8** and package ID is `dev.soto.panelgrove`. The release includes the signed APK, `SHA256SUMS`, and `SIGNING-CERTIFICATE.txt`.
 
-[GitHub CI](https://github.com/SotoOnGit/PanelGrove/actions/runs/40413500147) passed the debug build, core tests, lint, package checks, and Android tests on API 26 and 35, with 66 passed and five deliberate skips on each API. The [release workflow](https://github.com/SotoOnGit/PanelGrove/actions/runs/40491207093) also passed core tests, release lint, the signed release build, signature verification, native/ZIP alignment checks, and checksum generation.
+[GitHub CI](https://github.com/SotoOnGit/PanelGrove/actions/runs/40780054553) passed the debug build, core tests, lint, package checks, and Android tests on API 26 and 35 at the v0.9 release commit. The [release workflow](https://github.com/SotoOnGit/PanelGrove/actions/runs/40780054592) also passed core tests, release lint, the signed release build, signature verification, native/ZIP alignment checks, and checksum generation.
 
-Earlier local validation covered API 26, 32, and 36, including local-preview launches and CBZ/RAR/PDF reading. API 36 coverage spans two runs.
+Final local feature suites passed **92 cases with five expected skips** on each of API 26 and 32. Earlier physical-phone checks cover public 0.1.6 and separate development builds for CB7, covers, and display adjustments; their results are recorded with their original build identities.
 
-Physical checks on **2026-10-27** used a Xiaomi M2012K11AG running **Android 13 / API 33 (ARM64)**. The published APK reads CBZ, RAR5, PDF, and image folders through the phone's Documents picker. Fresh-install backup restoration and folder relinking preserved four books, saved positions, three bookmarks, history, and settings. Debug engine/storage checks and a separate process-restart check also passed.
-
-All **66 applicable automated cases** have passing phone results across separate runs, including the 12 UI cases after enabling MIUI background pop-ups. The stress test first timed out at 90 and 240 seconds, then passed in 86.9 seconds with a fresh debug installation and the app foregrounded; that variability remains under investigation. Broader providers/tablets, removable SD cards, actual 16 KB execution, human accessibility review, sustained reading, and a future public-version update remain open. See the [validation summary](docs/VALIDATION.md) for the measured scope.
+Physical validation of the signed 0.9 update over 0.1.6, edition/export flows with external share receivers, broader providers/tablets, actual 16 KB execution, accessibility, and sustained reading remain open. See the [validation summary](docs/VALIDATION.md) for the measured scope.
 
 ## Planned for 1.0
 
-Development builds now include **CB7/7Z support**, **custom covers**, **contrast and gamma controls**, **language editions grouped under the same series**, and **page export**. These additions are pending release and are absent from public 0.1.6. The next priority is **local reading statistics**, whose initial measurements still need defining. See the [roadmap](docs/ROADMAP.md), [usage guide](docs/USAGE.md#language-editions-development-build), and [edition/export validation](docs/EDITIONS_EXPORT_VALIDATION.md).
+**Local reading statistics** are the remaining planned feature for 1.0; their initial measurements still need defining. CB7/7Z, custom covers, contrast/gamma, language editions, and page export are included in 0.9. See the [roadmap](docs/ROADMAP.md), [usage guide](docs/USAGE.md#language-editions), and [edition/export validation](docs/EDITIONS_EXPORT_VALIDATION.md).
 
 ## Development and feedback
 

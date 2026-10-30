@@ -1,6 +1,6 @@
-# CB7 / 7Z development validation
+# CB7 / 7Z validation
 
-This feature is implemented after public 0.1.6 and is pending release. It adds `SEVEN_Z` to the existing book model and shares the isolated libarchive decoder used for RAR. Native builds statically link checksum-pinned XZ Utils 5.8.4/liblzma for LZMA and LZMA2; no codec download or new Android permission is needed at runtime.
+CB7/7Z support is included in public [0.9](releases/0.9.md). The development-build checks below were performed on **2026-10-27**; current CI and signed-release results are in the [validation summary](VALIDATION.md#version-09--release-and-feature-checks). The feature adds `SEVEN_Z` to the existing book model and shares the isolated libarchive decoder used for RAR. Native builds statically link checksum-pinned XZ Utils 5.8.4/liblzma for LZMA and LZMA2; no codec download or new Android permission is needed at runtime.
 
 Supported methods are LZMA, LZMA2, stored, Deflate, and PPMd. Solid archives are supported, with sequential preparation costs when jumping to uncached pages. Encrypted and multipart archives, BZip2, and other unlisted methods are unsupported. Existing path, link, entry-count, expanded-size, metadata-size, cache, and decoder timeout limits still apply.
 
@@ -42,7 +42,7 @@ The regression selection includes `EngineInstrumentedTest`, `ArchiveCompatibilit
 
 The existing API 36 AVD booted with PIN-locked credential-encrypted storage. Its attempted run could not open the test provider or app library and produced setup/cleanup failures; it is not a valid compatibility result. The emulator was stopped without changing its PIN or saved data, and API 32 supplied the second completed run. All emulators were used one at a time in read-only mode and stopped afterward.
 
-Local logs are retained under ignored `local-validation/cb7-*` paths. The emulator-tested debug APK had SHA-256 `8edd9a29639d367a087c8cf90e5078df572fcc83165851fd26b5a49cd0d8eea0`. API 36 acceptance, actual 16 KiB runtime execution, and a signed public release remain separate follow-up checks.
+Local logs are retained under ignored `local-validation/cb7-*` paths. The emulator-tested debug APK had SHA-256 `8edd9a29639d367a087c8cf90e5078df572fcc83165851fd26b5a49cd0d8eea0`. API 36 acceptance, actual 16 KiB runtime execution, and physical checks of the signed 0.9 APK remain separate follow-up checks.
 
 ## Physical-device acceptance
 

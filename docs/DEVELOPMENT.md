@@ -74,6 +74,16 @@ XZ Utils source: [upstream 5.8.4 release](https://github.com/tukaani-project/xz/
 
 An optional local compatibility test accepts a private sample directory through the Gradle property `panelgroveSamples`. Samples are not needed for a normal checkout, build, or test run and must stay outside the published source. Use `local-validation/` for local samples, reports, and device-specific evidence.
 
+## Public releases
+
+The current public prerelease is [0.9](releases/0.9.md), with `versionName = "0.9"`, `versionCode = 8`, and package `dev.soto.panelgrove`. Its [build/test CI](https://github.com/SotoOnGit/PanelGrove/actions/runs/40780054553) and [signed-release workflow](https://github.com/SotoOnGit/PanelGrove/actions/runs/40780054592) passed. See the [validation summary](VALIDATION.md) for measured scope.
+
+The `Build and test` workflow builds the debug APK, runs core tests, lint and package checks, and runs Android instrumentation on API 26 and 35. A pushed `v*` tag triggers `Signed draft release`, which runs core tests and release lint, builds the signed minified APK, verifies its signature and native/ZIP alignment, and creates a GitHub draft with the APK, `SHA256SUMS` and `SIGNING-CERTIFICATE.txt`. The draft needs release-note review and publication; tagging alone does not publish a release.
+
+Signing uses the repository secrets `PANELGROVE_KEYSTORE_BASE64`, `PANELGROVE_STORE_PASSWORD`, `PANELGROVE_KEY_ALIAS` and `PANELGROVE_KEY_PASSWORD`. The workflow decodes the keystore to runner temporary storage and removes it afterward. Keep the production signing identity and its secure backup outside the repository; later public APKs must use that identity and a higher version code to update existing installations.
+
+For a future release, update the version, release notes, README download links, user guide, roadmap and validation summary. Push the release commit and wait for CI before creating its version tag. Review the draft's APK, checksum and signing fingerprint, and test installation over the previous public APK with library/progress/bookmarks/settings retained. Keep failed attempts and remaining acceptance work explicit when publishing. Public 0.9 is already available; the recorded evidence still lacks the 0.1.6 → 0.9 update-install check.
+
 ## Interface text and diagnostics
 
 English interface text, accessibility labels, plurals, and formatted messages are in `app/src/main/res/values/strings.xml`. Add translations in `values-<language>/strings.xml`. `StringDictionary` resolves Android resources in composition and background work. Protocol keys, filenames, metadata, and parser diagnostics remain separate from interface translations.

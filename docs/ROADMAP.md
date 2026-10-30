@@ -1,10 +1,10 @@
 # Panelgrove roadmap
 
-Updated **2026-10-30**. The current public prerelease is [**0.9**](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.9), version code **8**, published on **2026-10-29**. It includes the first five feature priorities below.
+Updated **2026-10-30**. The **1.0** feature scope is implemented and prepared as version code **9**. Publication is pending the [launch checklist](RELEASE_1.0.md). The current public prerelease remains [**0.9**](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.9), version code **8**.
 
-The [0.9 release notes](releases/0.9.md) describe the shipped features. Local reading statistics are implemented in development for 1.0. Outstanding acceptance work, including a signed 0.9 update over 0.1.6, is tracked in the [validation summary](VALIDATION.md).
+The [1.0 release notes](releases/1.0.md) describe reading statistics and reader reliability improvements. The first five priorities shipped in [0.9](releases/0.9.md); statistics complete the planned 1.0 feature set. Remaining acceptance checks are tracked separately from feature completion.
 
-## Priorities for 1.0
+## 1.0 scope
 
 | Priority | Feature | Intended scope | Status |
 | --- | --- | --- | --- |
@@ -13,7 +13,7 @@ The [0.9 release notes](releases/0.9.md) describe the shipped features. Local re
 | 3 | Contrast and gamma controls | Preview, adjust, reset and retain display adjustments in the reader. Keep source images unchanged. | Released in 0.9 |
 | 4 | Different languages for the same series | Attribute separate books in any supported format to one shared series, identify their language editions and make those editions easy to select. | Released in 0.9 |
 | 5 | Page export | Save or share a selected page as a full-page image through Android's system controls. Keep the source document unchanged. | Released in 0.9 |
-| 6 | Statistics | Reading time and comparisons, pages viewed, completions, streaks, rankings, sessions, language breakdowns and an activity calendar, retained locally and included in backups. | Implemented in development; pending release |
+| 6 | Statistics | Reading time and comparisons, pages viewed, completions, streaks, rankings, sessions, language breakdowns and an activity calendar, retained locally and included in backups. | Included in prepared 1.0; pending publication |
 
 CB7/7Z implementation scope and checks are recorded in [feature validation](CB7_VALIDATION.md).
 
@@ -33,7 +33,7 @@ Version 0.9 provides **Reader actions → Export page**, with a page-number choi
 
 ### Statistics scope
 
-Development builds include weekly/monthly time graphs with older-period comparisons and day → book → chapter → session details; pages viewed; unique volumes/chapters completed, editions and rereads; reading days/current and best streaks; most-read series/books; session count/average/longest duration; language filters and breakdowns; and a yearly activity heatmap. See the [measurement rules](USAGE.md#reading-statistics-development-build).
+Version 1.0 includes weekly/monthly time graphs with older-period comparisons and day → book → chapter → session details; pages viewed; unique volumes/chapters completed, editions and rereads; reading days/current and best streaks; most-read series/books; session count/average/longest duration; language filters and breakdowns; and a yearly activity heatmap. See the [measurement rules](USAGE.md#reading-statistics).
 
 Statistics use dedicated Room tables and version 2 JSON backups; version 1 backups remain importable. Records are retained after removing a book or clearing opening history. Existing opening history cannot reconstruct past reading time, so tracking starts with the feature. Reading goals and time-remaining estimates are outside this release; goals may be considered in a later gamification update.
 

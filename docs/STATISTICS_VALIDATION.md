@@ -1,6 +1,6 @@
 # Reading statistics — development validation
 
-Recorded **2026-10-30**. Statistics are local development changes for 1.0, not part of public 0.9. No release version, tag or publication was created by this work.
+Recorded **2026-10-30** during statistics development. The feature is now included in prepared **1.0 / code 9** and remains absent from public 0.9. The measurements below retain their original development-build scope; see [1.0 launch preparation](RELEASE_1.0.md) for versioned candidate checks and publication status.
 
 ## Implemented scope
 
@@ -18,7 +18,7 @@ Recorded **2026-10-30**. Statistics are local development changes for 1.0, not p
 
 The five-minute inactivity default is adjustable to 1, 3, 5, 10 or 30 minutes. Manual pause/play is in the reader. Render loading/failures, covering menus, loss of window focus, background use and screen locking do not accrue time. Monotonic elapsed time protects durations from wall-clock changes; local-day/time-zone snapshots and active spans preserve daily splits and comparison cutoffs. Consecutive active spans coalesce, while pauses remain explicit. Checkpoints occur every 15 seconds and on pause/exit. Goals and estimated time remaining are excluded.
 
-See [usage and measurement definitions](USAGE.md#reading-statistics-development-build).
+See [usage and measurement definitions](USAGE.md#reading-statistics).
 
 ## Automated checks
 

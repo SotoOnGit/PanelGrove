@@ -18,7 +18,7 @@ jobs:
           packages: platform-tools
       - uses: gradle/actions/setup-gradle@v4
       - run: sdkmanager 'platforms;android-36.1' 'build-tools;36.0.0' 'ndk;28.2.13676358' 'cmake;3.22.1'
-      - run: bash gradlew :core:test :app:assembleDebug :app:lintDebug --console=plain
+      - run: bash gradlew :core:test :app:testDebugUnitTest :app:assembleDebug :app:lintDebug --console=plain
       - run: python scripts/check_apk.py app/build/outputs/apk/debug/app-debug.apk
       - uses: actions/upload-artifact@v4
         with:
@@ -26,6 +26,7 @@ jobs:
           path: |
             app/build/outputs/apk/debug/*.apk
             core/build/reports/tests/test/
+            app/build/reports/tests/testDebugUnitTest/
             app/build/reports/lint-results-debug.html
   android-tests:
     runs-on: ubuntu-latest

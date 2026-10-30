@@ -30,9 +30,19 @@ jobs:
           PANELGROVE_STORE_PASSWORD: ${{ secrets.PANELGROVE_STORE_PASSWORD }}
           PANELGROVE_KEY_ALIAS: ${{ secrets.PANELGROVE_KEY_ALIAS }}
           PANELGROVE_KEY_PASSWORD: ${{ secrets.PANELGROVE_KEY_PASSWORD }}
-        run: bash gradlew :core:test :app:lintRelease :app:assembleRelease --console=plain
+        run: bash gradlew :core:test :app:testDebugUnitTest :app:lintRelease :app:assembleRelease --console=plain
       - name: Verify signature and package
         run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          version = os.environ['GITHUB_REF_NAME'].removeprefix('v')
+          metadata = json.loads(Path('app/build/outputs/apk/release/output-metadata.json').read_text())
+          assert metadata['applicationId'] == 'dev.soto.panelgrove'
+          assert len(metadata['elements']) == 1
+          assert metadata['elements'][0]['versionName'] == version, 'Tag and APK version differ'
+          assert Path(f'docs/releases/{version}.md').is_file(), 'Release notes are missing'
+          PY
           mkdir release
           cp app/build/outputs/apk/release/app-release.apk release/panelgrove-${GITHUB_REF_NAME}.apk
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs release/*.apk > release/SIGNING-CERTIFICATE.txt
@@ -42,7 +52,7 @@ jobs:
       - name: Create reviewable draft
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" release/* --verify-tag --draft --generate-notes --title "Panelgrove $GITHUB_REF_NAME"
+        run: gh release create "$GITHUB_REF_NAME" release/* --verify-tag --draft --notes-file "docs/releases/${GITHUB_REF_NAME#v}.md" --title "Panelgrove $GITHUB_REF_NAME"
       - name: Remove temporary key
         if: always()
         run: rm -f "$RUNNER_TEMP/panelgrove.jks"

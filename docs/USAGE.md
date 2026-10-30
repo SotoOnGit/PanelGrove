@@ -2,9 +2,9 @@
 
 ## Install and update
 
-Panelgrove requires **Android 8.0 or newer**. The current public prerelease is [0.9](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.9), published on **2026-10-29**. See the [release notes](releases/0.9.md) for the additions since 0.1.6.
+Panelgrove requires **Android 8.0 or newer**. This guide covers **1.0 / version code 9**, including reading statistics. Version 1.0 is prepared for release; the current public download remains [0.9](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.9) until it is published. See the [1.0 notes](releases/1.0.md) and [launch status](RELEASE_1.0.md).
 
-1. Download [panelgrove-v0.9.apk](https://github.com/SotoOnGit/PanelGrove/releases/download/v0.9/panelgrove-v0.9.apk) on your Android device.
+1. Download the publicly signed APK from [GitHub Releases](https://github.com/SotoOnGit/PanelGrove/releases) on your Android device. The 1.0 asset will be named `panelgrove-v1.0.apk` when published.
 2. Open the downloaded APK. If Android asks, allow installation from the browser or file manager you used, then complete the installation.
 3. Open Panelgrove and add your own books through **Library → Add manga**.
 
@@ -18,7 +18,7 @@ Before switching, export a JSON backup through **Settings → Backup & restore**
 
 ### Release verification files
 
-Each public release includes `SHA256SUMS` for checking the downloaded APK's SHA-256 hash and `SIGNING-CERTIFICATE.txt` with the public signing-certificate fingerprint. These files are available beside the APK on the [release page](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.9).
+Each public release includes `SHA256SUMS` for checking the downloaded APK's SHA-256 hash and `SIGNING-CERTIFICATE.txt` with the public signing-certificate fingerprint. These files are available beside the APK on its [release page](https://github.com/SotoOnGit/PanelGrove/releases).
 
 ## Add your manga
 
@@ -62,9 +62,11 @@ Archive and folder pages retain their original PNG, JPEG or WebP bytes and dimen
 
 Sharing grants the receiving app temporary read access to an export snapshot. These snapshots are kept in app cache and expire during a later app startup after 24 hours. Save the image to retain a lasting copy. A staged save survives activity recreation; if Android has removed its cache, retry the export.
 
-## Reading statistics (development build)
+<a id="reading-statistics-development-build"></a>
 
-The **Statistics** tab adds week/month reading-time graphs, daily breakdowns, pages viewed, volumes/chapters finished, reading days and streaks, series/book rankings, session summaries, language breakdowns, and a yearly activity calendar. These features are in development for 1.0 and are absent from public 0.9.
+## Reading statistics
+
+The **Statistics** tab in 1.0 adds week/month reading-time graphs, daily breakdowns, pages viewed, volumes/chapters finished, reading days and streaks, series/book rankings, session summaries, language breakdowns and a yearly activity calendar. Public 0.9 does not include statistics.
 
 Use the arrows to browse periods. The comparison initially uses the preceding week/month; its own arrows select an older comparison period. Solid bars show the selected period and light bars show the comparison. For the current week/month, the comparison stops at the same local time on the corresponding day of the earlier period. Actual active intervals preserve menu/background gaps at that cutoff. Different month lengths are limited to the days available in the comparison month. Tap a bar for that day's details, then expand a book and chapter to see session portions. Series/book rankings also open details. **All languages** filters the graph, totals, streaks and calendar; the language breakdown lists every language in the selected period and tapping one applies its filter.
 
@@ -92,7 +94,7 @@ Removing a library entry never deletes an external original. Deleting an owned m
 
 ## Back up and restore
 
-Use **Settings → Backup & restore** to export or restore a JSON backup. It includes library organization, language assignments, reading positions, bookmarks, history, settings (including contrast and gamma), and references to the copy destination and managed copies.
+Use **Settings → Backup & restore** to export or restore a JSON backup. It includes library organization, language assignments, reading positions, bookmarks, history, reading statistics, settings (including contrast and gamma), and references to the copy destination and managed copies.
 
 **Backups do not contain manga files, custom cover images, or Android file-access grants.** Keep the books themselves separately. Choose custom covers again on a fresh installation. When moving to another installation, keep the original installation and files until the restored books open successfully.
 

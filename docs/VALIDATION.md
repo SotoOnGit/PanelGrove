@@ -2,9 +2,15 @@
 
 Updated **2026-10-30**. The current public prerelease is [**0.9**](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.9), version code **8**, package `dev.soto.panelgrove`, published on **2026-10-29**. Release dates here use Europe/Bucharest; GitHub records the publication timestamp as 2026-10-28 22:36 UTC. Current release checks and historical physical-phone/local-preview results are recorded separately below.
 
-## Reading statistics — 1.0 development
+## Version 1.0 — launch preparation
 
-Local reading statistics are implemented in development and are absent from public 0.9. The [statistics validation record](STATISTICS_VALIDATION.md) covers measurement rules, database/backup changes, JVM checks, Android 8/API 26 and Android 12/API 32 regression/feature suites, screenshots, and externally forced process-restart checks. These local results are separate from the published-release evidence below.
+The source is prepared as **1.0 / code 9**, completing the planned feature scope with local reading statistics. It has not been publicly signed, tagged or published by this preparation. The [launch checklist](RELEASE_1.0.md) records candidate checks and the remaining public-signing/update steps.
+
+The versioned local candidate passed minified/debug builds, **81 core tests plus two app tests** (one optional core skip), release lint with zero errors, signature/package/alignment checks, six API 32 UI cases and four API 26 minified reading/statistics smoke cases. A preview-key 0.9 → 1.0 minified update rehearsal on API 32 retained reading data and preferences through the schema migration. These are local candidate results; the final publicly signed update remains to be checked. Current [1.0 screenshots](screenshots/README.md#version-10) use generated books and records.
+
+[CI at `eccd35b`](https://github.com/SotoOnGit/PanelGrove/actions/runs/41120333678) passed the debug build, core tests, lint/package checks and Android test jobs on **API 26 and 35**, after the vertical-reader restoration and UI-thread test fixes. This is the feature/fix baseline before the 1.0 version/documentation changes, not a signed 1.0 release result.
+
+The [statistics validation record](STATISTICS_VALIDATION.md) covers measurement rules, database/backup changes, JVM checks, Android 8/API 26 and Android 12/API 32 regression/feature suites, screenshots, and externally forced process-restart checks. These results retain their original build identities and remain separate from the published-release evidence below.
 
 ## Version 0.9 — release and feature checks
 

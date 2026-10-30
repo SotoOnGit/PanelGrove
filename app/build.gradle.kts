@@ -13,8 +13,8 @@ android {
         applicationId = "dev.soto.panelgrove"
         minSdk = 26
         targetSdk = 36
-        versionCode = 8
-        versionName = "0.9"
+        versionCode = 9
+        versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments["timeout_msec"] = "90000"
         ndk { abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86_64") }

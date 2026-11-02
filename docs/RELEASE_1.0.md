@@ -1,15 +1,40 @@
-# Panelgrove 1.0 launch preparation
+# Panelgrove 1.0 release record
 
-Prepared **2026-10-30** for the first stable GitHub release. Version **1.0**, version code **9**, package `dev.soto.panelgrove`, Android **8.0+**. Public 0.9 remains the published prerelease until this candidate is signed, reviewed and published.
+Panelgrove's first stable GitHub release was published on **2026-10-30**. Version **1.0**, version code **9**, package `dev.soto.panelgrove`, Android **8.0+**. Public release metadata, CI job results, checksum text and signing-certificate text were checked on **2026-11-02**. Dates use Europe/Bucharest; GitHub records publication as **2026-10-30 21:59:01 UTC**.
 
-## Prepared scope
+## Published release
+
+The [v1.0 release](https://github.com/SotoOnGit/PanelGrove/releases/tag/v1.0) is public, marked stable, and reported by GitHub as the latest release. Tag `v1.0` points to commit `54b7affa6c5b250de4d9d625a9190f1f74b83bbd`.
+
+| Check | Recorded result |
+| --- | --- |
+| [Build and test at the release tag](https://github.com/SotoOnGit/PanelGrove/actions/runs/41132967590) | Debug build, core/app JVM tests, lint, package checks and Android instrumentation on **API 26 and 35** passed |
+| [Signed draft release](https://github.com/SotoOnGit/PanelGrove/actions/runs/41132967585) | Core/app JVM tests, release lint, minified signed build, tag/APK version gate, signature/native/ZIP alignment checks and checksum generation passed |
+| Public assets | [panelgrove-v1.0.apk](https://github.com/SotoOnGit/PanelGrove/releases/download/v1.0/panelgrove-v1.0.apk) (**5,093,615 bytes**), [SHA256SUMS](https://github.com/SotoOnGit/PanelGrove/releases/download/v1.0/SHA256SUMS) and [SIGNING-CERTIFICATE.txt](https://github.com/SotoOnGit/PanelGrove/releases/download/v1.0/SIGNING-CERTIFICATE.txt) |
+| Signing identity | Published certificate fingerprint matches public **0.9** and **0.1.6** |
+
+The published checksum text and GitHub APK asset digest agree on SHA-256:
+
+```text
+e95da4143327e7f0811cbb6b381fb2fa6af9b1b538524bb3da243b14ba820c79
+```
+
+The published signing-certificate SHA-256 is:
+
+```text
+bdcf7e47ee8e19c06ee2c8f17f1e43a3390c8254d83ed9a369a3713685f2c955
+```
+
+These results establish publication, workflow success and the reported artifact identity. No new APK installation or device acceptance run was performed during this documentation update. Public-signed update retention and remaining physical-device coverage are listed below.
+
+## Preparation baseline
 
 - The planned 1.0 features are implemented, including local reading statistics and backup retention. See the [release notes](releases/1.0.md), [user guide](USAGE.md#reading-statistics) and [roadmap](ROADMAP.md).
 - The vertical-reader layout/restoration fix and UI-thread test corrections are committed in `eccd35b080d60486424f80741074502108093974`. Its [Build and test run](https://github.com/SotoOnGit/PanelGrove/actions/runs/41120333678) passed build, JVM/lint/package checks and both API 26/35 jobs.
 - Version metadata is 1.0/code 9. The release workflow checks that the APK version matches the tag, requires versioned notes, and creates a draft using those notes.
 - Local previews use the existing preview signing key. They are review artifacts and cannot update a public installation.
 
-## Candidate validation
+## Historical local candidate validation
 
 The following checks used **1.0 / code 9**, prepared from the passing `eccd35b` feature/fix baseline. Earlier full regression suites and device checks retain their original identities in the [validation summary](VALIDATION.md) and [statistics record](STATISTICS_VALIDATION.md).
 
@@ -37,22 +62,10 @@ The local review artifact is `dist/Panelgrove-1.0-preview.apk`, with matching `P
 
 Detailed build logs, CI metadata/logs, package/certificate checks, screenshots, database comparisons and smoke summaries remain in ignored `local-validation/release-1.0/`. The initial API 26 smoke setup launched as root and did not acquire a persistable source grant, correctly reaching the import-folder prompt. That attempt is retained; the passing attempts launched as Android's shell user, with root used only for emulator evidence collection. No app change was needed for that setup correction. The connected physical phone was not used or changed.
 
-## Publish sequence
-
-1. Review and commit the prepared files, push the release commit to `main`, and wait for **Build and test**, including API 26 and 35, at that exact commit.
-2. Tag that passing commit **`v1.0`** and push the tag. **Signed draft release** uses the existing public signing secrets and produces `panelgrove-v1.0.apk`, `SHA256SUMS` and `SIGNING-CERTIFICATE.txt` in a GitHub draft. It does not publish automatically.
-3. Verify the draft's APK package/version (1.0/code 9), checksum and public certificate SHA-256:
-
-   ```text
-   bdcf7e47ee8e19c06ee2c8f17f1e43a3390c8254d83ed9a369a3713685f2c955
-   ```
-
-4. Install that **publicly signed** candidate over public **0.9** on a development device with generated books. Confirm library/source access, progress, bookmarks, history, reader preferences, custom covers and new statistics. Also retain a 0.1.6 → 1.0 check for users skipping 0.9. Export a backup first; updating must not require uninstalling the public app.
-5. Exercise save/share with an actual receiving app and confirm the reader and statistics after a cold start. Review the final APK, notes and screenshots.
-6. Publish the reviewed draft as a **stable release**, with the prerelease checkbox clear. Update README/user-guide/roadmap status and download links to the now-published 1.0 assets; retain the measured validation limits.
-
-No tag, push, GitHub draft, production-key signing operation or publication is performed by local preparation.
-
 ## Remaining coverage
 
-Existing physical-device, broader provider/tablet, actual 16 KB runtime, accessibility and sustained-reading limits remain recorded in [VALIDATION.md](VALIDATION.md#remaining-limits). Local preview-key update rehearsals can validate migration and data retention, but cannot establish public signing continuity or acceptance of the final GitHub-signed APK.
+- Public **0.9 → 1.0** and **0.1.6 → 1.0** update-install checks with retained library/source access, progress, bookmarks, history, reader preferences, custom covers and new statistics remain unrecorded. Matching public signing fingerprints establish identity continuity; the preview-key rehearsal above checks migration separately.
+- Save/share with an actual receiving app and physical acceptance of the final signed 1.0 APK remain unrecorded.
+- Broader provider/tablet, actual 16 KB runtime, accessibility and sustained-reading limits remain recorded in [VALIDATION.md](VALIDATION.md#remaining-limits).
+
+Publication does not close these acceptance items. See the [development guide](DEVELOPMENT.md#public-releases) for the workflow used for future releases.

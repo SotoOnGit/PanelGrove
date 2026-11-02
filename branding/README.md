@@ -2,6 +2,14 @@
 
 The app name is **Panelgrove** and its Android package ID is `dev.soto.panelgrove`.
 
+## Project description
+
+> Free, open source Android manga reader for CBZ, CBR, CB7/7Z, PDF and image folders. Offline reading, language editions and private reading statistics. No ads, accounts or analytics.
+
+The [main README](../README.md) provides the full project overview, current release download and screenshot gallery.
+
+## Icon and colors
+
 [icon.svg](icon.svg) is the original supplied artwork and the source for the Android launcher icon. Its paths, colors, 108 × 108 view box, and embedded metadata are preserved.
 
 | Color | Value |

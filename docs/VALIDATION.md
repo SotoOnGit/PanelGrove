@@ -1,12 +1,30 @@
 # Panelgrove validation summary
 
-Updated **2026-10-30**. The current public prerelease is [**0.9**](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.9), version code **8**, package `dev.soto.panelgrove`, published on **2026-10-29**. Release dates here use Europe/Bucharest; GitHub records the publication timestamp as 2026-10-28 22:36 UTC. Current release checks and historical physical-phone/local-preview results are recorded separately below.
+Updated **2026-11-02**. The current stable release is [**1.0**](https://github.com/SotoOnGit/PanelGrove/releases/tag/v1.0), version code **9**, package `dev.soto.panelgrove`, published on **2026-10-30**. Release dates here use Europe/Bucharest; GitHub records the 1.0 publication timestamp as 2026-10-30 21:59:01 UTC. Current release checks and historical physical-phone/local-preview results are recorded separately below.
 
-## Version 1.0 — launch preparation
+## Version 1.0 — release and candidate checks
 
-The source is prepared as **1.0 / code 9**, completing the planned feature scope with local reading statistics. It has not been publicly signed, tagged or published by this preparation. The [launch checklist](RELEASE_1.0.md) records candidate checks and the remaining public-signing/update steps.
+Stable **1.0 / code 9** completes the planned feature scope with local reading statistics. Tag `v1.0` points to `54b7affa6c5b250de4d9d625a9190f1f74b83bbd`. Public release metadata, CI job conclusions, checksum text and signing-certificate text were checked on **2026-11-02**; the [release record](RELEASE_1.0.md) preserves the local candidate checks and remaining acceptance work.
 
-The versioned local candidate passed minified/debug builds, **81 core tests plus two app tests** (one optional core skip), release lint with zero errors, signature/package/alignment checks, six API 32 UI cases and four API 26 minified reading/statistics smoke cases. A preview-key 0.9 → 1.0 minified update rehearsal on API 32 retained reading data and preferences through the schema migration. These are local candidate results; the final publicly signed update remains to be checked. Current [1.0 screenshots](screenshots/README.md#version-10) use generated books and records.
+| Area | Recorded result |
+| --- | --- |
+| [Build and test](https://github.com/SotoOnGit/PanelGrove/actions/runs/41132967590) | Debug build, core/app JVM tests, lint, package checks and Android test jobs on **API 26 and 35** passed at the release tag |
+| [Signed draft release](https://github.com/SotoOnGit/PanelGrove/actions/runs/41132967585) | Core/app JVM tests, release lint, minified signed build, version consistency, signature/alignment checks and checksum generation passed |
+| Public distribution | `v1.0` is the latest stable release with `panelgrove-v1.0.apk` (**5,093,615 bytes**), `SHA256SUMS` and `SIGNING-CERTIFICATE.txt` |
+
+The release's [SHA256SUMS](https://github.com/SotoOnGit/PanelGrove/releases/download/v1.0/SHA256SUMS) and GitHub asset digest report APK SHA-256:
+
+```text
+e95da4143327e7f0811cbb6b381fb2fa6af9b1b538524bb3da243b14ba820c79
+```
+
+The published [SIGNING-CERTIFICATE.txt](https://github.com/SotoOnGit/PanelGrove/releases/download/v1.0/SIGNING-CERTIFICATE.txt) records the same certificate SHA-256 as public 0.9 and 0.1.6:
+
+```text
+bdcf7e47ee8e19c06ee2c8f17f1e43a3390c8254d83ed9a369a3713685f2c955
+```
+
+The versioned local candidate passed minified/debug builds, **81 core tests plus two app tests** (one optional core skip), release lint with zero errors, signature/package/alignment checks, six API 32 UI cases and four API 26 minified reading/statistics smoke cases. A preview-key 0.9 → 1.0 minified update rehearsal on API 32 retained reading data and preferences through the schema migration. These are local candidate results; final publicly signed update-install acceptance remains unrecorded. Current [1.0 screenshots](screenshots/README.md#version-10) use generated books and records.
 
 [CI at `eccd35b`](https://github.com/SotoOnGit/PanelGrove/actions/runs/41120333678) passed the debug build, core tests, lint/package checks and Android test jobs on **API 26 and 35**, after the vertical-reader restoration and UI-thread test fixes. This is the feature/fix baseline before the 1.0 version/documentation changes, not a signed 1.0 release result.
 
@@ -129,8 +147,8 @@ This was a documentation capture session, not a rerun of the automated suites ab
 
 - The tested emulators and Xiaomi phone use **4 KB runtime memory pages**. Passing native ELF and APK alignment checks does not establish actual 16 KB runtime compatibility.
 - Investigate the phone's initial stress timeouts and reproduce the result with controlled foreground/cache conditions; a single uninterrupted full phone suite is not yet recorded. All 12 previously blocked UI cases and the final resource retry passed.
-- Public 0.1.6 four-format reading and fresh-install linked-folder restore pass on one phone/provider. Physical signed-0.9 acceptance, edition/export flows, external share receivers, tablets, removable SD cards, managed-copy transfer and additional production providers remain open.
+- Public 0.1.6 four-format reading and fresh-install linked-folder restore pass on one phone/provider. Physical acceptance of the signed 1.0 APK, edition/export/statistics flows, external share receivers, tablets, removable SD cards, managed-copy transfer and additional production providers remain open.
 - Human accessibility review, broader light-theme review, sustained physical-device reading and broader resource measurements remain open.
-- Installation of signed 0.9 over public 0.1.6, preserving the library, reading positions, bookmarks, history and settings, remains to be verified. The matching published signing fingerprints establish identity continuity, not an executed update-install check.
+- Installation of signed 1.0 over public 0.9 and 0.1.6, preserving the library, reading positions, bookmarks, history, settings and custom covers, remains unrecorded. The matching published signing fingerprints establish identity continuity, not an executed update-install check. The earlier 0.1.6 → 0.9 check also remains unrecorded.
 
-Panelgrove remains a preview. Test sources and original generated fixtures are included so contributors can repeat the automated checks; see the [development guide](DEVELOPMENT.md).
+Test sources and original generated fixtures are included so contributors can repeat the automated checks; see the [development guide](DEVELOPMENT.md).

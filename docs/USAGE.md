@@ -2,13 +2,13 @@
 
 ## Install and update
 
-Panelgrove requires **Android 8.0 or newer**. This guide covers **1.0 / version code 9**, including reading statistics. Version 1.0 is prepared for release; the current public download remains [0.9](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.9) until it is published. See the [1.0 notes](releases/1.0.md) and [launch status](RELEASE_1.0.md).
+Panelgrove requires **Android 8.0 or newer**. The current stable release is **1.0 / version code 9**, published on **2026-10-30**, including private reading statistics. See the [1.0 notes](releases/1.0.md) and [release record](RELEASE_1.0.md).
 
-1. Download the publicly signed APK from [GitHub Releases](https://github.com/SotoOnGit/PanelGrove/releases) on your Android device. The 1.0 asset will be named `panelgrove-v1.0.apk` when published.
+1. Download [panelgrove-v1.0.apk](https://github.com/SotoOnGit/PanelGrove/releases/download/v1.0/panelgrove-v1.0.apk) on your Android device. Verification files are available on the [1.0 release page](https://github.com/SotoOnGit/PanelGrove/releases/tag/v1.0).
 2. Open the downloaded APK. If Android asks, allow installation from the browser or file manager you used, then complete the installation.
 3. Open Panelgrove and add your own books through **Library → Add manga**.
 
-Updates are manual: download the APK from a newer [GitHub release](https://github.com/SotoOnGit/PanelGrove/releases) and install it over the existing public version. Public 0.1.6 and 0.9 use the same signing identity so Android can retain the app's library, progress, bookmarks, and settings. Export a JSON backup before updating and keep your manga files separately; uninstalling is not part of a public-version update.
+Updates are manual: download the APK from a newer [GitHub release](https://github.com/SotoOnGit/PanelGrove/releases) and install it over the existing public version. Public 0.1.6, 0.9 and 1.0 use the same signing identity so Android can retain the app's library, progress, bookmarks, history and settings. Export a JSON backup before updating and keep your manga files separately; uninstalling is not part of a public-version update. Reading statistics start in 1.0; past opening history cannot reconstruct earlier reading time.
 
 ### Moving from a local preview or debug build
 

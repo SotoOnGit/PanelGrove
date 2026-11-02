@@ -1,6 +1,6 @@
 # Panelgrove roadmap
 
-Updated **2026-10-30**. The **1.0** feature scope is implemented and prepared as version code **9**. Publication is pending the [launch checklist](RELEASE_1.0.md). The current public prerelease remains [**0.9**](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.9), version code **8**.
+Updated **2026-11-02**. [**Panelgrove 1.0**](https://github.com/SotoOnGit/PanelGrove/releases/tag/v1.0), version code **9**, is the current stable release, published on **2026-10-30**. The planned 1.0 feature scope is complete. Publication, CI and remaining acceptance coverage are recorded in the [release record](RELEASE_1.0.md).
 
 The [1.0 release notes](releases/1.0.md) describe reading statistics and reader reliability improvements. The first five priorities shipped in [0.9](releases/0.9.md); statistics complete the planned 1.0 feature set. Remaining acceptance checks are tracked separately from feature completion.
 
@@ -13,7 +13,7 @@ The [1.0 release notes](releases/1.0.md) describe reading statistics and reader 
 | 3 | Contrast and gamma controls | Preview, adjust, reset and retain display adjustments in the reader. Keep source images unchanged. | Released in 0.9 |
 | 4 | Different languages for the same series | Attribute separate books in any supported format to one shared series, identify their language editions and make those editions easy to select. | Released in 0.9 |
 | 5 | Page export | Save or share a selected page as a full-page image through Android's system controls. Keep the source document unchanged. | Released in 0.9 |
-| 6 | Statistics | Reading time and comparisons, pages viewed, completions, streaks, rankings, sessions, language breakdowns and an activity calendar, retained locally and included in backups. | Included in prepared 1.0; pending publication |
+| 6 | Statistics | Reading time and comparisons, pages viewed, completions, streaks, rankings, sessions, language breakdowns and an activity calendar, retained locally and included in backups. | Released in 1.0 |
 
 CB7/7Z implementation scope and checks are recorded in [feature validation](CB7_VALIDATION.md).
 

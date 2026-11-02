@@ -4,25 +4,25 @@
   <img src="branding/icon.svg" width="112" height="112" alt="Panelgrove icon">
 </p>
 
-A free, open source manga reader for Android. Read CBZ, CBR, CB7/7Z, PDF, and image folders offline, with no ads, accounts, or analytics.
+A free, open source manga reader for Android. Read CBZ, CBR, CB7/7Z, PDF, and image folders offline, organize language editions, and track your reading with private, on-device statistics. No ads, accounts, or analytics.
 
-**Android 8.0+ · 1.0 release preparation · GPL-3.0-or-later**
+**Android 8.0+ · 1.0 stable · GPL-3.0-or-later**
 
-[Download a public APK](https://github.com/SotoOnGit/PanelGrove/releases) · [1.0 release notes](docs/releases/1.0.md) · [User guide](docs/USAGE.md) · [Build from source](docs/DEVELOPMENT.md) · [Report an issue](https://github.com/SotoOnGit/PanelGrove/issues)
+[Download 1.0 APK](https://github.com/SotoOnGit/PanelGrove/releases/download/v1.0/panelgrove-v1.0.apk) · [Release notes and checksums](https://github.com/SotoOnGit/PanelGrove/releases/tag/v1.0) · [User guide](docs/USAGE.md) · [Build from source](docs/DEVELOPMENT.md) · [Report an issue](https://github.com/SotoOnGit/PanelGrove/issues)
 
-**New in 1.0:** private reading statistics, time graphs and comparisons, chapter/session breakdowns, reading streaks and an activity calendar. Language editions, page export, custom covers, contrast/gamma controls and CB7/7Z support from 0.9 remain included. Version 1.0 is prepared in source; [0.9](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.9) remains the public download until 1.0 is published.
+**New in 1.0:** private reading statistics, time graphs and comparisons, chapter/session breakdowns, reading streaks and an activity calendar, all included in JSON backups. Language editions, page export, custom covers, contrast/gamma controls and CB7/7Z support are included too. See the [1.0 release notes](docs/releases/1.0.md).
 
 ## Screenshots
 
-Actual screens from the **1.0 / code 9 debug build**, captured on Android 12 / API 32 with original generated demo books and statistics. [View the gallery](docs/screenshots/README.md), including month graphs, chapter/session details and Book details.
+Explore the library, reader and reading statistics in **Panelgrove 1.0**. These screens were captured from the **1.0 / code 9 debug build** on Android 12 / API 32 with original generated demo books and statistics. [View the full gallery](docs/screenshots/README.md).
 
-| Library | Reader | Bookmarks |
+| Library | Reader | Reading statistics |
 | --- | --- | --- |
-| [<img src="docs/screenshots/1.0/library-dark.png" width="240" alt="1.0 library with Continue reading and generated demo books">](docs/screenshots/1.0/library-dark.png) | [<img src="docs/screenshots/1.0/reader.png" width="240" alt="1.0 reader with timer controls and a generated page">](docs/screenshots/1.0/reader.png) | [<img src="docs/screenshots/1.0/bookmarks.png" width="240" alt="Contents sheet showing a saved bookmark">](docs/screenshots/1.0/bookmarks.png) |
-| **Reading settings** | **History** | **Settings** |
-| [<img src="docs/screenshots/1.0/reading-settings.png" width="240" alt="Reading direction, page layout and display adjustments">](docs/screenshots/1.0/reading-settings.png) | [<img src="docs/screenshots/1.0/history.png" width="240" alt="Reading history grouped by day">](docs/screenshots/1.0/history.png) | [<img src="docs/screenshots/1.0/settings.png" width="240" alt="Appearance, file storage and statistics settings">](docs/screenshots/1.0/settings.png) |
-| **Reading statistics** | **Activity calendar** | **Chapter and session details** |
-| [<img src="docs/screenshots/1.0/statistics-week.png" width="240" alt="Weekly reading-time graph and earlier-period comparison">](docs/screenshots/1.0/statistics-week.png) | [<img src="docs/screenshots/1.0/statistics-calendar.png" width="240" alt="Activity calendar with generated reading records">](docs/screenshots/1.0/statistics-calendar.png) | [<img src="docs/screenshots/1.0/statistics-drilldown.png" width="240" alt="Book, chapter and session statistics details">](docs/screenshots/1.0/statistics-drilldown.png) |
+| [<img src="docs/screenshots/1.0/library-dark.png" width="240" alt="1.0 library with Continue reading and generated demo books">](docs/screenshots/1.0/library-dark.png) | [<img src="docs/screenshots/1.0/reader.png" width="240" alt="1.0 reader with timer controls and a generated page">](docs/screenshots/1.0/reader.png) | [<img src="docs/screenshots/1.0/statistics-week.png" width="240" alt="Weekly reading-time graph and earlier-period comparison">](docs/screenshots/1.0/statistics-week.png) |
+| **Book details** | **Reading settings** | **Activity calendar** |
+| [<img src="docs/screenshots/1.0/book-details.png" width="240" alt="Book details with custom cover and language-edition controls">](docs/screenshots/1.0/book-details.png) | [<img src="docs/screenshots/1.0/reading-settings.png" width="240" alt="Reading direction, page layout and display adjustments">](docs/screenshots/1.0/reading-settings.png) | [<img src="docs/screenshots/1.0/statistics-calendar.png" width="240" alt="Activity calendar with generated reading records">](docs/screenshots/1.0/statistics-calendar.png) |
+| **Chapter and session details** | **History** | **Settings** |
+| [<img src="docs/screenshots/1.0/statistics-drilldown.png" width="240" alt="Book, chapter and session statistics details">](docs/screenshots/1.0/statistics-drilldown.png) | [<img src="docs/screenshots/1.0/history.png" width="240" alt="Reading history grouped by day">](docs/screenshots/1.0/history.png) | [<img src="docs/screenshots/1.0/settings.png" width="240" alt="Appearance, file storage and statistics settings">](docs/screenshots/1.0/settings.png) |
 
 ## Your library, on your device
 
@@ -53,7 +53,7 @@ Encrypted documents, multipart archives, and EPUB are not supported. BZip2 and o
 
 ## Get started
 
-1. Download and install the latest publicly signed APK from [GitHub Releases](https://github.com/SotoOnGit/PanelGrove/releases). See the [installation guide](docs/USAGE.md#install-and-update) for Android's installation prompt and updates.
+1. Download and install [Panelgrove 1.0](https://github.com/SotoOnGit/PanelGrove/releases/download/v1.0/panelgrove-v1.0.apk). The [release page](https://github.com/SotoOnGit/PanelGrove/releases/tag/v1.0) includes checksums and signing details. See the [installation guide](docs/USAGE.md#install-and-update) for Android's installation prompt and updates.
 2. In **Library**, choose **Add manga → Choose files**, or add a library folder.
 3. Open a book. Tap the middle of a page to show controls; tap either edge or swipe to turn pages. The default reading direction is right-to-left.
 
@@ -67,15 +67,13 @@ Removing a library entry leaves its external original intact. Deleting a managed
 
 Panelgrove does not include manga or provide a download catalog.
 
-## 1.0 launch status
+## 1.0 release
 
-Version **1.0 / code 9** is prepared for the first stable release, using the existing package `dev.soto.panelgrove`. It has not been tagged or published by this preparation. The current public prerelease remains [**0.9 / code 8**](https://github.com/SotoOnGit/PanelGrove/releases/tag/v0.9), published on **2026-10-29**.
+Version **1.0 / code 9** is the first stable release, published on **2026-10-30** with package `dev.soto.panelgrove`. The [public release](https://github.com/SotoOnGit/PanelGrove/releases/tag/v1.0) includes the signed APK, `SHA256SUMS` and `SIGNING-CERTIFICATE.txt`.
 
-[CI at the feature/fix commit](https://github.com/SotoOnGit/PanelGrove/actions/runs/41120333678) passed the debug build, core tests, lint, package checks and Android tests on API 26 and 35. The versioned release still needs CI at its final commit and the publicly signed candidate's launch checks. See the [1.0 launch checklist and validation](docs/RELEASE_1.0.md).
+[Build and test](https://github.com/SotoOnGit/PanelGrove/actions/runs/41132967590) passed at the tagged release commit, including JVM tests, lint, package checks and Android tests on **API 26 and 35**. The [signed release workflow](https://github.com/SotoOnGit/PanelGrove/actions/runs/41132967585) also passed. See the [release record](docs/RELEASE_1.0.md) for the verified checksum, signing identity and validation scope.
 
-Reading-statistics development suites passed **99 cases with five expected skips** on each of API 26 and 32, with later API 26/35 regression checks. Earlier physical-phone checks retain their original build identities in the [validation summary](docs/VALIDATION.md).
-
-Public signing/update retention, external share receivers, broader providers/tablets, actual 16 KB execution, accessibility and sustained physical-device reading retain the limits recorded in the launch checklist.
+Public-signed update retention, external share receivers, broader providers/tablets, actual 16 KB execution, accessibility and sustained physical-device reading retain the limits recorded in the [validation summary](docs/VALIDATION.md#remaining-limits).
 
 ## Reading statistics
 

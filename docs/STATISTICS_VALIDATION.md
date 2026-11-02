@@ -1,6 +1,6 @@
 # Reading statistics — development validation
 
-Recorded **2026-10-30** during statistics development. The feature is now included in prepared **1.0 / code 9** and remains absent from public 0.9. The measurements below retain their original development-build scope; see [1.0 launch preparation](RELEASE_1.0.md) for versioned candidate checks and publication status.
+Recorded **2026-10-30** during statistics development; release status updated **2026-11-02**. The feature shipped in stable **1.0 / code 9**, published on **2026-10-30**. The measurements below retain their original development-build scope; see the [1.0 release record](RELEASE_1.0.md) for published artifacts, final CI and candidate checks.
 
 ## Implemented scope
 
